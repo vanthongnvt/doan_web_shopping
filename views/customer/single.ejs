@@ -178,7 +178,22 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<!-- middle section -->
 	
 		<%include layout/footer%>
+		<script src="/js/imagezoom.js"></script>
+	<!-- //imagezoom -->
 
+	<!-- flexslider -->
+	<link rel="stylesheet" href="/css/flexslider.css" type="text/css" media="screen" />
+
+	<script src="/js/jquery.flexslider.js"></script>
+	<script>
+		// Can also be used with $(document).ready()
+		$(window).load(function () {
+			$('.flexslider').flexslider({
+				animation: "slide",
+				controlNav: "thumbnails"
+			});
+		});
+	</script>
 </body>
 
 </html>

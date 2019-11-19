@@ -287,7 +287,7 @@ router.get('/create-product',function(req,res,next){
 			slug: slug('iPhone 11 Pro Max 512GB',{lower:true}),
 			brandId:phoneApple._id,
 			categoryId:phoneApple.categoryId._id,
-			images:'iphone-11-pro-max-512gb-i1png',
+			images:'iphone-11-pro-max-512gb-i1.png',
 			price:43990000,
 			detail:'Màn hình:	OLED, 6.5", Super Retina XDR. Hệ điều hành:	iOS 13. Camera sau:	3 camera 12 MP',
 		},{

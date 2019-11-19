@@ -939,7 +939,10 @@ a.price-mar {
 /*-- //best seller (scroll) --*/
 
 /*-- //product left --*/
-
+.ov-hd{
+    white-space: nowrap;
+    overflow: hidden;
+}
 /*-- product right --*/
 
 /*-- special effect --*/

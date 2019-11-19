@@ -35,8 +35,9 @@ app.use('/tai-khoan', accountRouter);
 app.use('/thanh-toan',checkoutRouter);
 app.use('/lien-he',contactRouter);
 app.use('/gioi-thieu',aboutRouter);
-app.use('/san-pham',productRouter);
+// app.use('/san-pham',productRouter);
 app.use('/:category',categoryRouter);
+app.use('/:category/:product',productRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,8 +1,8 @@
 var express = require('express');
-var router = express.Router();
+var router = express.Router({ mergeParams : true });
 
 var categoryController=require('../../controllers/customer/category_controller');
-/* GET home page. */
+
 router.get('/',categoryController.listProduct);
 
 module.exports = router;

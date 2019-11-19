@@ -18,6 +18,7 @@ var orderSchema = mongoose.Schema({
 			type:Schema.Types.ObjectId,
 			ref:'Product'
 		}
+		discount:Number,
 		quantity:Number,
 	}],
 	pricing:{

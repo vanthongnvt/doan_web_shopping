@@ -65,6 +65,10 @@ var productSchema = mongoose.Schema({
 	}
 });
 
+productSchema.methods.formatPrice=function(){
+	return this.toFixed(0).price.replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
 var Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;

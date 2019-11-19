@@ -23,8 +23,22 @@ var categorySchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	}
+},{collection:'categories'});
+categorySchema.virtual('products', {
+	ref: 'Product',
+	localField: '_id',
+	foreignField: 'categoryId',
 });
 
+categorySchema.virtual('brands', {
+	ref: 'Brand',
+	localField: '_id',
+	foreignField: 'categoryId',
+});
+
+
+categorySchema.set('toObject', { virtuals: true });
+// categorySchema.set('toJSON', { virtuals: true });
 var Category = mongoose.model('Category', categorySchema);
 
 module.exports = Category;

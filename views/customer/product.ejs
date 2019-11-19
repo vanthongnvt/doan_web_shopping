@@ -47,8 +47,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<!-- product left -->
 				<div class="agileinfo-ads-display col-lg-9">
 					<div class="wrapper">
-						<!-- first section -->
-						<%products.forEach(function(product,index){
+						<%category.products.forEach(function(product,index){
 							if(index%3==0){
 								%>
 								<div class="product-sec1 px-sm-4 px-3 py-sm-5  py-3 mb-4">
@@ -103,7 +102,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 											</div>
 										</div>
 									</div>
-									<%if((index%3 == 2) ||index==products.length-1 ){
+									<%if((index%3 == 2) ||index==category.products.length-1 ){
 										%>
 									</div>
 								</div>
@@ -117,124 +116,66 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					<div class="col-lg-3 mt-lg-0 mt-4 p-lg-0">
 						<div class="side-bar p-sm-4 p-3">
 							<div class="search-hotel border-bottom py-2">
-								<h3 class="agileits-sear-head mb-3">Nhãn hiệu</h3>
+								<h3 class="agileits-sear-head mb-3">Hãng</h3>
 								<form action="#" method="post">
 									<input type="search" placeholder="Tìm nhãn hiệu..." name="search" required="">
 									<input type="submit" value=" ">
 								</form>
 								<div class="left-side py-2">
 									<ul>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Samsung</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Red Mi</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Apple</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Nexus</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Motorola</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Micromax</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Lenovo</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Oppo</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">Sony</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">LG</span>
-										</li>
-										<li>
-											<input type="checkbox" class="checked">
-											<span class="span">One Plus</span>
-										</li>
+										<%category.brands.forEach(function(brand){
+											%>
+											<li>
+												<input type="radio" class="checked" name="brand" value="<%=brand.name%>" <%if(query.brand==brand.slug){%>checked<%}%>>
+												<span class="span"><%=brand.name%></span>
+											</li>
+											<%
+										})%>
 									</ul>
 								</div>
 							</div>
-							<!-- ram -->
+							<!-- price -->
 							<div class="left-side border-bottom py-2">
-								<h3 class="agileits-sear-head mb-3">Ram</h3>
+								<h3 class="agileits-sear-head mb-3">Giá</h3>
+
 								<ul>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span"> < 512 MB</span>
+										<input type="radio" class="checked" name="rdprice" value="0|200000">
+										<span class="span">< 200,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">512 MB - 1 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="200000|500000">
+										<span class="span">200,000 - 500,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">1 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="500000|1000000">
+										<span class="span">500,000 - 1,000,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">2 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="1000000|2000000">
+										<span class="span">1,000,000 - 2,000,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">3 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="2000000|5000000">
+										<span class="span">2,000,000 - 5,000,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">5 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="5000000|10000000">
+										<span class="span">5,000,000 - 10,000,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">6 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="10000000|20000000">
+										<span class="span">10,000,000 - 20,000,000 VNĐ</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
-										<span class="span"> >= 6 GB</span>
+										<input type="radio" class="checked" name="rdprice" value="20000000|40000000">
+										<span class="span">20,000,000 - 40,000,000 VNĐ</span>
+									</li>
+									<li>
+										<input type="radio" class="checked" name="rdprice" value="40000000|0">
+										<span class="span"> > 40,000,000 VNĐ</span>
 									</li>
 								</ul>
-							</div>
-							<!-- //ram -->
-							<!-- price -->
-							<div class="range border-bottom py-2">
-								<h3 class="agileits-sear-head mb-3">Giá</h3>
-								<div class="w3l-range">
-									<ul>
-										<li>
-											<a href="#"> < $1,000</a>
-										</li>
-										<li class="my-1">
-											<a href="#">$1,000 - $5,000</a>
-										</li>
-										<li>
-											<a href="#">$5,000 - $10,000</a>
-										</li>
-										<li class="my-1">
-											<a href="#">$10,000 - $20,000</a>
-										</li>
-										<li>
-											<a href="#">$20,000 $30,000</a>
-										</li>
-										<li class="mt-1">
-											<a href="#"> > $30,000</a>
-										</li>
-									</ul>
-								</div>
 							</div>
 							<!-- //price -->
 							<!-- discounts -->
@@ -242,27 +183,27 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<h3 class="agileits-sear-head mb-3">Giảm giá</h3>
 								<ul>
 									<li>
-										<input type="checkbox" class="checked">
+										<input type="radio" class="checked" name="rddiscount" value="5">
 										<span class="span"> >= 5%</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
+										<input type="radio" class="checked" name="rddiscount" value="10">
 										<span class="span"> >= 10%</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
+										<input type="radio" class="checked" name="rddiscount" value="20">
 										<span class="span"> >= 20%</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
+										<input type="radio" class="checked" name="rddiscount" value="30">
 										<span class="span"> >= 30%</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
+										<input type="radio" class="checked" name="rddiscount" value="50">
 										<span class="span"> >= 50%</span>
 									</li>
 									<li>
-										<input type="checkbox" class="checked">
+										<input type="radio" class="checked" name="rddiscount" value="60">
 										<span class="span"> >= 60%</span>
 									</li>
 								</ul>
@@ -367,6 +308,54 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		</div>
 		<!-- middle section -->
 		<%include layout/footer%>
-	</body>
+		<script type="text/javascript">
+			serialize = function(obj) {
+				var str = [];
+				for (var p in obj)
+					if (obj.hasOwnProperty(p)) {
+						str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+					}
+					return str.join("&");
+				}
+				$(document).ready(function(){
+					var url =window.location.href.split('?')[0];
+					var mquery=<%-JSON.stringify(query)%>;
+					if(mquery!=null){
+						if(mquery.minPrice !=null && mquery.maxPrice !=null){
+							$('input[name="rdprice"]').each(function(){
+								if($(this).val() == mquery.minPrice+'|'+mquery.maxPrice){
+									$(this).attr('checked',true);
+								}
+							});
+						}
+						if(mquery.discount!=null){
+							$('input[name="rddiscount"]').each(function(){
+								if($(this).val() == mquery.discount){
+									$(this).attr('checked',true);
+								}
+							});
+						}
+					}
 
-	</html>
+					$('input[name="rdprice"]').change(function(){
+						var prices= $(this).val().split('|');
+						mquery.minPrice=prices[0];
+						mquery.maxPrice=prices[1];
+						window.location= url+'?'+serialize(mquery);
+					});
+
+					$('input[name="brand"]').change(function(){
+						mquery.brand=$(this).val();
+						window.location= url+'?'+serialize(mquery);
+					});
+					$('input[name="rddiscount"]').change(function(){
+						mquery.discount=$(this).val();
+						window.location= url+'?'+serialize(mquery);
+					});
+
+
+				})
+			</script>
+		</body>
+
+		</html>

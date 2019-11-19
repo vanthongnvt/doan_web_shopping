@@ -126,7 +126,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<h3 class="heading-tittle text-center font-italic"><%=category.name%> mới</h3>
 								<div class="row">
 
-									<%category.products.forEach(function(product){
+									<%category.products.forEach(function(product,index){
+										if(index==3) {return true;}
 										%>
 
 										<div class="col-md-4 product-men mt-5">

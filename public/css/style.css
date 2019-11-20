@@ -1528,7 +1528,7 @@ li.subitem1 p {
 }
 
 .occasion-cart .snipcart-details {
-    width: 38%;
+    width: fit-content;
     margin: 0;
 }
 

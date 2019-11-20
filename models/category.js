@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-
+// var mongoosePaginate = require('mongoose-paginate-v2');
 var categorySchema = mongoose.Schema({
 	name: {
 		type: String,
@@ -36,6 +36,14 @@ categorySchema.virtual('brands', {
 	foreignField: 'categoryId',
 });
 
+categorySchema.virtual('numProducts', {
+	ref: 'Product',
+	localField: '_id',
+	foreignField: 'categoryId',
+	count:true,
+});
+
+// categorySchema.plugin(mongoosePaginate);
 
 categorySchema.set('toObject', { virtuals: true });
 // categorySchema.set('toJSON', { virtuals: true });

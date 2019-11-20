@@ -6,7 +6,9 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 require('dotenv').config();
 var db=mongoose.connect(process.env.DB_URL,{ useUnifiedTopology: true,useNewUrlParser: true,useCreateIndex: true }, function (err) {
-	console.log(err);
+	if(err){
+		console.log(err);
+	}
 });
 var indexRouter = require('./routes/customer/index');
 var accountRouter = require('./routes/customer/account');
@@ -32,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/migrate', migrateRouter);
 app.use('/tai-khoan', accountRouter);
-app.use('/thanh-toan',checkoutRouter);
+app.use('/don-hang',checkoutRouter);
 app.use('/lien-he',contactRouter);
 app.use('/gioi-thieu',aboutRouter);
 // app.use('/san-pham',productRouter);

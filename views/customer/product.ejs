@@ -25,10 +25,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<div class="container">
 				<ul class="w3_short">
 					<li>
-						<a href="index.html">Home</a>
+						<a href="/">Home</a>
 						<i>|</i>
 					</li>
-					<li>Electronics</li>
+					<li><%=category.name%></li>
 				</ul>
 			</div>
 		</div>
@@ -110,11 +110,26 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							})%>
 							<!-- //first section -->
 						</div>
+						<%if(pagination.totalItem>0){%>
+							<%-include('layout/pagination',{pagination:pagination});%>
+						<%}%>
 					</div>
 					<!-- //product left -->
 					<!-- product right -->
 					<div class="col-lg-3 mt-lg-0 mt-4 p-lg-0">
 						<div class="side-bar p-sm-4 p-3">
+							<div class="agileits-navi_search border-bottom py-2">
+								<h3 class="agileits-sear-head mb-3">Sắp xếp</h3>
+								<form action="#" method="post">
+									<select id="agileinfo-nav_search" name="sort" class="border" required="">
+										<option value="new">Mới nhất</option>
+										<option value="old">Cũ nhất</option>
+										<option value="expensive">Giá cao nhất</option>
+										<option value="cheap">Giá thấp nhất</option>
+										<option value="discount">Giảm giá nhiều nhất</option>
+									</select>
+								</form>
+							</div>
 							<div class="search-hotel border-bottom py-2">
 								<h3 class="agileits-sear-head mb-3">Hãng</h3>
 								<form action="#" method="post">
@@ -123,10 +138,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</form>
 								<div class="left-side py-2">
 									<ul>
+										<li>
+											<input type="radio" class="checked" name="brand" value="all" <%if(query.brand==null){%>checked<%}%>>
+											<span class="span">Tất cả</span>
+										</li>
 										<%category.brands.forEach(function(brand){
 											%>
 											<li>
-												<input type="radio" class="checked" name="brand" value="<%=brand.name%>" <%if(query.brand==brand.slug){%>checked<%}%>>
+												<input type="radio" class="checked" name="brand" value="<%=brand.name%>">
 												<span class="span"><%=brand.name%></span>
 											</li>
 											<%
@@ -139,6 +158,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<h3 class="agileits-sear-head mb-3">Giá</h3>
 
 								<ul>
+									<li>
+										<input type="radio" class="checked" name="rdprice" value="all">
+										<span class="span">Tất cả</span>
+									</li>
 									<li>
 										<input type="radio" class="checked" name="rdprice" value="0|200000">
 										<span class="span">< 200,000 VNĐ</span>
@@ -182,6 +205,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<div class="left-side border-bottom py-2">
 								<h3 class="agileits-sear-head mb-3">Giảm giá</h3>
 								<ul>
+									<li>
+										<input type="radio" class="checked" name="rddiscount" value="all">
+										<span class="span"> Tất cả</span>
+									</li>
 									<li>
 										<input type="radio" class="checked" name="rddiscount" value="5">
 										<span class="span"> >= 5%</span>
@@ -253,16 +280,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									</li>
 								</ul>
 							</div>
-							<div class="left-side py-2">
-								<h3 class="agileits-sear-head mb-3">Sẵn có</h3>
-								<ul>
-									<li>
-										<input type="checkbox" class="checked">
-										<span class="span">Không bao gồm hàng</span>
-									</li>
-								</ul>
-							</div>
-							<!-- //arrivals -->
 						</div>
 						<!-- //product right -->
 					</div>
@@ -284,7 +301,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
 								</div>
 								<div class="col-sm-5 offerimg-w3l">
-									<img src="images/off1.png" alt="" class="img-fluid">
+									<img src="/images/off1.png" alt="" class="img-fluid">
 								</div>
 							</div>
 						</div>
@@ -298,7 +315,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									<p>Miễn phí vận chuyển trên $ 100</p>
 								</div>
 								<div class="col-sm-5 offerimg-w3l">
-									<img src="images/off2.png" alt="" class="img-fluid">
+									<img src="/images/off2.png" alt="" class="img-fluid">
 								</div>
 							</div>
 						</div>
@@ -312,10 +329,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			serialize = function(obj) {
 				var str = [];
 				for (var p in obj)
-					if (obj.hasOwnProperty(p)) {
+					if (obj.hasOwnProperty(p)&&obj[p]!=null) {
 						str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
 					}
-					return str.join("&");
+					if(str.length==0){
+						return '';
+					}
+					return '?'+str.join("&");
 				}
 				$(document).ready(function(){
 					var url =window.location.href.split('?')[0];
@@ -335,23 +355,61 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								}
 							});
 						}
+						if(mquery.brand!=null){
+							$('input[name="brand"]').each(function(){
+								if($(this).val() == mquery.brand){
+									$(this).attr('checked',true);
+								}
+							});
+						}
+						if(mquery.sort!=null){
+							$('select[name="sort"] option').each(function(){
+								if($(this).val() == mquery.sort){
+									$(this).attr('selected',true);
+								}
+							});
+						}
 					}
 
 					$('input[name="rdprice"]').change(function(){
-						var prices= $(this).val().split('|');
-						mquery.minPrice=prices[0];
-						mquery.maxPrice=prices[1];
-						window.location= url+'?'+serialize(mquery);
+						if($(this).val()==='all'){
+							mquery.minPrice=null;
+							mquery.maxPrice=null;	
+						}
+						else{
+							var prices= $(this).val().split('|');
+							mquery.minPrice=prices[0];
+							mquery.maxPrice=prices[1];
+						}
+						window.location= url+serialize(mquery);
+
 					});
 
 					$('input[name="brand"]').change(function(){
-						mquery.brand=$(this).val();
-						window.location= url+'?'+serialize(mquery);
+						if($(this).val()=='all'){
+							mquery.brand=null;
+						}
+						else{
+							mquery.brand=$(this).val();
+						}
+						
+						window.location= url+serialize(mquery);
 					});
 					$('input[name="rddiscount"]').change(function(){
-						mquery.discount=$(this).val();
-						window.location= url+'?'+serialize(mquery);
+						if($(this).val()=='all'){
+							mquery.discount=null;
+						}
+						else{
+							mquery.discount=$(this).val();
+						}
+						
+						window.location= url+serialize(mquery);
 					});
+
+					$('select[name="sort"]').change(function(){
+						mquery.sort=$(this).val();
+						window.location= url+serialize(mquery);
+					})
 
 
 				})

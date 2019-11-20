@@ -21,7 +21,7 @@ exports.index = function(req,res,next){
 	},
 	{
 		$sort: {
-			created: 1,
+			created: -1,
 		}
 	},
 	{
@@ -35,7 +35,7 @@ exports.index = function(req,res,next){
 					$expr: { $eq: [ '$categoryId', '$$indicator_id' ] }
 				}
 			},
-			{ $limit: 3 }
+			{ $limit: 4 }
 			]
 		}
 	},

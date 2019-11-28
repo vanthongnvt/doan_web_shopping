@@ -2189,6 +2189,67 @@ div#testimonials h4.m-title {
 	display: inherit;
 }
 
+/*-- acouunt--*/
+.account-avatar{
+    background: #9fc5e0;
+    position: relative;
+    height: 110px;
+}
+.account-avatar img{
+    position: absolute;
+    bottom: 0;
+    left: 10px;
+}
+.account-avatar:hover .btn-change-avatar{
+    display: block;
+}
+input[name="user_avatar"]{
+    display: none;
+}
+.btn-change-avatar{
+    display: none;
+    position: absolute;
+    left: 10px;
+    bottom: 0px;
+    width: 100px;
+    background: #0779c9ab;
+    height: 25px;
+    font-size: 14px;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+.btn-change-avatar:focus{
+    outline: none;
+}
+.list-left-menu li.active{
+    background: #0779c9;
+    position: relative;
+}
+.list-left-menu li.active a{
+    color: #ffffff;
+}
+.list-left-menu li.active::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: #f45c5d;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /*-- placeholder-color 
 
 ::-webkit-input-placeholder {

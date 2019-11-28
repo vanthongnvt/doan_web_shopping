@@ -63,10 +63,20 @@ var productSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	}
-});
+},{collection:'products'});
 
 productSchema.methods.formatPrice=function(){
-	return this.toFixed(0).price.replace(/\d(?=(\d{3})+\.)/g, '$&,');
+	return this.price.toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
+productSchema.statics.getProductByName=async function(name){
+	try{
+		var result = await this.findOne({slug:name}).populate('categoryId').exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
 }
 
 var Product = mongoose.model('Product', productSchema);

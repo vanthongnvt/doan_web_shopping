@@ -4,6 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var expressSession = require('express-session');
+var bodyParser = require('body-parser');
+var flash=require('connect-flash');
+var passport = require('passport');
+require('./middleware/init_passport');
 require('dotenv').config();
 var db=mongoose.connect(process.env.DB_URL,{ useUnifiedTopology: true,useNewUrlParser: true,useCreateIndex: true }, function (err) {
 	if(err){
@@ -19,6 +24,7 @@ var productRouter = require ('./routes/customer/product');
 var checkoutRouter=require('./routes/customer/checkout');
 var migrateRouter=require('./routes/customer/migratedb');
 
+var checkLogedMiddleware=require('./middleware/check_logged');
 var app = express();
 
 // view engine setup
@@ -26,11 +32,25 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
+app.use(expressSession({
+  secret: process.env.APP_SECRET,
+  resave: true,
+  saveUninitialized: true
+}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//middleware
+app.use(checkLogedMiddleware);
 
+//route
 app.use('/', indexRouter);
 app.use('/migrate', migrateRouter);
 app.use('/tai-khoan', accountRouter);
@@ -40,6 +60,7 @@ app.use('/gioi-thieu',aboutRouter);
 // app.use('/san-pham',productRouter);
 app.use('/:category([-\\w]+)',categoryRouter);
 app.use('/:category/:product',productRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

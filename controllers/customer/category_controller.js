@@ -12,7 +12,7 @@ exports.listProduct = async function(req,res,next){
 	let eqs=new Object(),sort=new Object();
 	let page;
 	if(query.page!=null){
-		page=query.page;
+		page=parseInt(query.page)>=0?parseInt(query.page):1;
 		delete query.page;
 	}
 	else{
@@ -54,40 +54,22 @@ exports.listProduct = async function(req,res,next){
 
 	}
 	if(query.brand!=null){
-		let brandId= brandModel.findOne({name:query.brand},function(err,brand){
-			if(err||brand==null){
-				console.log(err);
-				return res.send('503');
+		let brand= await brandModel.getBrandByName(query.brand);
+		if(!brand.error&&brand.data!=null){
+			eqs.brandId=brand.data._id;
+			url=url+'&brand='+query.brand+'&page=';
+			let products= await categoryModel.paginateFilterProducts(category,sort,eqs,page);
+			if(!products.err){
+				if(products.data==null){
+					return res.send('404');
+				}
+				count=products.total;
+				let pagination={totalPage:parseInt(count/9)+1,curPage:page,totalItem:count,url:url};
+				return res.render('./customer/product',{category:products.data,query:query,count:count,pagination:pagination});
 			}
-			else{
-				eqs.brandId=brand._id;
-				url=url+'&brand='+query.brand+'&page=';
-
-				categoryModel.findOne({slug:category}).populate({path:'numProducts',match:eqs}).exec(function(err,docs){
-					if(err){
-						console.log(err);
-						return res.send('503');
-					}
-					else if(docs==null){
-						return res.send('404');
-					}
-					else{
-						let count=docs.numProducts;
-						categoryModel.findOne({slug:category}).populate({path:'products',match:eqs,options:{skip:9*(page-1),limit:9,sort:sort}}).populate('brands').exec(function(err,result){
-
-							if(err){
-								console.log(err);
-								return res.send('503');
-							}
-							else{
-								let pagination={totalPage:parseInt(count/9)+1,curPage:page,totalItem:count,url:url};
-								return res.render('./customer/product',{category:result,query:query,count:count,pagination:pagination});
-							}
-						})
-					}
-				});
-			}
-		})
+			return res.send('500');
+		}
+		return res.send('404');
 	}
 	else{
 		if(query.length>0){
@@ -96,29 +78,15 @@ exports.listProduct = async function(req,res,next){
 		else{
 			url=url+'page=';
 		}
-		categoryModel.findOne({slug:category}).populate({path:'numProducts',match:eqs}).exec(function(err,docs){
-			if(err){
-				console.log(err);
-				return res.send('503');
-			}
-			else if(docs==null){
+		let products= await categoryModel.paginateFilterProducts(category,sort,eqs,page);
+		if(!products.err){
+			if(products.data==null){
 				return res.send('404');
 			}
-			else{
-				let count=docs.numProducts;
-				categoryModel.findOne({slug:category}).populate({path:'products',match:eqs,options:{skip:9*(page-1),limit:9,sort:sort}}).populate('brands').exec(function(err,result){
-
-					if(err){
-						console.log(err);
-						return res.send('503');
-					}
-					else{
-						let pagination={totalPage:parseInt(count/9)+1,curPage:page,totalItem:count,url:url};
-						// console.log(result);
-						return res.render('./customer/product',{category:result,query:query,pagination:pagination});
-					}
-				})
-			}
-		});
+			count=products.total;
+			let pagination={totalPage:parseInt(count/9)+1,curPage:page,totalItem:count,url:url};
+			return res.render('./customer/product',{category:products.data,query:query,count:count,pagination:pagination});
+		}
+		return res.send('500');
 	}
 }

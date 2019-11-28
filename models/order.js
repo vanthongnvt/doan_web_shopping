@@ -48,7 +48,7 @@ var orderSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	}
-});
+},{collection:'orders'});
 
 var Order = mongoose.model('Order', orderSchema);
 

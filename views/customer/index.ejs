@@ -229,6 +229,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- middle section -->
 
 <%include layout/footer%>
+<%if(show_login){
+	%>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#showLogin').click();
+		})
+	</script>
+	<%
+}%>
 </body>
 
 </html>

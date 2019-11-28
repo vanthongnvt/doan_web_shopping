@@ -1,8 +1,26 @@
 var express = require('express');
-var router = express.Router();
-
+var passport =require('passport');
+var router = express.Router({ mergeParams : true });
+var authRedirectMiddleware=require('../../middleware/auth_redirect');
 var accountController=require('../../controllers/customer/account_controller');
 
-router.get('/',accountController.userInfo);
+router.get('/',authRedirectMiddleware,accountController.userInfo);
+
+// router.post('/dang-nhap', passport.authenticate('login' , {
+// 	successRedirect : '/',
+// 	failuerRedirect : '/',
+// 	failuerFlash: true
+// }));
+
+// router.post('/dang-ky', passport.authenticate('signup' , {
+// 	successRedirect : '/',
+// 	failuerRedirect : '/',
+// 	failuerFlash: true
+// }));
+router.post('/dang-nhap',accountController.login);
+
+router.post('/dang-ky',accountController.signup);
+
+router.get('/dang-xuat',accountController.logout);
 
 module.exports = router;

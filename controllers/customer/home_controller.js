@@ -2,52 +2,18 @@ var express = require('express');
 var productModel= require('../../models/product');
 var categoryModel = require('../../models/category');
 
-exports.index = function(req,res,next){
-
-	// categoryModel.find().populate({path:'products',options:{limit:3,sort:{created:1}}}).exec(function(err,result){
-	// 	if(err){
-	// 		return res.send('503');
-	// 	}
-	// 	else{
-	// 		console.log(result);
-	// 		// return res.render('./customer/index',{data:result});
-	// 	} 
-	// })
+exports.index = async function(req,res,next){
+	var show_login=false;
+	// console.log(req.flash('req_login'));
+	if(req.flash('req_login').length!=0){
+		show_login=true;
+	}
 	
-	categoryModel.aggregate([{
-		$match: {
-			isAccessories: false,
-		}
-	},
-	{
-		$sort: {
-			created: -1,
-		}
-	},
-	{
-		$lookup: {
-			from: "products",
-			as: "products",
-			let: { indicator_id: '$_id' },
-			pipeline: [
-			{ 
-				$match: {
-					$expr: { $eq: [ '$categoryId', '$$indicator_id' ] }
-				}
-			},
-			{ $limit: 4 }
-			]
-		}
-	},
-	]).exec(function(err, result){
-		if(err){
-			return res.send('503');
-		}
-		else{
-			// console.log(result);
-			return res.render('./customer/index',{data:result});
-		}
-	})
+	var result= await categoryModel.getNewProduct();
+	if(!result.error){
+		return res.render('./customer/index',{data:result.data,show_login:show_login});
+	}
+	return res.send('500');
 }
 
 exports.contact = function(req,res,next){

@@ -45,7 +45,7 @@ passport.use('signup', new LocalStrategy({
                     var newUser = new UserModel();
                     newUser.username = username;
                     newUser.password = newUser.encryptPassword(password);
-                    newUser.email = req.params.email;
+                    newUser.email = req.body.email;
                     // newUser.firstName = req.params('firstName');
                     // newUser.lastName = req.params('lastName');
 

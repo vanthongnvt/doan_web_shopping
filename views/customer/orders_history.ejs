@@ -45,33 +45,41 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<div class="row">
 				<%include layout/account_navside%>
 				<div class="right col-lg-9">
-					<h4 class="mb-sm-4 mb-3">Thông tin tài khoản</h4>
+					<h4 class="mb-sm-4 mb-3">Lịch sử mua hàng</h4>
 					<hr class="m-0">
-					<div class="row">
-						<div class="col-lg-6 ml-3 rounded">
-							<table>
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
 								<tr>
-									<td class="p-2">Tên tài khoản: </td>
-									<td class="p-2"><%=user.username%></td>
+									<th scope="col">Mã</th>
+									<th scope="col">Ngày</th>
+									<th scope="col">Trạng thái</th>
+									<th scope="col">Tổng thanh toán</th>
+									<th scope="col"></th>
 								</tr>
+							</thead>
+							<tbody>
+
 								<tr>
-									<td class="p-2">Họ tên:</td>
-									<td class="p-2"><%=user.fullname%></td>
+									<td class="align-middle">
+										<h5 class="mt-10">#234</h5>
+									</td>
+									<td class="align-middle">
+										<h5 class="mt-10">32/242/34423</h5>
+									</td>
+									<td class="align-middle">
+										<h5 class="mt-10">Đang giao</h5>
+									</td>
+									<td class="align-middle">
+										<h5 class="mt-10">1,000,000,000 VNĐ</h5>
+									</td>
+									<td>
+										<a href="/tai-khoan/don-hang/123" class="btn btn-primary">Xem chi tiết</button>
+									</td>
 								</tr>
-								<tr>
-									<td class="p-2">Email:</td>
-									<td class="p-2"><%=user.email%></td>
-								</tr>
-								<tr>
-									<td class="p-2">Số điện thoại:</td>
-									<td class="p-2"><%=user.phone%></td>
-								</tr>
-								<tr>
-									<td class="p-2">Địa chỉ:</td>
-									<td class="p-2"><%=user.address%></td>
-								</tr>
-							</table>
-						</div>
+
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

@@ -45,34 +45,47 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<div class="row">
 				<%include layout/account_navside%>
 				<div class="right col-lg-9">
-					<h4 class="mb-sm-4 mb-3">Thông tin tài khoản</h4>
+					<h4 class="mb-sm-4 mb-3">Chỉnh sửa thông tin tài khoản</h4>
 					<hr class="m-0">
-					<div class="row">
-						<div class="col-lg-6 ml-3 rounded">
-							<table>
-								<tr>
-									<td class="p-2">Tên tài khoản: </td>
-									<td class="p-2"><%=user.username%></td>
-								</tr>
-								<tr>
-									<td class="p-2">Họ tên:</td>
-									<td class="p-2"><%=user.fullname%></td>
-								</tr>
-								<tr>
-									<td class="p-2">Email:</td>
-									<td class="p-2"><%=user.email%></td>
-								</tr>
-								<tr>
-									<td class="p-2">Số điện thoại:</td>
-									<td class="p-2"><%=user.phone%></td>
-								</tr>
-								<tr>
-									<td class="p-2">Địa chỉ:</td>
-									<td class="p-2"><%=user.address%></td>
-								</tr>
-							</table>
+					<form action="#" method="post" id="sign-up-form">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="col-form-label">Tên đăng nhập:</label>
+									<input type="text" class="form-control" placeholder=" " name="account_username" value="<%=user.username%>" required="" disabled="">
+								</div>
+
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="col-form-label">Họ tên:</label>
+									<input type="text" class="form-control" placeholder=" " name="account_fullname" value="<%=user.fullname%>" required="">
+								</div>
+							</div>
 						</div>
-					</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="col-form-label">Email:</label>
+									<input type="text" class="form-control" placeholder=" " name="account_email" value="<%=user.email%>" required="">
+								</div>
+
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="col-form-label">Số điện thoại:</label>
+									<input type="phone" class="form-control" placeholder=" " name="account_phone" value="<%=user.phone%>" required="">
+								</div>
+							</div>
+						</div>
+							<div class="form-group">
+								<label class="col-form-label">Địa chỉ:</label>
+								<input type="text" class="form-control" placeholder=" " name="account_address" value="<%=user.address%>" required="" >
+							</div>
+						<div class="right-w3l">
+							<input type="submit" class="form-control" value="Thay đổi">
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

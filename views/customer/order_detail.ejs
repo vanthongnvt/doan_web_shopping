@@ -45,33 +45,55 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<div class="row">
 				<%include layout/account_navside%>
 				<div class="right col-lg-9">
-					<h4 class="mb-sm-4 mb-3">Thông tin tài khoản</h4>
+					<h4 class="mb-sm-4 mb-3">Lịch sử mua hàng</h4>
 					<hr class="m-0">
-					<div class="row">
-						<div class="col-lg-6 ml-3 rounded">
-							<table>
+					<div class="table-responsive">
+						<table class="timetable_sub">
+							<thead>
 								<tr>
-									<td class="p-2">Tên tài khoản: </td>
-									<td class="p-2"><%=user.username%></td>
+									<th>STT</th>
+									<th>Sản phẩm</th>
+									<th>Tên sản phẩm</th>
+									<th>Số lượng</th>
+									<th>Giảm</th>
 								</tr>
-								<tr>
-									<td class="p-2">Họ tên:</td>
-									<td class="p-2"><%=user.fullname%></td>
+							</thead>
+							<tbody>
+								<tr class="rem1">
+									<td class="invert">1</td>
+									<td class="invert-image">
+										<a href="single.html">
+											<img src="images/a.jpg" alt=" " class="img-responsive">
+										</a>
+									</td>
+									<td class="invert">Back Cover</td>
+									<td class="invert">1</td>
+									<td class="invert">$259 (Đã giảm xx%)</td>
 								</tr>
-								<tr>
-									<td class="p-2">Email:</td>
-									<td class="p-2"><%=user.email%></td>
+								<tr class="rem1">
+									<td class="invert">1</td>
+									<td class="invert-image">
+										<a href="single.html">
+											<img src="images/a.jpg" alt=" " class="img-responsive">
+										</a>
+									</td>
+									<td class="invert">Back Cover</td>
+									<td class="invert">1</td>
+									<td class="invert">$259</td>
 								</tr>
-								<tr>
-									<td class="p-2">Số điện thoại:</td>
-									<td class="p-2"><%=user.phone%></td>
+								<tr class="rem1">
+									<td class="invert">1</td>
+									<td class="invert-image">
+										<a href="single.html">
+											<img src="images/a.jpg" alt=" " class="img-responsive">
+										</a>
+									</td>
+									<td class="invert">Back Cover</td>
+									<td class="invert">1</td>
+									<td class="invert">$259</td>
 								</tr>
-								<tr>
-									<td class="p-2">Địa chỉ:</td>
-									<td class="p-2"><%=user.address%></td>
-								</tr>
-							</table>
-						</div>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

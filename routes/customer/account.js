@@ -23,4 +23,12 @@ router.post('/dang-ky',accountController.signup);
 
 router.get('/dang-xuat',accountController.logout);
 
+router.get('/chinh-sua',authRedirectMiddleware,accountController.editInfo);
+
+router.get('/lich-su-mua-hang',authRedirectMiddleware,accountController.ordersHistory);
+
+router.get('/thay-doi-mat-khau',authRedirectMiddleware,accountController.changePassword);
+
+router.get('/don-hang/:id',authRedirectMiddleware,accountController.orderDetail);
+
 module.exports = router;

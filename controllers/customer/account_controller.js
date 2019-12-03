@@ -46,3 +46,20 @@ exports.logout= function(req,res,next){
 	req.logOut();
     res.redirect('/');
 }
+
+exports.editInfo= function(req,res,next){
+
+    res.render('./customer/edit_account');
+}
+
+exports.ordersHistory = function(req,res,next){
+    res.render('./customer/orders_history');
+}
+
+exports.changePassword = function(req,res,next){
+    res.render('./customer/change_password');
+}
+
+exports.orderDetail = function(req,res,next){
+    res.render('./customer/order_detail');
+}

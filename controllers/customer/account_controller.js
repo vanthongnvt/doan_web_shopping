@@ -63,3 +63,11 @@ exports.changePassword = function(req,res,next){
 exports.orderDetail = function(req,res,next){
     res.render('./customer/order_detail');
 }
+
+exports.forgotPassword = function(req,res,next){
+    res.render('./customer/forgot_password');
+}
+
+exports.resetPassword = function(req,res,next){
+    res.render('./customer/reset_password');
+}

@@ -7,7 +7,13 @@ exports.detail = async function(req,res,next){
 	let result = await productModel.getProductByName(product);
 	if(!result.error){
 		if(result.data!=null&&result.data.categoryId.slug==category){
-			res.render('./customer/single',{product:result.data});
+			let relateProduct = await productModel.getRelateProducts(result.data);
+			if(!relateProduct.error){
+				res.render('./customer/single',{product:result.data, relateProducts:relateProduct.data});
+			}
+			else{
+				return res.send('500');
+			}
 		}
 		else{
 			return res.send('404');

@@ -2238,9 +2238,30 @@ input[name="user_avatar"]{
     height: 100%;
     background: #f45c5d;
 }
-
-
-
+.ship-detail .total-price{
+    font-weight: bold;
+    font-size: 20px;
+}
+.ship-detail td{
+    color: #000;
+    padding: 5px;
+}
+.ship-detail td:nth-child(1){
+    padding-right: 20px;
+}
+.ship-detail .delivered{
+    font-weight: bold;
+    color: #28a745;
+}
+.ship-detail .pending{
+    color: #ffc107;
+}
+.ship-detail .cancel{
+    color: #dc3545;
+}
+.ship-detail .refund{
+    color: #007bff;
+}
 
 
 

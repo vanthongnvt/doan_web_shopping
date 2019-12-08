@@ -31,4 +31,8 @@ router.get('/thay-doi-mat-khau',authRedirectMiddleware,accountController.changeP
 
 router.get('/don-hang/:id',authRedirectMiddleware,accountController.orderDetail);
 
+router.get('/quen-mat-khau',accountController.forgotPassword);
+
+router.get('/tao-moi-mat-khau/:refreshToken',accountController.resetPassword);
+
 module.exports = router;

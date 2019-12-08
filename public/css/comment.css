@@ -1,0 +1,13 @@
+.comment-avatar{
+    width: 60px;
+    height: 60px;
+}
+.comment-avatar img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid #ced4da;
+}
+.comment-box-expand{
+	display: none;
+}

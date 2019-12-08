@@ -9,7 +9,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 <head>
 	<%include layout/head%>
-
+	<link rel="stylesheet" type="text/css" href="/css/comment.css">
 </head>
 
 <body>
@@ -106,6 +106,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<div class="snipcart-details top_brand_home_details item_add single-item hvr-outline-out">
 								<form action="#" method="post">
 									<fieldset>
+										<input type="hidden" name="product_id" value="<%=product._id%>">
 										<input type="hidden" name="cmd" value="_cart" />
 										<input type="hidden" name="add" value="1" />
 										<input type="hidden" name="business" value=" " />
@@ -125,6 +126,120 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</div>
 		</div>
 		<!-- //Single Page -->
+
+		<!-- Relate Product -->
+		<div class="px-sm-4 px-3 py-sm-5  py-3 mb-4">
+			<h3 class="heading-tittle text-center font-italic">Sản phẩm liên quan</h3>
+			<div class="row">
+
+				<%relateProducts.forEach(function(product,index){
+					%>
+
+					<div class="col-md-3 product-men mt-5">
+						<div class="men-pro-item simpleCart_shelfItem">
+							<div class="men-thumb-item text-center">
+								<img src="/images/products/<%=product.images[0]%>" alt="" width="150px" height="200px">
+								<div class="men-cart-pro">
+									<div class="inner-men-cart-pro">
+										<a href="/<%=product.categoryId.slug%>/<%=product.slug%>" class="link-product-add-cart">Chi tiết</a>
+									</div>
+								</div>
+							</div>
+							<div class="item-info-product text-center border-top mt-4">
+								<h4 class="pt-1 ov-hd">
+									<a href="/<%=product.categoryId.slug%>/<%=product.slug%>" title="<%=product.name%>"><%=product.name%></a>
+								</h4>
+								<div class="info-product-price my-2">
+									<%if(product.discount>0){
+										%>
+
+										<span class="item_price"><%=product.price*product.discount%> VNĐ</span>
+										<del><%=product.price%> VNĐ</del>
+										<%
+									} else{
+										%>
+										<span class="item_price"><%=product.price%> VNĐ</span>
+										<%
+									}%>
+								</div>
+								<div class="snipcart-details top_brand_home_details item_add single-item hvr-outline-out">
+									<form action="#" method="post">
+										<fieldset>
+											<input type="hidden" name="product_id" value="<%=product._id%>">
+											<input type="hidden" name="cmd" value="_cart" />
+											<input type="hidden" name="add" value="1" />
+											<input type="hidden" name="business" value=" " />
+											<input type="hidden" name="item_name" value="<%=product.name%>" />
+											<input type="hidden" name="amount" value="<%=product.price*product.discount%>" />
+											<input type="hidden" name="discount_amount" value="<%=product.discount%>" />
+											<input type="hidden" name="currency_code" value="VND" />
+											<input type="hidden" name="return" value=" " />
+											<input type="hidden" name="cancel_return" value=" " />
+											<input type="submit" name="submit" value="Thêm vào giỏ" class="button btn" />
+										</fieldset>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<%
+				})%>
+			</div>
+		</div>
+		<!-- //Relate product -->
+
+		<div class="panel-comment mb-3">
+			<h3 class="px-5">Bình luận</h3>
+			<div class="row mt-3">
+				<div class="col-lg-8 pt-3  mx-sm-2 mx-lg-5 border-top">
+					<div class="comment-box">
+						<div class="form-group">
+							<textarea class="form-control" name="comment_content" placeholder="Nội dung bình luận"></textarea>
+							<div class="invalid-feedback invalid-comment-content"></div>
+						</div>
+						<div class="comment-box-expand">
+							<div class="row">
+								<div class="form-group col-lg-6">
+									<%if(!logged){%>
+									<input type="text" class="form-control" placeholder="Tên " name="comment_user" required="">
+									<%}else{%>
+									<input type="text" disabled="disabled" class="form-control" name="comment_user" required="" value="<%=user.username%>">
+									<%}%>
+									<div class="invalid-feedback invalid-comment-user"></div>
+								</div>
+
+								<div class="col-lg-6">
+									<input type="submit" class="btn btn-primary" value="Đăng bình luận">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="comment-list">
+						<div class="d-flex comment-item py-3">
+							<div class="comment-avatar">
+								<img src="/images/avatars/unknown.png">
+							</div>
+							<div class="ml-3">
+								<div class="d-flex align-center">
+									<h5 class="comment-name">username</h5>
+									<small class="comment-date ml-5">22/03/2014</small>
+								</div>
+								<p class="text-monospace">friurugrugrtgnrtugnrtunrutu</p>
+							</div>
+						</div>
+						<div class="d-flex comment-item py-3">
+							<div class="comment-avatar">
+								<img src="/images/avatars/unknown.png">
+							</div>
+							<div class="ml-3">
+								<h5 class="comment-name">username</h5>
+								<p class="comment-text">friurugrugrtgnrtugnrtunrutu</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<!-- middle section -->
 		<div class="join-w3l1 py-sm-5 py-4">
@@ -179,6 +294,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				controlNav: "thumbnails"
 			});
 		});
+		$(document).ready(function(){
+			$('textarea[name="comment_content"]').click(function(){
+				$('.comment-box-expand').slideDown();
+			})
+		})
 	</script>
 </body>
 

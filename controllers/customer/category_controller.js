@@ -18,6 +18,10 @@ exports.listProduct = async function(req,res,next){
 	else{
 		page=1;
 	}
+	if(query.q!=null){
+		url=url+'&q='+query.q;
+		eqs.name = { '$regex' : query.q ,'$options': 'i'};
+	}
 	if(query.minPrice!=null&&query.maxPrice!=null){
 		url=url+'&minPrice='+query.minPrice+'&maxPrice='+query.maxPrice;
 		if(parseInt(query.maxPrice)<=0){

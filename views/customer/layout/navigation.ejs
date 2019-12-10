@@ -150,9 +150,17 @@
 					<div class="row">
 						<!-- search -->
 						<div class="col-10 agileits_search">
-							<form class="form-inline" action="#" method="post">
-								<input class="form-control mr-sm-2" type="search" placeholder="Tìm kiếm" aria-label="Search" required>
-								<button class="btn my-2 my-sm-0" type="submit">Tìm kiếm</button>
+							<form class="form-inline" action="#" method="get">
+								<div class="position-relative wr mr-sm-2">
+									<input class="form-control" type="search" name="t_key" placeholder="Tìm kiếm" aria-label="Search" required>
+									<select class="input-select form-control" name="t_category">
+										<option value="dien-thoai">Điện thoại</option>
+										<option value="laptop">Laptop</option>
+										<option value="tablet">Tablet</option>
+										<option value="tivi">Tivi</option>
+									</select>
+								</div>
+								<button class="btn my-2 my-sm-0 btn-search-product" type="button" title="Tìm kiếm"><i class="fas fa-search"></i></button>
 							</form>
 						</div>
 						<!-- //search -->
@@ -162,7 +170,7 @@
 								<form action="#" method="post" class="last">
 									<input type="hidden" name="cmd" value="_cart">
 									<input type="hidden" name="display" value="1">
-									<button class="btn w3view-cart" type="submit" name="submit" value="">
+									<button type="button" class="btn w3view-cart quick-view-cart" name="submit" value="">
 										<i class="fas fa-cart-arrow-down"></i>
 									</button>
 								</form>

@@ -69,6 +69,16 @@ productSchema.methods.formatPrice=function(){
 	return this.price.toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
+productSchema.statics.findProductById = async function(id){
+	try{
+		var result = await this.findOne({_id:id}).populate('categoryId').exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 productSchema.statics.getProductByName=async function(name){
 	try{
 		var result = await this.findOne({slug:name}).populate('categoryId').exec();

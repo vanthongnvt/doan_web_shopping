@@ -1,6 +1,5 @@
 var express = require('express');
 var productModel= require('../../models/product');
-
 exports.detail = async function(req,res,next){
 	let product=req.params.product;
 	let category=req.params.category;

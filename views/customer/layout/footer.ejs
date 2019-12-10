@@ -1,5 +1,41 @@
 <!-- footer -->
 <footer>
+	<div id="PPminicarts">
+		<form method="post" class="<% if (Object.entries(session.cart.items).length==0) { %>minicarts-empty<% } else {%>minicarts-av <%}%>">
+			<button type="button" class="minicarts-closer">&times;</button>    
+			<ul class="list-cart">
+				<%for(const [key,cartItem] of Object.entries( session.cart.items )){ %>
+				<li class="minicarts-item">
+					<div class="minicarts-details-image">
+						<img src="/images/products/<%=cartItem.item.images[0]%>">
+					</div>
+					<div class="minicarts-details-name">
+						<a class="minicarts-name" href="<%= cartItem.item.link %>"><%= cartItem.item.name %></a>                
+						<ul class="minicarts-attributes">
+							<% if (cartItem.item.discount>0) { %>                    
+							<li>Giảm: <%=cartItem.item.discount%>%</li>
+							<% } %>      
+						</ul>
+					</div>
+					<div class="minicarts-details-quantity">
+						<input class="minicarts-quantity" data-minicarts-idx="<%= key %>" name="quantity_<%= key %>" type="text" pattern="[0-9]*" value="<%= cartItem.qty %>" autocomplete="off" />
+					</div>
+					<div class="minicarts-details-remove">
+						<button type="button" class="minicarts-remove" data-minicarts-idx="<%= key%>">&times;</button>
+					</div>
+					<div class="minicarts-details-price">
+						<span class="minicarts-price price-format"><%= cartItem.price %></span><sup>đ</sup>
+					</div>
+				</li>
+				<% } %>
+			</ul>
+			<div class="minicarts-footer">
+				<div class="minicarts-subtotal hide-if-empty">Tổng tiền: <span class="price-format"><%= session.cart.totalPrice %></span><sup>đ</sup></div>
+				<a href="/don-hang" class="minicarts-submit btn hide-if-empty" data-minicarts-alt="Thanh toán">Đến hanh toán</a>
+				<p class="minicarts-empty-text">Chưa có sản phẩm trong giỏ hàng</p>
+			</div>
+		</form>
+	</div>
 	<div class="footer-top-first">
 		<div class="container py-md-5 py-sm-4 py-3">
 			<!-- footer first section -->
@@ -217,26 +253,27 @@
 				<!-- //popup modal (for location)-->
 
 				<!-- cart-js -->
-				<script src="/js/minicart.js"></script>
+				<!-- <script src="/js/minicart.js"></script> -->
 				<script>
-		paypals.minicarts.render(); //use only unique class names other than paypals.minicarts.Also Replace same class name in css and minicart.min.js
+		// paypals.minicarts.render(); 
+		//use only unique class names other than paypals.minicarts.Also Replace same class name in css and minicart.min.js
 
-		paypals.minicarts.cart.on('checkout', function (evt) {
-			var items = this.items(),
-			len = items.length,
-			total = 0,
-			i;
+		// paypals.minicarts.cart.on('checkout', function (evt) {
+		// 	var items = this.items(),
+		// 	len = items.length,
+		// 	total = 0,
+		// 	i;
 
-			// Count the number of each item in the cart
-			for (i = 0; i < len; i++) {
-				total += items[i].get('quantity');
-			}
+		// 	// Count the number of each item in the cart
+		// 	for (i = 0; i < len; i++) {
+		// 		total += items[i].get('quantity');
+		// 	}
 
-			if (total < 3) {
-				alert('The minimum order quantity is 3. Please add more to your shopping cart before checking out');
-				evt.preventDefault();
-			}
-		});
+		// 	if (total < 3) {
+		// 		alert('The minimum order quantity is 3. Please add more to your shopping cart before checking out');
+		// 		evt.preventDefault();
+		// 	}
+		// });
 	</script>
 	<!-- //cart-js -->
 
@@ -262,6 +299,9 @@
 			}
 			//empty string means no validation error
 		}
+		// function priceFormat(){
+		// 	$('.price-format').each(function(){})
+		// }
 	</script>
 	<!-- //password-script -->
 	
@@ -288,6 +328,16 @@
 			$(".nav-item").removeClass("active");
 			$('a[href="' + this.location.pathname + '"]').parents('li,ul').addClass('active');
 
+			//top-search
+			$('.btn-search-product').click(function(){
+				var key = $('input[name="t_key"]').val().trim();
+				if(key===""){
+					$('input[name="t_key"]').focus();
+					return false;
+				}
+				var cate = $('select[name="t_category"]').val();
+				window.location = '/'+cate+'/?q='+key;
+			})
 
 			//sign up
 			$('#sign-up-form').submit(function(e){
@@ -365,6 +415,82 @@
 			});
 			$('input[name="login_password"]').keyup(function(){
 				$('.invalid-login-password').hide();
+			});
+
+			var cart = <%-JSON.stringify(session.cart)%>;
+
+			//cart
+			$('.add-to-cart').click(function(e){
+				e.preventDefault();
+				var id = $(this).siblings('input[name="product_id"]').val();
+				var storedItem = cart.items[id];
+				$.get('/cart/add-to-cart/'+id,function(res){
+					if(res.message == 'success'){
+						$("#PPminicarts").show();
+						if($.isEmptyObject(cart.items)){
+							$('#PPminicarts form').removeClass('minicarts-empty').addClass('minicarts-av');
+						}
+						cart = res.cart;
+						if(storedItem){
+							var qty= $('.minicarts-details-quantity input[name="quantity_'+id+'"]');
+							var targetPrice = qty.parents('.minicarts-details-quantity').siblings('.minicarts-details-price').find('.minicarts-price');
+							qty.val(parseInt(qty.val())+1);
+							targetPrice.html(res.storedItem.price);
+						}
+						else{
+							var cart_item = '<li class="minicarts-item"><div class="minicarts-details-image"><img src="/images/products/'+res.storedItem.item.images[0]+'"></div><div class="minicarts-details-name"><a class="minicarts-name" href="'+res.storedItem.item.link+'">'+res.storedItem.item.name+'</a><ul class="minicarts-attributes"></ul></div><div class="minicarts-details-quantity"><input class="minicarts-quantity" data-minicarts-idx="'+res.storedItem.item.id+'" name="quantity_'+res.storedItem.item.id+'" type="text" pattern="[0-9]*" value="'+res.storedItem.qty+'" autocomplete="off"></div><div class="minicarts-details-remove"><button type="button" class="minicarts-remove" data-minicarts-idx="'+res.storedItem.item.id+'">×</button></div><div class="minicarts-details-price"><span class="minicarts-price price-format">'+res.storedItem.item.price+'</span><sup>đ</sup></div></li>';
+							$('.list-cart').append(cart_item);
+						}
+						$('.minicarts-subtotal').find('span').html(cart.totalPrice);
+					}
+				})
+			});
+
+			$('.quick-view-cart').click(function(e){
+				e.preventDefault();
+				$("#PPminicarts").show();
+			});
+
+			$('.minicarts-closer').click(function(){
+				$("#PPminicarts").hide();
+			});
+
+			$(document).on('change','.minicarts-quantity',function(){
+				var amount = $(this).val();
+				var id = $(this).attr('data-minicarts-idx');
+				var cartItem = $(this).parents('.minicarts-item');
+				var targetPrice = $(this).parents('.minicarts-details-quantity').siblings('.minicarts-details-price').find('.minicarts-price');
+				$.get('/cart/increase-qty/'+id+'?amount='+parseInt(amount),function(res){
+					if(res.message == 'success'){
+						cart = res.cart;
+						// console.log(cart);
+						if($.isEmptyObject(cart.items)){
+							$('#PPminicarts form').removeClass('minicarts-av').addClass('minicarts-empty');
+						}
+						if(parseInt(amount)==0){
+							cartItem.remove();
+						}
+						else{
+							targetPrice.html(cart.items[id].price);
+							$('.minicarts-subtotal').find('span').html(cart.totalPrice);
+						}
+					}
+				})
+			});
+
+			$(document).on('click','.minicarts-remove',function(){
+				var id = $(this).attr('data-minicarts-idx');
+				var cartItem = $(this).parents('.minicarts-item');
+				$.get('/cart/remove-from-cart/'+id,function(res){
+					if(res.message == 'success'){
+						cart = res.cart;
+						if($.isEmptyObject(cart.items)){
+							$('#PPminicarts form').removeClass('minicarts-av').addClass('minicarts-empty');
+						}
+						cartItem.remove();
+						$('.minicarts-subtotal').find('span').html(cart.totalPrice);
+					}
+				})
 			})
 		});
 	</script>
@@ -393,3 +519,4 @@
 	<script src="/js/bootstrap.js"></script>
 	<!-- //for bootstrap working -->
 	<!-- //js-files -->
+</footer>

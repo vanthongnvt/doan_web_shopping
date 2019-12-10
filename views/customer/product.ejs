@@ -95,7 +95,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 															<input type="hidden" name="currency_code" value="VND" />
 															<input type="hidden" name="return" value=" " />
 															<input type="hidden" name="cancel_return" value=" " />
-															<input type="submit" name="submit" value="Thêm vào giỏ" class="button btn" />
+															<input type="submit" name="submit" value="Thêm vào giỏ" class="button btn add-to-cart" />
 														</fieldset>
 													</form>
 												</div>
@@ -112,13 +112,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<!-- //first section -->
 						</div>
 						<%if(pagination.totalItem>0){%>
-							<%-include('layout/pagination',{pagination:pagination});%>
+						<%-include('layout/pagination',{pagination:pagination});%>
 						<%}%>
 					</div>
 					<!-- //product left -->
 					<!-- product right -->
 					<div class="col-lg-3 mt-lg-0 mt-4 p-lg-0">
 						<div class="side-bar p-sm-4 p-3">
+							<div class="search-hotel py-2">
+								<form action="/<%=category.slug%>/" method="get">
+									<input class="border" type="search" placeholder="Tìm sản phẩm..." name="q" required="" value="<%=query.q%>">
+									<input type="submit" value=" ">
+								</form>
+							</div>
 							<div class="agileits-navi_search border-bottom py-2">
 								<h3 class="agileits-sear-head mb-3">Sắp xếp</h3>
 								<form action="#" method="post">
@@ -133,10 +139,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</div>
 							<div class="search-hotel border-bottom py-2">
 								<h3 class="agileits-sear-head mb-3">Hãng</h3>
-								<form action="#" method="post">
-									<input type="search" placeholder="Tìm nhãn hiệu..." name="search" required="">
-									<input type="submit" value=" ">
-								</form>
 								<div class="left-side py-2">
 									<ul>
 										<li>

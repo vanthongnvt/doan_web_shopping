@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var expressSession = require('express-session');
+var MongoStore =require('connect-mongo')(expressSession);
 var bodyParser = require('body-parser');
 var flash=require('connect-flash');
 var passport = require('passport');
@@ -23,6 +24,7 @@ var categoryRouter = require('./routes/customer/category');
 var productRouter = require ('./routes/customer/product');
 var checkoutRouter=require('./routes/customer/checkout');
 var migrateRouter=require('./routes/customer/migratedb');
+var cartRouter = require('./routes/customer/cart');
 
 var checkLogedMiddleware=require('./middleware/check_logged');
 var app = express();
@@ -35,7 +37,9 @@ app.use(logger('dev'));
 app.use(expressSession({
   secret: process.env.APP_SECRET,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MongoStore({mongooseConnection:mongoose.connection}),
+  cookie:{maxAge: 180*60*1000}
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -57,6 +61,7 @@ app.use('/tai-khoan', accountRouter);
 app.use('/don-hang',checkoutRouter);
 app.use('/lien-he',contactRouter);
 app.use('/gioi-thieu',aboutRouter);
+app.use('/cart',cartRouter);
 // app.use('/san-pham',productRouter);
 app.use('/:category([-\\w]+)',categoryRouter);
 app.use('/:category/:product',productRouter);

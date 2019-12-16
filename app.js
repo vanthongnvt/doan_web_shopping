@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var csrf = require('csurf');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var expressSession = require('express-session');
@@ -25,7 +26,9 @@ var productRouter = require ('./routes/customer/product');
 var checkoutRouter=require('./routes/customer/checkout');
 var migrateRouter=require('./routes/customer/migratedb');
 var cartRouter = require('./routes/customer/cart');
+var commentRouter = require('./routes/customer/comment');
 
+var csrfProtection = csrf({ cookie: true });
 var checkLogedMiddleware=require('./middleware/check_logged');
 var app = express();
 
@@ -51,6 +54,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(csrfProtection);
 //middleware
 app.use(checkLogedMiddleware);
 
@@ -62,6 +67,7 @@ app.use('/don-hang',checkoutRouter);
 app.use('/lien-he',contactRouter);
 app.use('/gioi-thieu',aboutRouter);
 app.use('/cart',cartRouter);
+app.use('/comment',commentRouter);
 // app.use('/san-pham',productRouter);
 app.use('/:category([-\\w]+)',categoryRouter);
 app.use('/:category/:product',productRouter);

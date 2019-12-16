@@ -12,6 +12,7 @@ module.exports =  function (req, res, next) {
 		req.session.cart = cart;
 	}
 	res.locals.session = req.session;
+	res.locals.csrfToken=req.csrfToken();
 	// console.log(req.session.cart);
 	return next();
 }

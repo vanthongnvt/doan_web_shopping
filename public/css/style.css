@@ -1592,7 +1592,7 @@ table.timetable_sub {
 }
 
 td.invert-image a img {
-    width: 30%;
+    width: 40px;
     margin: 0 auto;
 }
 
@@ -1600,9 +1600,7 @@ td.invert-image a img {
     position: relative;
 }
 
-.close1,
-.close2,
-.close3 {
+.checkout-cart-remove{
     background: url('../images/close_1.png') no-repeat 0px 0px;
     cursor: pointer;
     width: 28px;
@@ -1615,7 +1613,9 @@ td.invert-image a img {
     -o-transition: color 0.2s ease-in-out;
     transition: color 0.2s ease-in-out;
 }
-
+.color-black-default{
+    color: #353535;
+}
 /*-- quantity-starts --*/
 
 .value-minus,
@@ -2472,6 +2472,19 @@ div#testimonials h4.m-title {
 }
 .account-avatar:hover .btn-change-avatar{
     display: block;
+}
+.btn-save-avatar{
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    width: 100px;
+    background: #21bd21d9;
+    height: 25px;
+    font-size: 14px;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
 }
 input[name="user_avatar"]{
     display: none;

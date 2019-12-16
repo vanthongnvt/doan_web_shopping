@@ -1,7 +1,8 @@
 var express = require('express');
 var passport =require('passport');
 var userModel= require('../../models/user');
-
+var resetPasswordModel = require('../../models/resetPassword');
+var commentModel = require('../../models/comment');
 exports.userInfo = function(req,res,next){
 	res.render('./customer/account');
 }
@@ -66,6 +67,12 @@ exports.orderDetail = function(req,res,next){
 
 exports.forgotPassword = function(req,res,next){
     res.render('./customer/forgot_password');
+}
+exports.sendEmailResetPassword = async function(req,res,next){
+    var user = userModel.getUserByEmail(); 
+    // let resetPassword = new resetPasswordModel();
+    // resetPassword. 
+
 }
 
 exports.resetPassword = function(req,res,next){

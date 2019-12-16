@@ -37,3 +37,13 @@ exports.increaseQty = function(req,res,next){
 	res.status(200);
 	res.send({message:"success",cart:cart});
 }
+
+exports.updateCart = function(req,res,next){
+	let deleteItems = JSON.parse(req.body.deleteItems);
+	let updateItems = JSON.parse(req.body.updateItems);
+	let cart = new Cart(req.session.cart?req.session.cart:{});
+	cart.update(deleteItems,updateItems);
+	req.session.cart= cart;
+	res.status(200);
+	res.send({message:"success",cart:cart});
+}

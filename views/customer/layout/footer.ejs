@@ -1,7 +1,7 @@
 <!-- footer -->
 <footer>
 	<div id="PPminicarts">
-		<form method="post" class="<% if (Object.entries(session.cart.items).length==0) { %>minicarts-empty<% } else {%>minicarts-av <%}%>">
+		<form method="post" class="<% if (session.cart.totalItem==0) { %>minicarts-empty<% } else {%>minicarts-av <%}%>">
 			<button type="button" class="minicarts-closer">&times;</button>    
 			<ul class="list-cart">
 				<%for(const [key,cartItem] of Object.entries( session.cart.items )){ %>
@@ -31,7 +31,7 @@
 			</ul>
 			<div class="minicarts-footer">
 				<div class="minicarts-subtotal hide-if-empty">Tổng tiền: <span class="price-format"><%= session.cart.totalPrice %></span><sup>đ</sup></div>
-				<a href="/don-hang" class="minicarts-submit btn hide-if-empty" data-minicarts-alt="Thanh toán">Đến hanh toán</a>
+				<a href="/don-hang" class="minicarts-submit btn hide-if-empty" data-minicarts-alt="Thanh toán">Đến thanh toán</a>
 				<p class="minicarts-empty-text">Chưa có sản phẩm trong giỏ hàng</p>
 			</div>
 		</form>
@@ -345,10 +345,11 @@
 				var username=$('input[name="signup_username"]').val();
 				var email=$('input[name="signup_email"]').val();
 				var password=$('input[name="signup_password"]').val();
+				var _csrf = $('meta[name="csrf-token"]').attr('content');
 				$.ajax({
 					url:'/tai-khoan/dang-ky',
 					type:'post',
-					data:{username:username,email:email,password:password},
+					data:{username:username,email:email,password:password,_csrf:_csrf},
 					success:function(res){
 						location.reload();
 						return false;
@@ -383,10 +384,11 @@
 				e.preventDefault();
 				var username=$('input[name="login_username"]').val();
 				var password=$('input[name="login_password"]').val();
+				var _csrf = $('meta[name="csrf-token"]').attr('content');
 				$.ajax({
 					url:'/tai-khoan/dang-nhap',
 					type:'post',
-					data:{username:username,password:password},
+					data:{username:username,password:password,_csrf,_csrf},
 					success:function(res){
 						location.reload();
 						return false;

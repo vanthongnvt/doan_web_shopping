@@ -57,7 +57,7 @@ categorySchema.statics.getNewProduct= async function(){
 		},
 		{
 			$sort: {
-				created: -1,
+				created: 1,
 			}
 		},
 		{

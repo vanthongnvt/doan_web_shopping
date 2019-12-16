@@ -36,12 +36,27 @@ var userSchema = mongoose.Schema({
 	}
 },{collection:'users'});
 
+userSchema.virtual('reset_password', {
+	ref: 'ResetPassword',
+	localField: '_id',
+	foreignField: 'userId',
+});
+
 userSchema.methods.encryptPassword = function(password) {
 	return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 };
 
 userSchema.methods.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.password);
+}
+userSchema.statics.getUserByEmail = async function(email){
+	try{
+		var result = await this.findOne({email:email}).populate('reset_password').exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
 }
 
 var User = mongoose.model('User', userSchema);

@@ -189,13 +189,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<!-- //Relate product -->
 
 		<div class="panel-comment mb-3">
-			<h3 class="px-5">Bình luận</h3>
+			<h3 class="px-5">Bình luận (<%=product.comments_count%>)</h3>
 			<div class="row mt-3">
 				<div class="col-lg-8 pt-3  mx-sm-2 mx-lg-5 border-top">
 					<div class="comment-box">
 						<div class="form-group">
 							<textarea class="form-control" name="comment_content" placeholder="Nội dung bình luận"></textarea>
-							<div class="invalid-feedback invalid-comment-content"></div>
+							<div class="invalid-feedback invalid-comment-content">Vui lòng nhập nội dung bình luận</div>
 						</div>
 						<div class="comment-box-expand">
 							<div class="row">
@@ -205,37 +205,18 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									<%}else{%>
 									<input type="text" disabled="disabled" class="form-control" name="comment_user" required="" value="<%=user.username%>">
 									<%}%>
-									<div class="invalid-feedback invalid-comment-user"></div>
+									<div class="invalid-feedback invalid-comment-user">Vui lòng nhập tên</div>
 								</div>
 
 								<div class="col-lg-6">
-									<input type="submit" class="btn btn-primary" value="Đăng bình luận">
+									<input type="hidden" name="comment_product" value="<%=product._id%>">
+									<input type="submit" class="btn btn-primary btn-submit-comment" value="Đăng bình luận">
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="comment-list">
-						<div class="d-flex comment-item py-3">
-							<div class="comment-avatar">
-								<img src="/images/avatars/unknown.png">
-							</div>
-							<div class="ml-3">
-								<div class="d-flex align-center">
-									<h5 class="comment-name">username</h5>
-									<small class="comment-date ml-5">22/03/2014</small>
-								</div>
-								<p class="text-monospace">friurugrugrtgnrtugnrtunrutu</p>
-							</div>
-						</div>
-						<div class="d-flex comment-item py-3">
-							<div class="comment-avatar">
-								<img src="/images/avatars/unknown.png">
-							</div>
-							<div class="ml-3">
-								<h5 class="comment-name">username</h5>
-								<p class="comment-text">friurugrugrtgnrtugnrtunrutu</p>
-							</div>
-						</div>
+					<div class="payload-comments">
+						
 					</div>
 				</div>
 			</div>
@@ -297,8 +278,61 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		$(document).ready(function(){
 			$('textarea[name="comment_content"]').click(function(){
 				$('.comment-box-expand').slideDown();
+			});
+
+			$('.btn-submit-comment').click(function(){
+				var productId = $('input[name="comment_product"]').val();
+				var content= $('textarea[name="comment_content"]').val();
+				if(content==""){
+					$('.invalid-comment-content').show();
+					return;
+				}
+				var name = $('input[name="comment_user"]').val();
+				if(name==""){
+					$('.invalid-comment-user').show();
+					return;
+				}
+				var _csrf = $('meta[name="csrf-token"]').attr('content');
+				$.ajax({
+					url:'/comment/create',
+					type:'post',
+					data:{name:name,content:content,productId:productId,_csrf:_csrf},
+					success:function(res){
+						if(typeof res.error == 'undefined' || res.error==false){
+							$('textarea[name="comment_content"]').val('');
+							$('.comment-list').prepend(res);
+						}
+						else{
+							alert('Đã có lỗi xảy ra. Vui lòng thử lại sau!');
+						}
+					}
+				})
+			});
+
+			$('textarea[name="comment_content"]').keyup(function(){
+				$('.invalid-comment-content').hide();
+			});
+			$('input[name="comment_user"]').keyup(function(){
+				$('.invalid-comment-user').hide();
+			});
+		
+			$.get('/comment/list-comment-product?page=1&productId=<%=product._id%>',function(res){
+				if(typeof res.error == 'undefined' || res.error==false){
+					$('.payload-comments').html(res);
+				}
+			});
+
+			$(document).on('click','.payload-comments .pagination a',function(e){
+				e.preventDefault();
+				var url = '/comment' + $(this).attr('data-url');
+				$.get(url,function(res){
+				if(typeof res.error == 'undefined' || res.error==false){
+					$('.payload-comments').html(res);
+				}
+			});
 			})
-		})
+		});
+
 	</script>
 </body>
 

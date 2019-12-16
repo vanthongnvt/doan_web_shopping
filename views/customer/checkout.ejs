@@ -45,13 +45,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			<!-- //tittle heading -->
 			<div class="checkout-right">
 				<h4 class="mb-sm-4 mb-3">Giỏ hàng của bạn đang chứa:
-					<span>3 sản phẩm</span>
+					<span><%=session.cart.totalItem%> sản phẩm</span>
 				</h4>
 				<div class="table-responsive">
 					<table class="timetable_sub">
 						<thead>
 							<tr>
-								<th>STT</th>
+								<th>STT </th>
 								<th>Sản phẩm</th>
 								<th>Số lượng</th>
 								<th>Tên sản phẩm</th>
@@ -60,213 +60,176 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							</tr>
 						</thead>
 						<tbody>
-							<tr class="rem1">
-								<td class="invert">1</td>
+							<% let i=1;
+							for(const [key,cartItem] of Object.entries( session.cart.items )){ %>
+							<tr class="rem<%=i%>">
+								<td class="invert"><%=i++%></td>
 								<td class="invert-image">
-									<a href="single.html">
-										<img src="images/a.jpg" alt=" " class="img-responsive">
+									<a href="<%= cartItem.item.link %>">
+										<img src="/images/products/<%=cartItem.item.images[0]%>" alt=" " class="img-responsive">
 									</a>
 								</td>
 								<td class="invert">
 									<div class="quantity">
 										<div class="quantity-select">
-											<div class="entry value-minus">&nbsp;</div>
+											<div class="entry value-minus" data-cart="<%=key%>">&nbsp;</div>
 											<div class="entry value">
-												<span>1</span>
+												<span><%=cartItem.qty%></span>
 											</div>
-											<div class="entry value-plus active">&nbsp;</div>
+											<div class="entry value-plus active" data-cart="<%=key%>">&nbsp;</div>
 										</div>
 									</div>
 								</td>
-								<td class="invert">Back Cover</td>
-								<td class="invert">$259</td>
+								<td class="invert"><a href="<%= cartItem.item.link %>"><%= cartItem.item.name %></a></td>
+								<td class="invert"><%= cartItem.price %></td>
 								<td class="invert">
 									<div class="rem">
-										<div class="close1"> </div>
+										<div class="checkout-cart-remove" data-cart="<%=key%>"></div>
 									</div>
 								</td>
 							</tr>
-							<tr class="rem2">
-								<td class="invert">2</td>
-								<td class="invert-image">
-									<a href="single2.html">
-										<img src="images/a4.jpg" alt=" " class="img-responsive">
-									</a>
-								</td>
-								<td class="invert">
-									<div class="quantity">
-										<div class="quantity-select">
-											<div class="entry value-minus">&nbsp;</div>
-											<div class="entry value">
-												<span>1</span>
-											</div>
-											<div class="entry value-plus active">&nbsp;</div>
-										</div>
-									</div>
-								</td>
-								<td class="invert">Cordless Trimmer</td>
-								<td class="invert">$1,999</td>
-								<td class="invert">
-									<div class="rem">
-										<div class="close2"> </div>
-									</div>
-								</td>
-							</tr>
-							<tr class="rem3">
-								<td class="invert">3</td>
-								<td class="invert-image">
-									<a href="single.html">
-										<img src="images/a3.jpg" alt=" " class="img-responsive">
-									</a>
-								</td>
-								<td class="invert">
-									<div class="quantity">
-										<div class="quantity-select">
-											<div class="entry value-minus">&nbsp;</div>
-											<div class="entry value">
-												<span>1</span>
-											</div>
-											<div class="entry value-plus active">&nbsp;</div>
-										</div>
-									</div>
-								</td>
-								<td class="invert">Nikon Camera</td>
-								<td class="invert">$37,490</td>
-								<td class="invert">
-									<div class="rem">
-										<div class="close3"> </div>
-									</div>
-								</td>
-							</tr>
+							<% } %>
 						</tbody>
 					</table>
 				</div>
+				<div class="text-right my-2">
+					<p class="color-black-default">Tổng thanh toán: <b><%=session.cart.totalPrice%></b> vnđ</p>
+				</div>
+				<div class="form-group px-5 text-center">
+					<button class="btn btn-primary form-control my-3 w-50 update-cart" style="display: none">Lưu thay đổi</button>
+				</div>
 			</div>
 			<div class="checkout-left">
+				<%if(!logged){%>
+				<p>Vui lòng <a href="#" data-toggle="modal" data-target="#exampleModal" id="showLogin">đăng nhập</a> để thực hiện thanh toán</p>
+				<%}else{%>
 				<div class="address_form_agile mt-sm-5 mt-4">
 					<h4 class="mb-sm-4 mb-3">Thông tin khách hàng</h4>
-					<form action="payment.html" method="post" class="creditly-card-form agileinfo_form">
+					<form action="#" method="post" class="creditly-card-form agileinfo_form">
 						<div class="creditly-wrapper wthree, w3_agileits_wrapper">
 							<div class="information-wrapper">
 								<div class="first-row">
 									<div class="controls form-group">
-										<input class="billing-address-name form-control" type="text" name="name" placeholder="Tên đầy đủ" required="">
+										<input class="billing-address-name form-control" type="text" name="fullname" placeholder="Tên đầy đủ" required="" value="<%=user.fullname%>">
 									</div>
 									<div class="w3_agileits_card_number_grids">
 										<div class="w3_agileits_card_number_grid_left form-group">
 											<div class="controls">
-												<input type="text" class="form-control" placeholder="SĐT" name="number" required="">
+												<input type="text" class="form-control" placeholder="SĐT" name="phone" required="" value="<%=user.phone%>">
 											</div>
 										</div>
 										<div class="w3_agileits_card_number_grid_right form-group">
 											<div class="controls">
-												<input type="text" class="form-control" placeholder="Địa chỉ" name="landmark" required="">
+												<input type="text" class="form-control" placeholder="Địa chỉ" name="address" required="" value="<%=user.address%>">
 											</div>
 										</div>
-									</div>
-									<div class="controls form-group">
-										<input type="text" class="form-control" placeholder="Thành phố" name="city" required="">
 									</div>
 								</div>
 								<button class="submit check_out btn">Giao đến địa chỉ này</button>
 							</div>
 						</div>
 					</form>
-					<div class="checkout-right-basket">
-						<a href="payment.html">Thanh toán
-							<span class="far fa-hand-point-right"></span>
-						</a>
-					</div>
 				</div>
+				<%}%>
 			</div>
 		</div>
 	</div>
 	<!-- //checkout page -->
 
-		<!-- middle section -->
-		<div class="join-w3l1 py-sm-5 py-4">
-				<div class="container py-xl-4 py-lg-2">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="join-agile text-left p-4">
-								<div class="row">
-									<div class="col-sm-7 offer-name">
-										<h6>Âm thanh mượt mà, phong phú và to</h6>
-										<h4 class="mt-2 mb-3">Tai nghe</h4>
-										<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
-									</div>
-									<div class="col-sm-5 offerimg-w3l">
-										<img src="images/off1.png" alt="" class="img-fluid">
-									</div>
-								</div>
+	<!-- middle section -->
+	<div class="join-w3l1 py-sm-5 py-4">
+		<div class="container py-xl-4 py-lg-2">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="join-agile text-left p-4">
+						<div class="row">
+							<div class="col-sm-7 offer-name">
+								<h6>Âm thanh mượt mà, phong phú và to</h6>
+								<h4 class="mt-2 mb-3">Tai nghe</h4>
+								<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
+							</div>
+							<div class="col-sm-5 offerimg-w3l">
+								<img src="images/off1.png" alt="" class="img-fluid">
 							</div>
 						</div>
-						<div class="col-lg-6 mt-lg-0 mt-5">
-							<div class="join-agile text-left p-4">
-								<div class="row ">
-									<div class="col-sm-7 offer-name">
-										<h6>Điện thoại cỡ trung bình</h6>
-										<h4 class="mt-2 mb-3">Smart Phones 5</h4>
-										<p>Miễn phí vận chuyển trên $ 100</p>
-									</div>
-									<div class="col-sm-5 offerimg-w3l">
-										<img src="images/off2.png" alt="" class="img-fluid">
-									</div>
-								</div>
+					</div>
+				</div>
+				<div class="col-lg-6 mt-lg-0 mt-5">
+					<div class="join-agile text-left p-4">
+						<div class="row ">
+							<div class="col-sm-7 offer-name">
+								<h6>Điện thoại cỡ trung bình</h6>
+								<h4 class="mt-2 mb-3">Smart Phones 5</h4>
+								<p>Miễn phí vận chuyển trên $ 100</p>
+							</div>
+							<div class="col-sm-5 offerimg-w3l">
+								<img src="images/off2.png" alt="" class="img-fluid">
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- middle section -->
-		
-			
+		</div>
+	</div>
+	<!-- middle section -->
+
+
 	
 	<%include layout/footer%>
 
 	<!-- quantity -->
 	<script>
-		$('.value-plus').on('click', function () {
-			var divUpd = $(this).parent().find('.value'),
-				newVal = parseInt(divUpd.text(), 10) + 1;
-			divUpd.text(newVal);
-		});
 
-		$('.value-minus').on('click', function () {
-			var divUpd = $(this).parent().find('.value'),
+		$(document).ready(function (c) {
+			var deleteItems = [];
+			var updateItems = {};
+			$('.value-plus').on('click', function () {
+				var cartItem = $(this).attr('data-cart');
+				var divUpd = $(this).parent().find('.value'),
+				newVal = parseInt(divUpd.text(), 10) + 1;
+				divUpd.text(newVal);
+				$('.update-cart').slideDown();
+				updateItems[cartItem] = newVal;
+			});
+
+			$('.value-minus').on('click', function () {
+				var cartItem = $(this).attr('data-cart');
+				var divUpd = $(this).parent().find('.value'),
 				newVal = parseInt(divUpd.text(), 10) - 1;
-			if (newVal >= 1) divUpd.text(newVal);
+				if (newVal >= 1) {
+					divUpd.text(newVal);
+					$('.update-cart').slideDown();
+					updateItems.cartItem = newVal;
+				}
+			});
+
+			$('.checkout-cart-remove').on('click', function (c) {
+				var cartItem = $(this).attr('data-cart');
+				var parent = $(this).parents('tr');
+				parent.fadeOut('slow', function (c) {
+					parent.remove();
+				});
+				$('.update-cart').slideDown();
+				deleteItems.push(cartItem);
+			});
+
+			$('.update-cart').click(function(){
+				// console.log(updateItems);
+				var _csrf = $('meta[name="csrf-token"]').attr('content');
+				$.ajax({
+					url:'/cart/update',
+					type:'post',
+					data:{deleteItems:JSON.stringify(deleteItems),updateItems:JSON.stringify(updateItems),_csrf:_csrf},
+					success:function(res){
+						if(res.message=='success'){
+							location.href = location.href;
+						}
+					}
+				})
+			})
 		});
 	</script>
 	<!--quantity-->
-	<script>
-		$(document).ready(function (c) {
-			$('.close1').on('click', function (c) {
-				$('.rem1').fadeOut('slow', function (c) {
-					$('.rem1').remove();
-				});
-			});
-		});
-	</script>
-	<script>
-		$(document).ready(function (c) {
-			$('.close2').on('click', function (c) {
-				$('.rem2').fadeOut('slow', function (c) {
-					$('.rem2').remove();
-				});
-			});
-		});
-	</script>
-	<script>
-		$(document).ready(function (c) {
-			$('.close3').on('click', function (c) {
-				$('.rem3').fadeOut('slow', function (c) {
-					$('.rem3').remove();
-				});
-			});
-		});
-	</script>
-	<!-- //quantity -->
 
 </body>
 

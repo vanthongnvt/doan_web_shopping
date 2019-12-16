@@ -1,7 +1,7 @@
 module.exports = function Cart(oldCart){
 	this.items = oldCart.items||{};
 	this.totalPrice = oldCart.totalPrice||0;
-
+	this.totalItem = oldCart.totalItem||0;
 	this.addItem = function(itemAdd,id){
 		let storedItem = this.items[id];
 		if(!storedItem){
@@ -17,6 +17,7 @@ module.exports = function Cart(oldCart){
 				price:0,
 				qty:0
 			};
+			this.totalItem++;
 		}
 		storedItem.qty++;
 		storedItem.price = parseInt((storedItem.item.price*(100 - storedItem.item.discount)/100))*storedItem.qty;
@@ -27,7 +28,7 @@ module.exports = function Cart(oldCart){
 	this.toArray = function(){
 		var arr = [];
 		for(var id in this.items){
-			arr.push(items[id]);
+			arr.push(this.items[id]);
 		}
 		return arr;
 	}
@@ -37,6 +38,7 @@ module.exports = function Cart(oldCart){
 		if(storedItem){
 			this.totalPrice -= parseInt((storedItem.item.price*(100 - storedItem.item.discount)/100))*storedItem.qty;
 			delete this.items[id];
+			this.totalItem--;
 		}
 	}
 
@@ -50,6 +52,7 @@ module.exports = function Cart(oldCart){
 		if(storedItem){
 			if(amount==0){
 				delete this.items[id];
+				this.totalItem--;
 			}
 			else{
 				storedItem.price = parseInt((storedItem.item.price*(100 - storedItem.item.discount)/100))*amount;
@@ -57,6 +60,16 @@ module.exports = function Cart(oldCart){
 				this.totalPrice += parseInt((storedItem.item.price*(100 - storedItem.item.discount)/100))*amount;
 			}
 			storedItem.qty = amount;
+		}
+	}
+
+	this.update = function(deleteItems, updateItems){
+		for(var key in deleteItems){
+			this.removeItem(deleteItems[key]);
+		}
+		console.log(updateItems);	
+		for(var id in updateItems){
+			this.changeQty(id,updateItems[id]);
 		}
 	}
 }

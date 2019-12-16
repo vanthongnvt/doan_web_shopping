@@ -1,0 +1,55 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.btn-change-avatar').click(function(){
+			$('input[name="user_avatar"]').click();
+			return false;
+		});
+
+		$("input[name='user_avatar']").change(function(){
+			if(this.files.length==0)
+			{
+				$(this).siblings('.btn-save-avatar').hide();
+				return false;
+			}
+			
+			var el_img,src,type;
+			var count_image=0;
+			var arrtype=["jpg","jpeg","png"];
+			var file=this.files[0];
+			src=URL.createObjectURL(file);
+			type=file.name.split(".").pop();
+			if($.inArray(type,arrtype)>-1)
+			{
+				$(this).siblings('img').attr('src',src);
+				$(this).siblings('.btn-save-avatar').show();
+			}
+			else{
+				alert('Hình ảnh không được hỗ trợ');
+			}
+		});
+
+		$('.btn-save-avatar').click(function(){
+			var file=$("input[name='user_avatar']")[0].files[0];
+			if(file.length==0) {return;}
+			var formData = new FormData();
+			formData.append('image', file);
+			var _csrf = $('meta[name="csrf-token"]').attr('content');
+			formData.append('_csrf', _csrf);
+			$.ajax({
+				url:'/tai-khoan/update-avatar',
+				type:'post',
+				data:formData,
+				processData: false,
+				contentType: false,
+				success:function(res){
+					if(res.error==false){
+						alert('Thay đổi ảnh đại diện thành công');
+					}
+					else{
+						alert('Lỗi! Vui lòng thử lại sau');
+					}
+				}
+			})
+		})
+	})
+</script>

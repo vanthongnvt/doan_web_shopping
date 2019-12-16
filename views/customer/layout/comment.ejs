@@ -1,0 +1,22 @@
+<%function getDate(date_time){
+	var dd = String(date_time.getDate()).padStart(2, '0');
+	var mm = String(date_time.getMonth() + 1).padStart(2, '0');
+	var yyyy = date_time.getFullYear();
+	return mm + '/' + dd + '/' + yyyy;
+}%>
+<div class="d-flex comment-item py-3">
+	<div class="comment-avatar">
+		<%if(comment.avatar){%>
+		<img src="/images/avatars/<%=comment.avatar%>">
+		<%}else{%>
+		<img src="/images/avatars/unknown.png">
+		<% }%>
+	</div>
+	<div class="ml-3 w-100">
+		<div class="d-flex align-center">
+			<h6 class="comment-name w-100"><%=comment.name%></h6>
+			<small class="comment-date mx-5"><%=getDate(comment.created)%></small>
+		</div>
+		<p class="text-monospace"><%=comment.content%></p>
+	</div>
+</div>

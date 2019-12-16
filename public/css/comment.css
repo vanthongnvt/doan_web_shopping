@@ -11,3 +11,6 @@
 .comment-box-expand{
 	display: none;
 }
+.comment-list .comment-item:nth-child(2n+1){
+	background: #f8f9fa;
+}

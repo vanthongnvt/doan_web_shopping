@@ -65,6 +65,18 @@ var productSchema = mongoose.Schema({
 	}
 },{collection:'products'});
 
+productSchema.virtual('comments', {
+	ref: 'Comment',
+	localField: '_id',
+	foreignField: 'productId',
+	options: { sort: { created: -1 }}
+});
+productSchema.virtual('comments_count', {
+	ref: 'Comment',
+	localField: '_id',
+	foreignField: 'productId',
+	count:true
+});
 productSchema.methods.formatPrice=function(){
 	return this.price.toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
@@ -81,7 +93,7 @@ productSchema.statics.findProductById = async function(id){
 
 productSchema.statics.getProductByName=async function(name){
 	try{
-		var result = await this.findOne({slug:name}).populate('categoryId').exec();
+		var result = await this.findOne({slug:name}).populate('categoryId').populate('comments_count').exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);

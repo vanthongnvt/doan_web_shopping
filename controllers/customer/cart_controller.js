@@ -4,7 +4,7 @@ var Cart =  require('../../models/cart');
 exports.addToCart = async function(req,res,next){
 	let id = req.params.id;
 	let product = await productModel.findProductById(id);
-	if(!product.error){
+	if(product&&!product.error){
 		let cart = new Cart(req.session.cart?req.session.cart:{});
 		// console.log(cart);
 		let storedItem = cart.addItem(product.data,id);

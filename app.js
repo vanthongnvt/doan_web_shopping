@@ -9,10 +9,11 @@ var expressSession = require('express-session');
 var MongoStore =require('connect-mongo')(expressSession);
 var bodyParser = require('body-parser');
 var flash=require('connect-flash');
+var validator = require('express-validator');
 var passport = require('passport');
 require('./middleware/init_passport');
 require('dotenv').config();
-var db=mongoose.connect(process.env.DB_URL,{ useUnifiedTopology: true,useNewUrlParser: true,useCreateIndex: true }, function (err) {
+var db=mongoose.connect(process.env.DB_URL,{ useUnifiedTopology: true,useNewUrlParser: true,useCreateIndex: true,useFindAndModify: false }, function (err) {
 	if(err){
 		console.log(err);
 	}
@@ -29,7 +30,7 @@ var cartRouter = require('./routes/customer/cart');
 var commentRouter = require('./routes/customer/comment');
 
 var csrfProtection = csrf({ cookie: true });
-var checkLogedMiddleware=require('./middleware/check_logged');
+var checkLogedMiddleware=require('./middleware/web');
 var app = express();
 
 // view engine setup
@@ -47,6 +48,7 @@ app.use(expressSession({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(flash());
+app.use(validator());
 app.use(passport.initialize());
 app.use(passport.session());
 

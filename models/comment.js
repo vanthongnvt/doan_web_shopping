@@ -32,7 +32,7 @@ commentSchema.statics.getCommentsProduct = async function(productId,page){
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);
-		return {error:true ,message:err.err};
+		return {error:true ,message:err};
 	}
 }
 
@@ -42,7 +42,7 @@ commentSchema.statics.getCountCommentsProduct = async function(productId){
 		return {error:false,count:result};
 	}catch(err){
 		console.log(err);
-		return {error:true ,message:err.err};
+		return {error:true ,message:err};
 	}
 }
 

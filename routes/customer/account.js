@@ -35,4 +35,6 @@ router.get('/quen-mat-khau',accountController.forgotPassword);
 
 router.get('/tao-moi-mat-khau/:refreshToken',accountController.resetPassword);
 
+router.post('/dat-hang',authRedirectMiddleware,accountController.order);
+
 module.exports = router;

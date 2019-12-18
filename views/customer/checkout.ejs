@@ -105,27 +105,59 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<%}else{%>
 				<div class="address_form_agile mt-sm-5 mt-4">
 					<h4 class="mb-sm-4 mb-3">Thông tin khách hàng</h4>
-					<form action="#" method="post" class="creditly-card-form agileinfo_form">
+					<%if(messages.unavailable_products){%>
+					<div class="alert alert-danger" role="alert">
+						<%-messages.unavailable_products%>
+					</div>
+					<%}%>
+					<%if(messages.server_error){%>
+					<div class="alert alert-danger" role="alert">
+						<%=messages.server_error%>
+					</div>
+					<%}%>
+					<%if(messages.order_successfully){%>
+					<div class="alert alert alert-success" role="alert">
+						<%=messages.order_successfully%>
+					</div>
+					<%}%>
+					<form action="/tai-khoan/dat-hang" method="post" class="creditly-card-form agileinfo_form">
+						<input type="hidden" name="_csrf" value="<%=csrfToken%>">
 						<div class="creditly-wrapper wthree, w3_agileits_wrapper">
 							<div class="information-wrapper">
 								<div class="first-row">
 									<div class="controls form-group">
-										<input class="billing-address-name form-control" type="text" name="fullname" placeholder="Tên đầy đủ" required="" value="<%=user.fullname%>">
+										<input class="billing-address-name form-control" type="text" name="name" placeholder="Họ tên*" required="" value="<%=old.name?old.name:user.fullname%>">
+										<%if(messages.error_name){%>
+										<div class="invalid-feedback d-block"><%=messages.error_name%></div>
+										<%}%>
 									</div>
 									<div class="w3_agileits_card_number_grids">
 										<div class="w3_agileits_card_number_grid_left form-group">
 											<div class="controls">
-												<input type="text" class="form-control" placeholder="SĐT" name="phone" required="" value="<%=user.phone%>">
+												<input type="text" class="form-control" placeholder="SĐT*" name="phone" required="" value="<%=old.phone?old.phone:user.phone%>">
+												<%if(messages.error_phone){%>
+												<div class="invalid-feedback d-block"><%=messages.error_phone%></div>
+												<%}%>
 											</div>
 										</div>
 										<div class="w3_agileits_card_number_grid_right form-group">
 											<div class="controls">
-												<input type="text" class="form-control" placeholder="Địa chỉ" name="address" required="" value="<%=user.address%>">
+												<input type="text" class="form-control" placeholder="Địa chỉ*" name="address" required="" value="<%=old.address?old.address:user.address%>">
+												<%if(messages.error_address){%>
+												<div class="invalid-feedback d-block"><%=messages.error_address%></div>
+												<%}%>
+											</div>
+										</div>
+										<div class="w3_agileits_card_number_grid_right form-group">
+											<div class="controls">
+												<input type="text" class="form-control" placeholder="Ghi chú" name="note">
 											</div>
 										</div>
 									</div>
 								</div>
+								<%if(session.cart.totalItem>0){%>
 								<button class="submit check_out btn">Giao đến địa chỉ này</button>
+								<%}%>
 							</div>
 						</div>
 					</form>
@@ -149,7 +181,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
 							</div>
 							<div class="col-sm-5 offerimg-w3l">
-								<img src="images/off1.png" alt="" class="img-fluid">
+								<img src="/images/off1.png" alt="" class="img-fluid">
 							</div>
 						</div>
 					</div>
@@ -163,7 +195,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<p>Miễn phí vận chuyển trên $ 100</p>
 							</div>
 							<div class="col-sm-5 offerimg-w3l">
-								<img src="images/off2.png" alt="" class="img-fluid">
+								<img src="/images/off2.png" alt="" class="img-fluid">
 							</div>
 						</div>
 					</div>

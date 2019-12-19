@@ -29,11 +29,19 @@ var migrateRouter=require('./routes/customer/migratedb');
 var cartRouter = require('./routes/customer/cart');
 var commentRouter = require('./routes/customer/comment');
 
+var indexAdminRouter = require('./routes/admin/index');
+var categoryAdminRouter = require('./routes/admin/category');
+var productAdminRouter = require('./routes/admin/product');
+var userAdminRouter = require('./routes/admin/user');
+var orderAdminRouter = require('./routes/admin/order');
+var profileAdminRouter = require('./routes/admin/profile');
+
 var csrfProtection = csrf({ cookie: true });
 var webMiddleware=require('./middleware/web');
 var app = express();
 
 // view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -55,7 +63,8 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', express.static(path.join(__dirname, 'public')))
 
 app.use(csrfProtection);
 //middleware
@@ -72,9 +81,17 @@ app.use('/gioi-thieu',aboutRouter);
 app.use('/cart',cartRouter);
 app.use('/comment',commentRouter);
 // app.use('/san-pham',productRouter);
+
+
+app.use('/admin', indexAdminRouter);
+app.use('/admin/gian-hang', categoryAdminRouter);
+app.use('/admin/san-pham', productAdminRouter);
+app.use('/admin/nguoi-dung', userAdminRouter);
+app.use('/admin/don-hang', orderAdminRouter);
+app.use('/admin/profile', profileAdminRouter);
+
 app.use('/:category([-\\w]+)',categoryRouter);
 app.use('/:category/:product',productRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

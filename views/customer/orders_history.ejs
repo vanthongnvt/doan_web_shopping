@@ -47,7 +47,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="right col-lg-9">
 					<h4 class="mb-sm-4 mb-3">Lịch sử mua hàng</h4>
 					<hr class="m-0">
-					<div class="table-responsive">
+					<div class="table-responsive orders-list">
 						<table class="table">
 							<thead>
 								<tr>
@@ -59,75 +59,86 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</tr>
 							</thead>
 							<tbody>
-
+								<%orders.forEach(function(order){%>
 								<tr>
 									<td class="align-middle">
-										<h5 class="mt-10">#234</h5>
+										<p class="mt-10"><%=order._id%></p>
 									</td>
 									<td class="align-middle">
-										<h5 class="mt-10">32/242/34423</h5>
+										<p class="mt-10"><%=getDateCreated(order.created)%></p>
 									</td>
 									<td class="align-middle">
-										<h5 class="mt-10">Đang giao</h5>
+										<%if(order.status==0){%>
+										<p class="mt-10 order-status-pending">Đang giao</p>
+										<%}else if(order.status==1){%>
+										<p class="mt-10 order-status-delivered">Đã giao</p>
+										<%}else if(order.status==2){%>
+										<p class="mt-10 order-status-refund">Đã hoàn trả</p>
+										<%}else{%>
+										<p class="mt-10 order-status-canceled">Đã hủy</p>
+										<%}%>
 									</td>
 									<td class="align-middle">
-										<h5 class="mt-10">1,000,000,000 VNĐ</h5>
+										<p class="mt-10 total-price"><%=order.totalPrice%> VNĐ</p>
 									</td>
 									<td>
-										<a href="/tai-khoan/don-hang/123" class="btn btn-primary">Xem chi tiết</button>
-									</td>
-								</tr>
-
-							</tbody>
-						</table>
+										<a href="/tai-khoan/don-hang/<%=order._id%>" class="btn btn-primary">Xem chi tiết</button>
+										</td>
+									</tr>
+									<%})%>
+								</tbody>
+							</table>
+						</div>
+						<%if(pagination.totalItem>0){%>
+						<%-include('layout/pagination',{pagination:pagination});%>
+						<%}%>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- //account page -->
+		<!-- //account page -->
 
-	<!-- middle section -->
-	<div class="join-w3l1 py-sm-5 py-4">
-		<div class="container py-xl-4 py-lg-2">
-			<div class="row">
-				<div class="col-lg-6">
-					<div class="join-agile text-left p-4">
-						<div class="row">
-							<div class="col-sm-7 offer-name">
-								<h6>Âm thanh mượt mà, phong phú và to</h6>
-								<h4 class="mt-2 mb-3">Tai nghe</h4>
-								<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
-							</div>
-							<div class="col-sm-5 offerimg-w3l">
-								<img src="images/off1.png" alt="" class="img-fluid">
+		<!-- middle section -->
+		<div class="join-w3l1 py-sm-5 py-4">
+			<div class="container py-xl-4 py-lg-2">
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="join-agile text-left p-4">
+							<div class="row">
+								<div class="col-sm-7 offer-name">
+									<h6>Âm thanh mượt mà, phong phú và to</h6>
+									<h4 class="mt-2 mb-3">Tai nghe</h4>
+									<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
+								</div>
+								<div class="col-sm-5 offerimg-w3l">
+									<img src="/images/off1.png" alt="" class="img-fluid">
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="col-lg-6 mt-lg-0 mt-5">
-					<div class="join-agile text-left p-4">
-						<div class="row ">
-							<div class="col-sm-7 offer-name">
-								<h6>Điện thoại cỡ trung bình</h6>
-								<h4 class="mt-2 mb-3">Smart Phones 5</h4>
-								<p>Miễn phí vận chuyển trên $ 100</p>
-							</div>
-							<div class="col-sm-5 offerimg-w3l">
-								<img src="images/off2.png" alt="" class="img-fluid">
+					<div class="col-lg-6 mt-lg-0 mt-5">
+						<div class="join-agile text-left p-4">
+							<div class="row ">
+								<div class="col-sm-7 offer-name">
+									<h6>Điện thoại cỡ trung bình</h6>
+									<h4 class="mt-2 mb-3">Smart Phones 5</h4>
+									<p>Miễn phí vận chuyển trên $ 100</p>
+								</div>
+								<div class="col-sm-5 offerimg-w3l">
+									<img src="/images/off2.png" alt="" class="img-fluid">
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- middle section -->
+		<!-- middle section -->
 
 
 
-	<%include layout/footer%>
-	<%include layout/account_js%>
-</body>
+		<%include layout/footer%>
+		<%include layout/account_js%>
+	</body>
 
-</html>
+	</html>

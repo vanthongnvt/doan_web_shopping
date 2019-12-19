@@ -6,7 +6,7 @@ var orderSchema = mongoose.Schema({
 		type: Schema.Types.ObjectId,
 		ref:'User'
 	},
-	name : {
+	name: {
 		type: String,
 		require:true
 	},
@@ -25,6 +25,7 @@ var orderSchema = mongoose.Schema({
 		},
 		discount:Number,
 		quantity:Number,
+		price:Number,
 	}],
 	coupon:{
 		type:Number,
@@ -51,37 +52,80 @@ var orderSchema = mongoose.Schema({
 	}
 },{collection:'orders'});
 
-orderSchema.statics.createOrder = async function(cart,userId,address,phone,note){
+orderSchema.statics.createOrder = async function(cart,userId,name,address,phone,note){
 	let order = {};
 	order.userId = userId;
+	order.name = name;
 	order.address = address;
 	order.phone = phone;
 	order.note = note;
 	order.totalPrice = cart.totalPrice;
 	order.products = [];
+	const session = await this.startSession();
+  	session.startTransaction();
+  	const opts = { session };
 	for(id in cart.items){
 		try{
+			let itemProduct = cart.items[id].item;
 			let qty = cart.items[id].qty;
-			let result = await productModel.findOneAndUpdate({_id:id,status:true,quantity:{"$gte":qty}},{"$inc": { "quantity":-qty}});
+			let result = await productModel.findOneAndUpdate({_id:id,status:true,quantity:{"$gte":qty}},{"$inc": { "quantity":-qty}},opts);
 			if(!result){
-				return {error:true, message:'product is not available', code:1, name:cart.items[id].item.name, link: cart.items[id].item.link};
+				await session.abortTransaction();
+    			session.endSession();
+				return {error:true, message:'product is not available', code:1, name:itemProduct.name, link: cart.itemProduct.link};
 			}
 			else{
-				order.products.push({productId:id,quantity:cart.items[id].qty,discount:cart.items[id].item.discount});
+				order.products.push({productId:id,quantity:qty,discount:itemProduct.discount,price:itemProduct.price});
 			}
 		}catch(err){
 			console.log(err);
+			await session.abortTransaction();
+    		session.endSession();
 			return {error:true, message:'server error', code:0};
 		}
 	}
 	try{
 		let result = await this.create(order);
+		await session.commitTransaction();
+    	session.endSession();
 		return {error:false, data:result};
 	}catch(err){
 		console.log(err);
+		await session.abortTransaction();
+    	session.endSession();
 		return {error:true, message:'server error',code:0};
 	}
 
+}
+
+orderSchema.statics.getCountOrdersOfUser = async function(userId){
+	try{
+		let result = await this.countDocuments({userId:userId}).exec();
+		return {error:false,count:result};
+	}catch(err){
+		console.log(err);
+		return {error:true ,message:err};
+	}
+}
+
+orderSchema.statics.getOrdersOfUser = async function(userId,page,pageSize){
+	try{
+		let result = await this.find({userId:userId}).skip((page-1)*pageSize).limit(pageSize).sort({created:-1}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+orderSchema.statics.getOrderById = async function(id){
+	try{
+		let result = await this.findOne({_id:id}).populate({path:'products.productId',populate:{path:'categoryId'}}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
 }
 
 var Order = mongoose.model('Order', orderSchema);

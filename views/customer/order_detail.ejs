@@ -59,99 +59,93 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								</tr>
 							</thead>
 							<tbody>
+								<%order.products.forEach(function(product,index){%>
 								<tr class="rem1">
-									<td class="invert">1</td>
+									<td class="invert"><%=index+1%></td>
 									<td class="invert-image">
-										<a href="single.html">
-											<img src="images/a.jpg" alt=" " class="img-responsive">
+										<a href="/<%=product.productId.categoryId.slug%>/<%=product.productId.slug%>">
+											<img src="/images/products/<%=product.productId.images[0]%>" alt=" " class="img-responsive">
 										</a>
 									</td>
-									<td class="invert">Back Cover</td>
-									<td class="invert">1</td>
-									<td class="invert">$259 (Đã giảm xx%)</td>
+									<td class="invert">
+										<a href="/<%=product.productId.categoryId.slug%>/<%=product.productId.slug%>">
+											<%=product.productId.name%></a>
+										</td>
+										<td class="invert"><%=product.quantity%></td>
+										<td class="invert"><%=product.quantity*product.price%> vnd <%if(product.discount>0){%>(Đã giảm <%=product.discount%>) <%}%></td>
+									</tr>
+									<%})%>
+								</tbody>
+							</table>
+						</div>
+						<div class="pt-4 ship-detail my-2">
+							<table>
+								<tr><td>Tổng thanh toán:</td> <td class="total-price"><%=order.totalPrice%> VNĐ</td></tr>
+								<tr><td>Người nhận hàng:</td> <td><%=order.fullname%></td></tr>
+								<tr><td>SĐT:</td> <td><%=order.phone%></td></tr>
+								<tr><td>Địa chỉ:</td> <td><%=order.address%></td></tr>
+								<tr><td>Ghi chú:</td> <td><%=order.note%></td></tr>
+								<tr><td>Ngày đặt hàng:</td> <td><%=getDateCreated(order.created)%></td></tr>
+								<tr><td>Trạng thái:</td>
+									<%if(order.status==0){%>
+									<td class="mt-10 order-status-pending">Đang giao</td>
+									<%}else if(order.status==1){%>
+									<td class="mt-10 order-status-delivered">Đã giao</td>
+									<%}else if(order.status==2){%>
+									<td class="mt-10 order-status-refund">Đã hoàn trả</td>
+									<%}else{%>
+									<td class="mt-10 order-status-canceled">Đã hủy</td>
+									<%}%>
 								</tr>
-								<tr class="rem1">
-									<td class="invert">1</td>
-									<td class="invert-image">
-										<a href="single.html">
-											<img src="images/a.jpg" alt=" " class="img-responsive">
-										</a>
-									</td>
-									<td class="invert">Back Cover</td>
-									<td class="invert">1</td>
-									<td class="invert">$259</td>
-								</tr>
-								<tr class="rem1">
-									<td class="invert">1</td>
-									<td class="invert-image">
-										<a href="single.html">
-											<img src="images/a.jpg" alt=" " class="img-responsive">
-										</a>
-									</td>
-									<td class="invert">Back Cover</td>
-									<td class="invert">1</td>
-									<td class="invert">$259</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="pt-4 ship-detail my-2">
-						<table>
-							<tr><td>Tổng thanh toán:</td> <td class="total-price">23,535,345 VNĐ</td></tr>
-							<tr><td>Người nhận hàng:</td> <td>Nuyen van a</td></tr>
-							<tr><td>SĐT:</td> <td>04353534366</td></tr>
-							<tr><td>Địac chỉ:</td> <td>023,534 5 345 3 45 35353 jfd nvud vdfmv vbdf</td></tr>
-							<tr><td>Ngày đặt hàng:</td> <td>23/12/1335</td></tr>
-							<tr><td>Trạng thái:</td><td class="delivered">Đã giao</td></tr>
-						</table>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- //account page -->
+		<!-- //account page -->
 
-	<!-- middle section -->
-	<div class="join-w3l1 py-sm-5 py-4">
-		<div class="container py-xl-4 py-lg-2">
-			<div class="row">
-				<div class="col-lg-6">
-					<div class="join-agile text-left p-4">
-						<div class="row">
-							<div class="col-sm-7 offer-name">
-								<h6>Âm thanh mượt mà, phong phú và to</h6>
-								<h4 class="mt-2 mb-3">Tai nghe</h4>
-								<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
-							</div>
-							<div class="col-sm-5 offerimg-w3l">
-								<img src="images/off1.png" alt="" class="img-fluid">
+		<!-- middle section -->
+		<div class="join-w3l1 py-sm-5 py-4">
+			<div class="container py-xl-4 py-lg-2">
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="join-agile text-left p-4">
+							<div class="row">
+								<div class="col-sm-7 offer-name">
+									<h6>Âm thanh mượt mà, phong phú và to</h6>
+									<h4 class="mt-2 mb-3">Tai nghe</h4>
+									<p>Giảm giá tới 25% tất cả trong cửa hàng</p>
+								</div>
+								<div class="col-sm-5 offerimg-w3l">
+									<img src="images/off1.png" alt="" class="img-fluid">
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="col-lg-6 mt-lg-0 mt-5">
-					<div class="join-agile text-left p-4">
-						<div class="row ">
-							<div class="col-sm-7 offer-name">
-								<h6>Điện thoại cỡ trung bình</h6>
-								<h4 class="mt-2 mb-3">Smart Phones 5</h4>
-								<p>Miễn phí vận chuyển trên $ 100</p>
-							</div>
-							<div class="col-sm-5 offerimg-w3l">
-								<img src="images/off2.png" alt="" class="img-fluid">
+					<div class="col-lg-6 mt-lg-0 mt-5">
+						<div class="join-agile text-left p-4">
+							<div class="row ">
+								<div class="col-sm-7 offer-name">
+									<h6>Điện thoại cỡ trung bình</h6>
+									<h4 class="mt-2 mb-3">Smart Phones 5</h4>
+									<p>Miễn phí vận chuyển trên $ 100</p>
+								</div>
+								<div class="col-sm-5 offerimg-w3l">
+									<img src="images/off2.png" alt="" class="img-fluid">
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- middle section -->
+		<!-- middle section -->
 
 
 
-	<%include layout/footer%>
-	<%include layout/account_js%>
-</body>
+		<%include layout/footer%>
+		<%include layout/account_js%>
+	</body>
 
-</html>
+	</html>

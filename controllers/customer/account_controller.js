@@ -7,15 +7,15 @@ var orderModel = require('../../models/order');
 var Cart =  require('../../models/cart');
 
 exports.userInfo = function(req,res,next){
-        orderModel.find({},function(err,docs){
-            console.log(docs);
-            console.log(docs[0].products);
-        });
-	res.render('./customer/account');
-}
+        // orderModel.find({},function(err,docs){
+        //     console.log(docs);
+        //     console.log(docs[0].products);
+        // });
+        res.render('./customer/account');
+    }
 
-exports.signup = function(req,res,next){
-	passport.authenticate('signup', function(error, user, info) {
+    exports.signup = function(req,res,next){
+     passport.authenticate('signup', function(error, user, info) {
         if(error) {
             return res.status(500).json(error);
         }
@@ -60,16 +60,44 @@ exports.editInfo= function(req,res,next){
     res.render('./customer/edit_account');
 }
 
-exports.ordersHistory = function(req,res,next){
-    res.render('./customer/orders_history');
+exports.ordersHistory = async function(req,res,next){
+    let userId = req.user._id;
+    let page =1;
+    let url = req.baseUrl + req.path +'?page=';
+    if(req.query.page){
+        page = parseInt(req.query.page);
+    }
+    let pageSize = 10;
+    let rsCount = await orderModel.getCountOrdersOfUser(userId);
+    if(rsCount.error){
+        return res.send({error:true,messsage:'server error'});
+    }
+    else{
+        let count = rsCount.count;
+        let result = await orderModel.getOrdersOfUser(userId,page,pageSize);
+        if(result.error){
+            return res.send({error:true,messsage:'server error'});
+        }
+        else{
+            let pagination={totalPage:parseInt(count/pageSize)+1,curPage:page,totalItem:count,url:url};
+            res.render('./customer/orders_history',{orders:result.data,pagination:pagination});
+        }
+    }
 }
 
 exports.changePassword = function(req,res,next){
     res.render('./customer/change_password');
 }
 
-exports.orderDetail = function(req,res,next){
-    res.render('./customer/order_detail');
+exports.orderDetail = async function(req,res,next){
+    let id = req.params.id;
+    let result = await orderModel.getOrderById(id);
+    if(result.error){
+        return res.send({error:true,messsage:'server error'});
+    }
+    else{
+        res.render('./customer/order_detail',{order:result.data});
+    }
 }
 
 exports.forgotPassword = function(req,res,next){
@@ -119,7 +147,7 @@ exports.order = async function(req,res,next){
     if(cart.totalItem <= 0){
         res.redirect('/don-hang');
     }
-    let result = await orderModel.createOrder(cart,userId,address,phone,note);
+    let result = await orderModel.createOrder(cart,userId,name,address,phone,note);
     if(result.error){
         console.log('1');
         if(result.code == 1){

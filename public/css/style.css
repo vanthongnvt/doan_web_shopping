@@ -2521,6 +2521,12 @@ input[name="user_avatar"]{
     height: 100%;
     background: #f45c5d;
 }
+.orders-list p{
+    color: #232323;
+}
+.orders-list .total-price{
+    font-weight: bold;
+}
 .ship-detail .total-price{
     font-weight: bold;
     font-size: 20px;
@@ -2532,18 +2538,18 @@ input[name="user_avatar"]{
 .ship-detail td:nth-child(1){
     padding-right: 20px;
 }
-.ship-detail .delivered{
+.order-status-delivered{
     font-weight: bold;
-    color: #28a745;
+    color: #28a745 !important;
 }
-.ship-detail .pending{
-    color: #ffc107;
+.order-status-pending{
+    color: #ffc107 !important;
 }
-.ship-detail .cancel{
-    color: #dc3545;
+.order-status-canceled{
+    color: #dc3545 !important;
 }
-.ship-detail .refund{
-    color: #007bff;
+.order-status-refund{
+    color: #007bff !important;
 }
 
 

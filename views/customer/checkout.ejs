@@ -231,7 +231,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				if (newVal >= 1) {
 					divUpd.text(newVal);
 					$('.update-cart').slideDown();
-					updateItems.cartItem = newVal;
+					updateItems[cartItem] = newVal;
 				}
 			});
 

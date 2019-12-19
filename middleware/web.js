@@ -14,5 +14,11 @@ module.exports =  function (req, res, next) {
 	res.locals.session = req.session;
 	res.locals.csrfToken=req.csrfToken();
 	// console.log(req.session.cart);
+	res.locals.getDateCreated = function(date_time){
+		var dd = String(date_time.getDate()).padStart(2, '0');
+		var mm = String(date_time.getMonth() + 1).padStart(2, '0');
+		var yyyy = date_time.getFullYear();
+		return mm + '/' + dd + '/' + yyyy;
+	}
 	return next();
 }

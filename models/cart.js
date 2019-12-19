@@ -45,6 +45,7 @@ module.exports = function Cart(oldCart){
 	this.clear = function(){
 		this.items = {};
 		this.totalPrice = 0;
+		this.totalItem=0;
 	}
 
 	this.changeQty= function(id,amount){
@@ -67,7 +68,6 @@ module.exports = function Cart(oldCart){
 		for(var key in deleteItems){
 			this.removeItem(deleteItems[key]);
 		}
-		console.log(updateItems);	
 		for(var id in updateItems){
 			this.changeQty(id,updateItems[id]);
 		}

@@ -30,7 +30,7 @@ var cartRouter = require('./routes/customer/cart');
 var commentRouter = require('./routes/customer/comment');
 
 var csrfProtection = csrf({ cookie: true });
-var checkLogedMiddleware=require('./middleware/web');
+var webMiddleware=require('./middleware/web');
 var app = express();
 
 // view engine setup
@@ -59,7 +59,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(csrfProtection);
 //middleware
-app.use(checkLogedMiddleware);
+app.use(webMiddleware);
+
 
 //route
 app.use('/', indexRouter);

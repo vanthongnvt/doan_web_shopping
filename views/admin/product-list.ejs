@@ -3,7 +3,6 @@
 
 <head>
     <% include layout/header %>
-
 </head>
 
 <body class="sidebar-mini fixed">
@@ -44,119 +43,244 @@
 
                 <!-- Tables start -->
                 <!-- Row start -->
-                <div class="row">
-                    <div class="col-sm-12">
-                        <!-- Basic Table starts -->
+                <!-- Basic Table starts -->
 
 
-                        <!-- Hover effect table starts -->
-                        <div class="card">
-                            <div class="card-block">
-                                <div class="row">
-                                    <div class="col-sm-8">
-
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="input-group">
-                                            <input style="padding-left: 10%" class="input--style-1" type="text"
-                                                placeholder="SEARCH ..." id="myInput">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 table-responsive">
-                                        <table class="table" >
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center txt-primary pro-pic">Gian hàng</th>
-                                                    <th class="text-center txt-primary">ID sản phẩm</th>
-                                                    <th class="text-center txt-primary">Tên sản phẩm</th>
-                                                    <th class="text-center txt-primary">Đơn giá</th>
-                                                    <th class="text-center txt-primary">Số lượng</th>
-                                                    <th class="text-center txt-primary">Trạng thái</th>
-                                                    <th class="text-center txt-primary">Tùy chọn</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="text-center" id="myList">
-                                                <% products.forEach(function(product){ %>
-                                                <tr>
-                                                    <td><%= product.category %></td>
-                                                    <td><%= product.id %></td>
-                                                    <td><%= product.name %></td>
-                                                    <td><%= product.cost %> VNĐ</td>
-                                                    <td><%= product.quantity %></td>
-                                                    <td class="text-center">
-                                                        <% if(product.status == 'Mở'){ %>
-                                                        <span class="label label-success m-t-20">Mở</span>
-                                                        <% }else{ %>
-                                                        <span class="label label-danger">Đóng</span>
-                                                        <% } %>
-                                                    </td>
-                                                    <td class="faq-table-btn">
-                                                        <button type="button"
-                                                            class="btn btn-primary waves-effect waves-light"
-                                                            data-toggle="tooltip" data-placement="top" title="Edit">
-                                                            <i class="icofont icofont-ui-edit"></i>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="btn btn-success waves-effect waves-light"
-                                                            data-toggle="tooltip" data-placement="top" title="View">
-                                                            <i class="icofont icofont-eye-alt"></i>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="btn btn-danger waves-effect waves-light"
-                                                            data-toggle="tooltip" data-placement="top" title="Delete">
-                                                            <i class="icofont icofont-ui-delete"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <% }) %>
-
-
-                                            </tbody>
-                                        </table>
-                                    </div>
+                <!-- Hover effect table starts -->
+                <div class="card">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="md-input-wrapper">
+                                    <select class="md-form-control" name="category">
+                                        <option value="all">Gian hàng - tất cả</option>
+                                        <%categoryList.forEach(function(category){%>
+                                        <option value="<%=category._id%>"><%=category.name%></option>
+                                        <%})%>
+                                    </select>
+                                    <span class="md-line"></span>
                                 </div>
                             </div>
+                            <div class="col-sm-3">
+                                <div class="md-input-wrapper">
+                                    <select class="md-form-control" name="brand">
+                                        <option value="all">Hãng - tất cả</option>
+                                        <%if(brandList!=null){%>
+                                        <%brandList.forEach(function(brand){%>
+                                        <option value="<%=brand._id%>"><%=brand.name%></option>
+                                        <%})%>
+                                        <%}%>
+                                    </select>
+                                    <span class="md-line"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="md-input-wrapper">
+                                    <select class="md-form-control" name="status">
+                                        <option value="all">Trạng thái - tất cả</option>
+                                        <option value="1">Mở</option>
+                                        <option value="0">Đóng</option>
+                                    </select>
+                                    <span class="md-line"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="md-input-wrapper p-relative">
+                                    <form action="/admin/san-pham/danh-sach" method="get" id="form-search">
+                                        <input type="text" name="q" class="md-form-control" placeholder="SEARCH ..." id="myInput" value="<%=(query.q)?query.q:null%>" required="required">
+                                    </form>
+                                    <span class="md-line"></span>
+                                    <i class="fa fa-search p-absolute submit-search" style="top:25px; right: 10px"></i>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 table-responsive">
+                                <table class="table" >
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center txt-primary pro-pic"<%if(!query.sort){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1">Ngày đăng</a>
+                                            </th>
+                                            <th class="text-center txt-primary pro-pic">Gian hàng</th>
+                                            <th class="text-center txt-primary pro-pic">Hãng</th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='name'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1&sort=name">Tên sản phẩm</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='price'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1&sort=price">Giá (VNĐ)</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='qty'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1&sort=qty">Số lượng</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='discount'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1&sort=discount">Giảm giá</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='sold'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1&sort=sold">Đã bán</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='view'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/san-pham/danh-sach?page=1&sort=view">Lượt xem</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='status'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold" href="/admin/san-pham/danh-sach?page=1&sort=status">Trạng thái</a>
+                                            </th>
+                                            <th class="text-center txt-primary">Tùy chọn</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myList">
+                                        <% products.forEach(function(product){ %>
+                                        <tr>
+                                            <td title="<%=product.created%>"><%= getDateCreated(product.created) %></td>
+                                            <td><%= product.categoryId.name %></td>
+                                            <td><%= product.brandId.name %></td>
+                                            <td style="width: 20%"><a href="/<%=product.categoryId.slug%>/<%=product.slug%>"><%= product.name %></a></td>
+                                            <td><%= product.price %></td>
+                                            <td class="text-center"><%= product.quantity %></td>
+                                            <td class="text-center"><%if(product.discount>0){%><%=product.discount%>%<%}%></td>
+                                            <td class="text-center"><%=product.numberOfProductSold%></td>
+                                            <td class="text-center"><%=product.view%></td>
+                                            <td class="text-center">
+                                                <% if(product.status == 1){ %>
+                                                <span class="label label-success m-t-20">Mở</span>
+                                                <% }else{ %>
+                                                <span class="label label-danger">Đóng</span>
+                                                <% } %>
+                                            </td>
+                                            <td class="faq-table-btn">
+                                                <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                    <i class="icofont icofont-ui-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <i class="icofont icofont-ui-delete"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <%if(pagination.totalItem>0){%>
+                            <%-include('layout/pagination',{pagination:pagination});%>
+                            <%}%>
                         </div>
-                        <!-- Hover effect table ends -->
+                    </div>
+                </div>
+                <!-- Hover effect table ends -->
+            </div>
+        </div>
 
+        <!-- Required Jqurey -->
+        <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+        <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
 
-                        <!-- Required Jqurey -->
-                        <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
-                        <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
-                        <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+        <!-- Required Fremwork -->
+        <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
 
-                        <!-- Required Fremwork -->
-                        <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <!-- waves effects.js -->
+        <script src="/admin/plugins/Waves/waves.min.js"></script>
 
-                        <!-- waves effects.js -->
-                        <script src="/admin/plugins/Waves/waves.min.js"></script>
+        <!-- Scrollbar JS-->
+        <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+        <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
 
-                        <!-- Scrollbar JS-->
-                        <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-                        <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
+        <!--classic JS-->
+        <script src="/admin/plugins/classie/classie.js"></script>
 
-                        <!--classic JS-->
-                        <script src="/admin/plugins/classie/classie.js"></script>
+        <!-- notification -->
+        <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
 
-                        <!-- notification -->
-                        <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+        <!-- custom js -->
+        <script type="text/javascript" src="/admin/js/main.min.js"></script>
+        <script type="text/javascript" src="/admin/pages/elements.js"></script>
+        <script src="/admin/js/menu.min.js"></script>
 
-                        <!-- custom js -->
-                        <script type="text/javascript" src="/admin/js/main.min.js"></script>
-                        <script type="text/javascript" src="/admin/pages/elements.js"></script>
-                        <script src="/admin/js/menu.min.js"></script>
-                        
-                        <!-- search js -->
-                        <script>
-                                $(document).ready(function () {
-                                    $("#myInput").on("keyup", function () {
-                                        var value = $(this).val().toLowerCase();
-                                        $("#myList tr").filter(function () {
-                                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                                        });
-                                    });
-                                });
-                            </script>
+        <!-- search js -->
+        <script>
+            serialize = function(obj) {
+                var str = [];
+                for (var p in obj){
+                    if (obj.hasOwnProperty(p)&&obj[p]!=null) {
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    if(str.length==0){
+                        return '';
+                    }
+                }
+                return '?'+str.join("&");
+            }
+            $(document).ready(function () {
+                $("#myInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#myList tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+
+                var url =window.location.href.split('?')[0];
+                var mquery=<%-JSON.stringify(query)%>;
+                if(mquery!=null){
+                    if(mquery.brandId!=null){
+                        $('select[name="brand"] option').each(function(){
+                            if($(this).val() == mquery.brandId){
+                                $(this).attr('selected',true);
+                            }
+                        });
+                    }
+                    if(mquery.categoryId!=null){
+                        $('select[name="category"] option').each(function(){
+                            if($(this).val() == mquery.categoryId){
+                                $(this).attr('selected',true);
+                            }
+                        });
+                    }
+                    if(mquery.status!=null){
+                        $('select[name="status"] option').each(function(){
+                            if($(this).val() == mquery.status){
+                                $(this).attr('selected',true);
+                            }
+                        });
+                    }
+                }
+
+                $('select[name="brand"]').change(function(){
+                    if($(this).val()=='all'){
+                        mquery.brandId=null;
+                    }
+                    else{
+                        mquery.brandId=$(this).val();
+                    }
+
+                    window.location= url+serialize(mquery);
+                });
+                $('select[name="status"]').change(function(){
+                    if($(this).val()=='all'){
+                        mquery.status=null;
+                    }
+                    else{
+                        mquery.status=$(this).val();
+                    }
+
+                    window.location= url+serialize(mquery);
+                });
+
+                $('select[name="category"]').change(function(){
+                    if($(this).val()=='all'){
+                        mquery.categoryId=null;
+                    }
+                    else{
+                        mquery.categoryId=$(this).val();
+                    }
+                    window.location= url+serialize(mquery);
+                });
+
+                $('.submit-search').click(function(){
+                    $('#form-search').submit();
+                })
+
+            });
+
+        </script>
+    </div>
 </body>
 
 </html>

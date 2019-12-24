@@ -34,7 +34,7 @@
                                 </li>
                                 <li class="breadcrumb-item"><a href="#">Người dùng</a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="/gian-hang/danh-sach">Danh sách</a>
+                                <li class="breadcrumb-item"><a href="/admin/nguoi-dung/danh-sach">Danh sách</a>
                                 </li>
                             </ol>
                         </div>
@@ -42,122 +42,182 @@
                 </div>
                 <!-- Header end -->
 
-                <!-- Tables start -->
-                <!-- Row start -->
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-block">
-                                <div class="row">
-                                    <div class="col-sm-8">
-
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="input-group">
-                                            <input style="padding-left: 10%" class="input--style-1" type="text"
-                                                placeholder="SEARCH ..." id="myInput">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center txt-primary pro-pic">Avatar</th>
-                                                    <th class="text-center txt-primary pro-pic">ID</th>
-                                                    <th class="text-center txt-primary">Họ và tên</th>
-                                                    <th class="text-center txt-primary">Username</th>
-                                                    <th class="text-center txt-primary">Email</th>
-                                                    <th class="text-center txt-primary">SĐT</th>
-                                                    <th class="text-center txt-primary">Địa chỉ</th>
-                                                    <th class="text-center txt-primary">Trạng thái</th>
-                                                    <th class="text-center txt-primary">Tùy chọn</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="text-center" id="myList">
-                                                <% users.forEach(function(user){ %>
-                                                <tr>
-                                                    <td><img src="/admin/images/avatar-1.png" style="width:40%;height:40%;">
-                                                    </td>
-                                                    <td><%= user.id %></td>
-                                                    <td><%= user.name %></td>
-                                                    <td><%= user.username %></td>
-                                                    <td><%= user.email %></td>
-                                                    <td><%= user.phone %></td>
-                                                    <td><%= user.address %></td>
-                                                    <td class="text-center">
-                                                        <% if(user.status == 'Mở'){ %>
-                                                        <span class="label label-success m-t-20">Mở</span>
-                                                        <% }else{ %>
-                                                        <span class="label label-danger">Khóa</span>
-                                                        <% } %>
-                                                    </td>
-                                                    <td class="faq-table-btn">
-                                                        <button type="button"
-                                                            class="btn btn-primary waves-effect waves-light"
-                                                            data-toggle="tooltip" data-placement="top" title="Edit">
-                                                            <i class="icofont icofont-ui-edit"></i>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="btn btn-success waves-effect waves-light"
-                                                            data-toggle="tooltip" data-placement="top" title="View">
-                                                            <i class="icofont icofont-eye-alt"></i>
-                                                        </button>
-                                                        <button type="button"
-                                                            class="btn btn-danger waves-effect waves-light"
-                                                            data-toggle="tooltip" data-placement="top" title="Delete">
-                                                            <i class="icofont icofont-ui-delete"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <% }) %>
-
-
-                                            </tbody>
-                                        </table>
-                                    </div>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="md-input-wrapper">
+                                    <select class="md-form-control" name="block">
+                                        <option value="all">Trạng thái - tất cả</option>
+                                        <option value="1">Đã khóa</option>
+                                        <option value="0">Mở</option>
+                                    </select>
+                                    <span class="md-line"></span>
                                 </div>
                             </div>
+                            <div class="col-sm-3">
+                                <div class="md-input-wrapper p-relative">
+                                    <form action="/admin/nguoi-dung/danh-sach" method="get" id="form-search">
+                                        <input type="text" name="q" class="md-form-control" placeholder="SEARCH ..." id="myInput" value="<%=(query.q)?query.q:null%>" required="required">
+                                    </form>
+                                    <span class="md-line"></span>
+                                    <i class="fa fa-search p-absolute submit-search" style="top:25px; right: 10px"></i>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center txt-primary" <%if(!query.sort){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1">Ngày tạo</a>
+                                            </th>
+                                            <th class="text-center txt-primary pro-pic">Avatar</th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='name'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1&sort=name">Họ và tên</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='username'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1&sort=username">Username</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='email'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1&sort=email">Email</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='phone'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1&sort=phone">SĐT</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='price'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1&sort=address">Địa chỉ</a>
+                                            </th>
+                                            <th class="text-center txt-primary" <%if(query.sort=='status'){%>style="border-bottom: 2px solid;"<%}%>>
+                                                <a class="txt-primary font-weight-bold"href="/admin/nguoi-dung/danh-sach?page=1&sort=status">Trạng thái</a>
+                                            </th>
+                                            <th class="text-center txt-primary">Tùy chọn</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myList">
+                                        <% users.forEach(function(user){ %>
+                                        <tr>
+                                            <td title="<%=user.created%>"><%=getDateCreated(user.created)%></td>
+                                            <td class="text-center">
+                                                <%if(user.avatar){%>
+                                                <img src="/admin/images/avatars/<%=user.avatar%>" style="width:40%;height:40%;">
+                                                <%}else{%>
+                                                <img src="/admin/images/avatar-1.png" style="width:40%;height:40%;">
+                                                <%}%>
+                                            </td>
+                                            <td><%= user.fullname %></td>
+                                            <td><%= user.username %></td>
+                                            <td><%= user.email %></td>
+                                            <td><%= user.phone %></td>
+                                            <td><%= user.address %></td>
+                                            <td class="text-center">
+                                                <% if(user.block == false){ %>
+                                                <span class="label label-success m-t-20">Mở</span>
+                                                <% }else{ %>
+                                                <span class="label label-danger">Khóa</span>
+                                                <% } %>
+                                            </td>
+                                            <td class="faq-table-btn text-center">
+                                                <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="View">
+                                                    <i class="icofont icofont-eye-alt"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger waves-effect waves-light" Wdata-toggle="tooltip" data-placement="top" title="Delete">
+                                                    <i class="icofont icofont-ui-delete"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <%if(pagination.totalItem>0){%>
+                            <%-include('layout/pagination',{pagination:pagination});%>
+                            <%}%>
                         </div>
-                        <!-- Hover effect table ends -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Hover effect table ends -->
 
 
-                        <!-- Required Jqurey -->
-                        <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
-                        <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
-                        <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+        <!-- Required Jqurey -->
+        <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+        <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
 
-                        <!-- Required Fremwork -->
-                        <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <!-- Required Fremwork -->
+        <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
 
-                        <!-- waves effects.js -->
-                        <script src="/admin/plugins/Waves/waves.min.js"></script>
+        <!-- waves effects.js -->
+        <script src="/admin/plugins/Waves/waves.min.js"></script>
 
-                        <!-- Scrollbar JS-->
-                        <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-                        <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
+        <!-- Scrollbar JS-->
+        <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+        <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
 
-                        <!--classic JS-->
-                        <script src="/admin/plugins/classie/classie.js"></script>
+        <!--classic JS-->
+        <script src="/admin/plugins/classie/classie.js"></script>
 
-                        <!-- notification -->
-                        <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+        <!-- notification -->
+        <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
 
-                        <!-- custom js -->
-                        <script type="text/javascript" src="/admin/js/main.min.js"></script>
-                        <script type="text/javascript" src="/admin/pages/elements.js"></script>
-                        <script src="/admin/js/menu.min.js"></script>
+        <!-- custom js -->
+        <script type="text/javascript" src="/admin/js/main.min.js"></script>
+        <script type="text/javascript" src="/admin/pages/elements.js"></script>
+        <script src="/admin/js/menu.min.js"></script>
 
-                        <!-- search js -->
-                        <script>
-                            $(document).ready(function () {
-                                $("#myInput").on("keyup", function () {
-                                    var value = $(this).val().toLowerCase();
-                                    $("#myList tr").filter(function () {
-                                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                                    });
-                                });
-                            });
-                        </script>
+        <!-- search js -->
+        <script>
+            serialize = function(obj) {
+                var str = [];
+                for (var p in obj){
+                    if (obj.hasOwnProperty(p)&&obj[p]!=null) {
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
+                    if(str.length==0){
+                        return '';
+                    }
+                }
+                return '?'+str.join("&");
+            }
+            $(document).ready(function () {
+                $("#myInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    $("#myList tr").filter(function () {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
+                });
+
+                var url =window.location.href.split('?')[0];
+                var mquery=<%-JSON.stringify(query)%>;
+                if(mquery!=null){
+                    if(mquery.block!=null){
+                        $('select[name="block"] option').each(function(){
+                            if($(this).val() == mquery.block){
+                                $(this).attr('selected',true);
+                            }
+                        });
+                    }
+                }
+                $('select[name="block"]').change(function(){
+                    if($(this).val()=='all'){
+                        mquery.block=null;
+                    }
+                    else{
+                        mquery.block=$(this).val();
+                    }
+
+                    window.location= url+serialize(mquery);
+                });
+
+                $('.submit-search').click(function(){
+                    $('#form-search').submit();
+                })
+            });
+        </script>
+    </div>
 </body>
 
 </html>

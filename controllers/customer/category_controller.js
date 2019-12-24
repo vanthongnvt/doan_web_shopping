@@ -76,7 +76,7 @@ exports.listProduct = async function(req,res,next){
 		return res.send('404');
 	}
 	else{
-		if(query.length>0){
+		if(Object.keys(query).length>0){
 			url=url+'&page=';
 		}
 		else{

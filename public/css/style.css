@@ -92,7 +92,8 @@ label {
 
 .header-right ul li {
     display: inline-block;
-    width: 19%;
+    /*width: 19%;*/
+    padding: 0 20px;
     font-size: 13px;
     letter-spacing: 1px;
 }

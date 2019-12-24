@@ -25,10 +25,47 @@ var brandSchema = mongoose.Schema({
 	}
 },{collection:'brands'});
 
+brandSchema.virtual('numProducts', {
+	ref: 'Product',
+	localField: '_id',
+	foreignField: 'brandId',
+	count:true,
+});
+
 brandSchema.statics.getBrandByName=async function(name){
 	try{
 		var result = await this.findOne({name:name});
 		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+brandSchema.statics.getBrandsByCategory=async function(categoryId){
+	try{
+		var result = await this.find({categoryId:categoryId}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+brandSchema.statics.countBrand = async function(findObj){
+	try{
+		let result = await this.countDocuments(findObj).exec();
+		return {error:false,count:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+brandSchema.statics.listBrand = async function(findObj,page,pageSize,sort){
+	try{
+		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).populate('numProducts').populate('categoryId').sort(sort).exec();
+		return {error:false,data:result};
+
 	}catch(err){
 		console.log(err);
 		return {error:true,message:err};

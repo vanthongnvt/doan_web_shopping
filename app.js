@@ -31,6 +31,7 @@ var commentRouter = require('./routes/customer/comment');
 
 var indexAdminRouter = require('./routes/admin/index');
 var categoryAdminRouter = require('./routes/admin/category');
+var brandAdminRouter = require('./routes/admin/brand');
 var productAdminRouter = require('./routes/admin/product');
 var userAdminRouter = require('./routes/admin/user');
 var orderAdminRouter = require('./routes/admin/order');
@@ -86,6 +87,7 @@ app.use('/comment',commentRouter);
 
 app.use('/admin', indexAdminRouter);
 app.use('/admin/gian-hang',checkAdmin, categoryAdminRouter);
+app.use('/admin/hang-sx',checkAdmin, brandAdminRouter);
 app.use('/admin/san-pham',checkAdmin, productAdminRouter);
 app.use('/admin/nguoi-dung',checkAdmin, userAdminRouter);
 app.use('/admin/don-hang',checkAdmin, orderAdminRouter);

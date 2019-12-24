@@ -110,6 +110,27 @@ productSchema.statics.getRelateProducts = async function(product){
 	}
 }
 
+productSchema.statics.countProduct = async function(findObj){
+	try{
+		let result = await this.countDocuments(findObj).exec();
+		return {error:false,count:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+productSchema.statics.listProduct = async function(findObj,page,pageSize,sort){
+	try{
+		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).sort(sort).populate('categoryId').populate('brandId').exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 var Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;

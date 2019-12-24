@@ -30,9 +30,9 @@
                                 <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
                                     <li class="breadcrumb-item"><a href="/"><i class="icofont icofont-home"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">Gian hàng</a>
+                                    <li class="breadcrumb-item"><a>Gian hàng</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="/gian-hang/them">Thêm</a>
+                                    <li class="breadcrumb-item"><a href="/admin/gian-hang/them">Thêm</a>
                                     </li>
                                 </ol>
                             </div>
@@ -47,110 +47,103 @@
                             <div class="card-header"><h5 class="card-header-text">NHẬP THÔNG TIN GIAN HÀNG</h5>
                             </div>
                             <div class="card-block">
-                                <form method="POST" action="/category/add">
+                                <form method="POST" action="/admin/gian-hang/them">
+                                    <input type="hidden" name="_csrf" value="<%=csrfToken%>">
                                     <div class="form-group row">
                                         <label for="example-text-input"
-                                            class="col-xs-2 col-form-label form-control-label">Tên gian hàng</label>
+                                        class="col-xs-2 col-form-label form-control-label">Tên gian hàng</label>
                                         <div class="col-sm-10">
                                             <input class="form-control" type="text" placeholder="Nhập tên của gian hàng"
-                                                id="example-text-input" name="category[name]">
+                                            id="example-text-input" name="category[name]">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="example-search-input"
-                                            class="col-xs-2 col-form-label form-control-label">Mô tả</label>
+                                        class="col-xs-2 col-form-label form-control-label">Mô tả</label>
                                         <div class="col-sm-10">
                                             <textarea class="form-control max-textarea" placeholder="Nhập mô tả của gian hàng" maxlength="255" rows="4" name="category[description]"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="example-email-input"
-                                            class="col-xs-2 col-form-label form-control-label">Tình trạng</label>
+                                        class="col-xs-2 col-form-label form-control-label">Tình trạng</label>
                                         <div class="col-sm-10">
                                             <div class="form-radio">
-                                                <form>
-                                               
-                                                    <div class="radio radiofill radio-inline">
-                                                        <label>
-                                                            <input type="radio" name="radio" value="Mở">
-                                                                <i class="helper"></i>Mở
-                                                        </label>
-                                                    </div>
+
+                                                <div class="radio radiofill radio-inline">
+                                                    <label>
+                                                        <input type="radio" name="radio" value="Mở">
+                                                        <i class="helper"></i>Mở
+                                                    </label>
+                                                </div>
                                                 
-                                                    <div class="radio radiofill radio-inline">
-                                                        <label>
-                                                            <input type="radio" name="radio" checked="checked" value="Đóng">
-                                                                <i class="helper"></i>Đóng
-                                                        </label>
-                                                    </div>
-                                                </form>
+                                                <div class="radio radiofill radio-inline">
+                                                    <label>
+                                                        <input type="radio" name="radio" checked="checked" value="Đóng">
+                                                        <i class="helper"></i>Đóng
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="file" class="col-md-2 col-form-label form-control-label">File
-                                            ảnh</label>
-                                        <div class="col-md-9">
-                                            <label for="file" class="custom-file">
-                                                <input type="file" id="file" class="custom-file-input">
-                                                <span class="custom-file-control"></span>
-                                            </label>
+                                        <label class="col-xs-2 col-form-label form-control-label">Loại phụ kiện</label>
+                                        <div class="col-sm-10 text-left">
+                                            <input style="width: auto;" type="checkbox"  name="isAccessories">
                                         </div>
                                     </div>
                                     <div class="container">
                                         <div class="row">
                                             <div class="col text-center">
-                                                <button type="submit"
-                                                    class="btn btn-success waves-effect waves-light">Thêm
-                                                </button>
-                                            </div>
+                                                <button type="submit" class="btn btn-success waves-effect waves-light">Thêm</button>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
-                        <!-- Textual inputs ends -->
                     </div>
-                    <!-- Row end -->
+                    <!-- Textual inputs ends -->
                 </div>
-                <!-- Main content ends -->
+                <!-- Row end -->
             </div>
-            <!-- Container-fluid ends -->
+            <!-- Main content ends -->
         </div>
+        <!-- Container-fluid ends -->
     </div>
+</div>
 
 
-    <!-- Required Jqurey -->
-    <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
-    <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+<!-- Required Jqurey -->
+<script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+<script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
 
-    <!-- Required Fremwork -->
-    <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+<!-- Required Fremwork -->
+<script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- waves effects.js -->
-    <script src="/admin/plugins/Waves/waves.min.js"></script>
+<!-- waves effects.js -->
+<script src="/admin/plugins/Waves/waves.min.js"></script>
 
-    <!-- Scrollbar JS-->
-    <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-    <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
+<!-- Scrollbar JS-->
+<script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
 
-    <!--classic JS-->
-    <script src="/admin/plugins/classie/classie.js"></script>
+<!--classic JS-->
+<script src="/admin/plugins/classie/classie.js"></script>
 
-    <!-- notification -->
-    <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+<!-- notification -->
+<script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
 
-    <!-- syntax highlighter js -->
-    <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shCore.js"></script>
-    <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
-    <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
-    <script type="text/javascript">SyntaxHighlighter.all();</script>
+<!-- syntax highlighter js -->
+<script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+<script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
 
-    <!-- custom js -->
-    <script type="text/javascript" src="/admin/js/main.min.js"></script>
-    <script type="text/javascript" src="/admin/pages/elements.js"></script>
-    <script src="/admin/js/menu.min.js"></script>
+<!-- custom js -->
+<script type="text/javascript" src="/admin/js/main.min.js"></script>
+<script type="text/javascript" src="/admin/pages/elements.js"></script>
+<script src="/admin/js/menu.min.js"></script>
 
 </body>
 

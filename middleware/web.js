@@ -18,7 +18,7 @@ module.exports =  function (req, res, next) {
 		var dd = String(date_time.getDate()).padStart(2, '0');
 		var mm = String(date_time.getMonth() + 1).padStart(2, '0');
 		var yyyy = date_time.getFullYear();
-		return mm + '/' + dd + '/' + yyyy;
+		return dd + '/' + mm + '/' + yyyy;
 	}
 	return next();
 }

@@ -1,9 +1,17 @@
 const express = require('express');
-const categoryModel= require('../../models/category');
+const brandModel= require('../../models/brand');
+const categoryModel = require('../../models/category');
 
-exports.listCategory = async function(req,res,next){
+exports.listBrand = async function(req,res,next){
 	
 	let page =1,pageSize =10,findObj = {};
+	let categoryList = await categoryModel.all();
+	if(categoryList.error){
+		return res.render('./admin/404');
+	}
+	else{
+		categoryList = categoryList.data;
+	}
 	let url = req.baseUrl + req.path+'?page=';
 	let query = req.query;
 	if(query.page){
@@ -14,9 +22,9 @@ exports.listCategory = async function(req,res,next){
 		url=url+'&q='+query.q;
 		findObj.name = { '$regex' : query.q ,'$options': 'i'};
 	}
-	if(query.isAccessories!=null){
-		url=url+'&isAccessories='+query.isAccessories;
-		findObj.isAccessories = query.isAccessories;
+	if(query.categoryId){
+		url=url+'&categoryId='+query.categoryId;
+		findObj.categoryId = query.categoryId;
 	}
 	let sort={created:-1};
 	if(query.sort!=null){
@@ -27,9 +35,6 @@ exports.listCategory = async function(req,res,next){
 		else if(query.sort=='product'){
 			sort = {numProducts:-1};
 		}
-		else if(query.sort=='isAccessories'){
-			sort = {isAccessories:-1};
-		}
 		else if(query.sort=='status'){
 			sort={status:-1};
 		}
@@ -37,7 +42,7 @@ exports.listCategory = async function(req,res,next){
 			sort={created:-1};
 		}
 	}
-	let rsCount = await categoryModel.countCategory(findObj);
+	let rsCount = await brandModel.countBrand(findObj);
 	if(rsCount.error){
 		return res.send({error:true,messsage:'server error'});
 	}
@@ -49,30 +54,30 @@ exports.listCategory = async function(req,res,next){
 			url=url+'page=';
 		}
 		let count = rsCount.count;
-		let rsList = await categoryModel.listCategory(findObj,page,pageSize,sort);
+		let rsList = await brandModel.listBrand(findObj,page,pageSize,sort);
 		if(rsList.error){
 			return res.send({error:true,messsage:'server error'});
 		}
 		else{
 			let pagination={totalPage:parseInt(count/pageSize)+1,curPage:page,totalItem:count,url:url};
-			return res.render('./admin/category-list',{categories:rsList.data,pagination:pagination,query:query});
+			return res.render('./admin/brand-list',{brands:rsList.data,categoryList:categoryList,pagination:pagination,query:query});
 		}
 	}
 
 }
 
-exports.addCategoryPage = function(req,res,next){
-	res.render('./admin/category-add');
+exports.addBrandPage = function(req,res,next){
+	res.render('./admin/brand-add');
 }
 
-exports.createCategory = async function(req,res,next){
-
-}
-
-exports.editCategoryPage = async function(req,res,next){
+exports.createBrand = async function(req,res,next){
 
 }
 
-exports.updateCategory = async function(req,res,next){
+exports.editbrandPage = async function(req,res,next){
+
+}
+
+exports.updateBrand = async function(req,res,next){
 
 }

@@ -59,6 +59,29 @@ userSchema.statics.getUserByEmail = async function(email){
 	}
 }
 
+userSchema.statics.countUser = async function(findObj){
+	findObj.isAdmin = false;
+	try{
+		let result = await this.countDocuments(findObj).exec();
+		return {error:false,count:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+userSchema.statics.listUser = async function(findObj,page,pageSize,sort){
+	findObj.isAdmin = false;
+	try{
+		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).sort(sort).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;

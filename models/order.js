@@ -49,6 +49,10 @@ var orderSchema = mongoose.Schema({
 	created: { 
 		type: Date,
 		default: Date.now
+	},
+	checked:{
+		type:Boolean,
+		default:false
 	}
 },{collection:'orders'});
 
@@ -122,6 +126,27 @@ orderSchema.statics.getOrderById = async function(id){
 	try{
 		let result = await this.findOne({_id:id}).populate({path:'products.productId',populate:{path:'categoryId'}}).exec();
 		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+orderSchema.statics.countOrder = async function(findObj){
+	try{
+		let result = await this.countDocuments(findObj).exec();
+		return {error:false,count:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+orderSchema.statics.listOrder = async function(findObj,page,pageSize,sort){
+	try{
+		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).sort(sort).exec();
+		return {error:false,data:result};
+
 	}catch(err){
 		console.log(err);
 		return {error:true,message:err};

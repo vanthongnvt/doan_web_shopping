@@ -100,6 +100,37 @@ categorySchema.statics.paginateFilterProducts= async function(category,sort,eqs,
 	}
 
 }
+categorySchema.statics.countCategory = async function(findObj){
+	try{
+		let result = await this.countDocuments(findObj).exec();
+		return {error:false,count:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+categorySchema.statics.listCategory = async function(findObj,page,pageSize,sort){
+	try{
+		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).populate('numProducts').sort(sort).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+categorySchema.statics.all = async function(){
+	try{
+		let result = await this.find().exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
 
 var Category = mongoose.model('Category', categorySchema);
 

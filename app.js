@@ -38,6 +38,7 @@ var profileAdminRouter = require('./routes/admin/profile');
 
 var csrfProtection = csrf({ cookie: true });
 var webMiddleware=require('./middleware/web');
+var checkAdmin = require('./middleware/is_admin');
 var app = express();
 
 // view engine setup
@@ -84,11 +85,11 @@ app.use('/comment',commentRouter);
 
 
 app.use('/admin', indexAdminRouter);
-app.use('/admin/gian-hang', categoryAdminRouter);
-app.use('/admin/san-pham', productAdminRouter);
-app.use('/admin/nguoi-dung', userAdminRouter);
-app.use('/admin/don-hang', orderAdminRouter);
-app.use('/admin/profile', profileAdminRouter);
+app.use('/admin/gian-hang',checkAdmin, categoryAdminRouter);
+app.use('/admin/san-pham',checkAdmin, productAdminRouter);
+app.use('/admin/nguoi-dung',checkAdmin, userAdminRouter);
+app.use('/admin/don-hang',checkAdmin, orderAdminRouter);
+app.use('/admin/profile',checkAdmin, profileAdminRouter);
 
 app.use('/:category([-\\w]+)',categoryRouter);
 app.use('/:category/:product',productRouter);

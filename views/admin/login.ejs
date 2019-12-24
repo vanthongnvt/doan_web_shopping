@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<% include layout/header %>
+</head>
+<body>
+	<section class="login p-fixed d-flex text-center bg-primary common-img-bg">
+		<!-- Container-fluid starts -->
+		<div class="container-fluid">
+			<div class="row">
+
+				<div class="col-sm-12">
+					<div class="login-card card-block">
+						<form class="md-float-material" action="/admin/login" method="post">
+							<input type="hidden" name="_csrf" value="<%=csrfToken%>">
+							<div class="text-center">
+								<img src="images/logo-blue.png" width="100%" alt="logo">
+							</div>
+							<h3 class="text-center txt-primary">
+								Sign In to your account
+							</h3>
+							<%if(loginError){%>
+							<div class="alert alert-danger" role="alert">
+								<%=loginError%>
+							</div>
+							<%}%>
+							<div class="md-input-wrapper">
+								<input type="text" class="md-form-control" />
+								<label>Email</label>
+							</div>
+							<div class="md-input-wrapper">
+								<input type="password" class="md-form-control" />
+								<label>Password</label>
+							</div>
+							<div class="row">
+								<div class="col-sm-6 col-xs-12">
+									<div class="rkmd-checkbox checkbox-rotate checkbox-ripple m-b-25">
+										<label class="input-checkbox checkbox-primary">
+											<input type="checkbox" id="checkbox">
+											<span class="checkbox"></span>
+										</label>
+										<div class="captions">Remember Me</div>
+
+									</div>
+								</div>
+								<div class="col-sm-6 col-xs-12 forgot-phone text-right">
+									<a href="forgot-password.html" class="text-right f-w-600"> Forget Password?</a>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-10 offset-xs-1">
+									<button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">LOGIN</button>
+								</div>
+							</div>
+						</form>
+						<!-- end of form -->
+					</div>
+					<!-- end of login-card -->
+				</div>
+				<!-- end of col-sm-12 -->
+			</div>
+			<!-- end of row -->
+		</div>
+		<!-- end of container-fluid -->
+	</section>
+
+
+	<!-- Required Jqurey -->
+	<script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+	<script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+	<script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+	<!-- Required Fremwork -->
+	<script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<!-- waves effects.js -->
+	<script src="/admin/plugins/Waves/waves.min.js"></script>
+	<!-- Custom js -->
+	<script type="text/javascript" src="/admin/pages/elements.js"></script>
+</body>
+</html>

@@ -1,41 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var userController=require('../../controllers/admin/user_controller');
 
 
+router.get('/danh-sach',userController.listUser);
 
-router.get('/danh-sach', function(req, res, next) {
-  const data=[
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Khóa'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-    {id:'VI001', name:'Huỳnh Đình Tiến', username:'tienibra17', email:'tienhuynh@gmail.com', phone:'0934942095', address:'TPHCM', status: 'Mở'},
-  ]
-    res.render('./admin/user-list', {users:data});
-  });
+router.post('/block',userController.blockUser);
 
-
-
-
+router.get('/lich-su-mua-hang',userController.userOrderHistory);
 
 module.exports = router;

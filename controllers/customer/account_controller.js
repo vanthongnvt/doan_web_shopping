@@ -7,29 +7,26 @@ var orderModel = require('../../models/order');
 var Cart =  require('../../models/cart');
 
 exports.userInfo = function(req,res,next){
-        // orderModel.find({},function(err,docs){
-        //     console.log(docs);
-        //     console.log(docs[0].products);
-        // });
-        res.render('./customer/account');
-    }
+  
+    res.render('./customer/account');
+}
 
-    exports.signup = function(req,res,next){
-     passport.authenticate('signup', function(error, user, info) {
-        if(error) {
-            return res.status(500).json(error);
+exports.signup = function(req,res,next){
+   passport.authenticate('signup', function(error, user, info) {
+    if(error) {
+        return res.status(500).json(error);
+    }
+    if(!user) {
+        return res.status(401).json(info);
+    }
+    req.login(user, function(err) {
+        if (err) {
+            res.status(500).json(error);
+        } else {
+            res.json({success:true});
         }
-        if(!user) {
-            return res.status(401).json(info);
-        }
-        req.login(user, function(err) {
-            if (err) {
-                res.status(500).json(error);
-            } else {
-                res.json({success:true});
-            }
-        });
-    })(req, res, next);
+    });
+})(req, res, next);
 }
 
 exports.login = function(req,res,next){

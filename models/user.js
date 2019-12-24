@@ -82,6 +82,16 @@ userSchema.statics.listUser = async function(findObj,page,pageSize,sort){
 	}
 }
 
+userSchema.statics.updateInfo = async function(id,fullname,email,phone,address){
+	try{
+		let result = await this.updateOne({id:_id},{fullname:fullname,email:email,phone:phone,address:address}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -23,7 +23,9 @@ router.post('/dang-ky',accountController.signup);
 
 router.get('/dang-xuat',accountController.logout);
 
-router.get('/chinh-sua',authRedirectMiddleware,accountController.editInfo);
+router.get('/chinh-sua',authRedirectMiddleware,accountController.editInfoPage);
+
+router.post('/chinh-sua',authRedirectMiddleware,accountController.updateInfo);
 
 router.get('/lich-su-mua-hang',authRedirectMiddleware,accountController.ordersHistory);
 

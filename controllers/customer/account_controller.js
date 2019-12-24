@@ -7,12 +7,12 @@ var orderModel = require('../../models/order');
 var Cart =  require('../../models/cart');
 
 exports.userInfo = function(req,res,next){
-  
+
     res.render('./customer/account');
 }
 
 exports.signup = function(req,res,next){
-   passport.authenticate('signup', function(error, user, info) {
+ passport.authenticate('signup', function(error, user, info) {
     if(error) {
         return res.status(500).json(error);
     }
@@ -52,9 +52,55 @@ exports.logout= function(req,res,next){
     res.redirect('/');
 }
 
-exports.editInfo= function(req,res,next){
+exports.editInfoPage = function(req,res,next){
+    
+    let messages = req.flash('messages')[0]||{};
+    let old = req.flash('old')[0]||{};
+    console.log(messages);
+    res.render('./customer/edit_account',{messages:messages,old:old});
+}
 
-    res.render('./customer/edit_account');
+exports.updateInfo = async function(req,res,next){
+    let messages = {};
+    let old = req.body;
+    let fullname =req.body.account_fullname?req.body.account_fullname:null;
+    let email = req.body.account_email?req.body.account_email:null;
+    let phone = req.body.account_phone?req.body.account_phone:null;
+    let address = req.body.account_address?req.body.account_address:null;
+    let userId = req.user._id;
+    if(phone!=null){
+        req.checkBody('phone','Số điện thoại không hợp lệ').isMobilePhone();
+    }
+    if(email!=null){
+        req.checkBody('email','Email không hợp lệ').isEmail();
+    }
+    let validateErr = req.validationErrors();
+    if(validateErr){
+        validateErr.forEach(function(error){
+            let err_key = 'error_'+ error.param;
+            messages[err_key] = error.msg;
+        })
+    }
+    if(fullname!=null&&fullname.length > 50){
+        messages.error_phone = 'Tên tối đa 50 ký tự';
+    }
+
+    if(address!=null&&address.length>300){
+        messages.error_address = 'Địa chỉ tối đa 300 ký tự';
+    }
+    if(messages && Object.keys(messages).length > 0){
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/chinh-sua');
+    }
+
+    let result = await userModel.updateInfo(userId,fullname,email,phone,address);
+    if(result.error){
+        return res.send('503');
+    }
+    else{
+        return res.redirect('/tai-khoan/chinh-sua');
+    }
 }
 
 exports.ordersHistory = async function(req,res,next){

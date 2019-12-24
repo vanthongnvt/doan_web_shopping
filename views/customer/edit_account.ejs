@@ -47,7 +47,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="right col-lg-9">
 					<h4 class="mb-sm-4 mb-3">Chỉnh sửa thông tin tài khoản</h4>
 					<hr class="m-0">
-					<form action="#" method="post" id="sign-up-form">
+					<form action="/tai-khoan/chinh-sua" method="post">
 						<input type="hidden" name="_csrf" value="<%=csrfToken%>">
 						<div class="row">
 							<div class="col-lg-6">
@@ -60,7 +60,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label class="col-form-label">Họ tên:</label>
-									<input type="text" class="form-control" placeholder=" " name="account_fullname" value="<%=user.fullname%>" required="">
+									<input type="text" class="form-control" placeholder=" " name="account_fullname" value="<%=old.account_fullname?old.account_fullname:user.fullname%>">
+									<%if(messages.error_fullname){%>
+									<div class="invalid-feedback d-block"><%=messages.error_fullname%></div>
+									<%}%>
 								</div>
 							</div>
 						</div>
@@ -68,21 +71,30 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label class="col-form-label">Email:</label>
-									<input type="text" class="form-control" placeholder=" " name="account_email" value="<%=user.email%>" required="">
+									<input type="text" class="form-control" placeholder=" " name="account_email" value="<%=old.account_email?old.account_email:user.email%>" >
+									<%if(messages.error_email){%>
+									<div class="invalid-feedback d-block"><%=messages.error_email%></div>
+									<%}%>
 								</div>
 
 							</div>
 							<div class="col-lg-6">
 								<div class="form-group">
 									<label class="col-form-label">Số điện thoại:</label>
-									<input type="phone" class="form-control" placeholder=" " name="account_phone" value="<%=user.phone%>" required="">
+									<input type="phone" class="form-control" placeholder=" " name="account_phone" value="<%=old.account_phone?old.account_phone:user.phone%>">
+									<%if(messages.error_phone){%>
+									<div class="invalid-feedback d-block"><%=messages.error_phone%></div>
+									<%}%>
 								</div>
 							</div>
 						</div>
-							<div class="form-group">
-								<label class="col-form-label">Địa chỉ:</label>
-								<input type="text" class="form-control" placeholder=" " name="account_address" value="<%=user.address%>" required="" >
-							</div>
+						<div class="form-group">
+							<label class="col-form-label">Địa chỉ:</label>
+							<input type="text" class="form-control" placeholder=" " name="account_address" value="<%=old.account_address?old.account_address:user.address%>">
+							<%if(messages.error_address){%>
+							<div class="invalid-feedback d-block"><%=messages.error_address%></div>
+							<%}%>
+						</div>
 						<div class="right-w3l">
 							<input type="submit" class="form-control" value="Thay đổi">
 						</div>

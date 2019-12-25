@@ -49,6 +49,27 @@ userSchema.methods.encryptPassword = function(password) {
 userSchema.methods.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.password);
 }
+userSchema.methods.updatePassowrd =async function(newPassword){
+	try{
+		let encryptPw =  bcrypt.hashSync(newPassword, bcrypt.genSaltSync(5), null);
+		var result = await this.updateOne({password:encryptPw}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+userSchema.methods.updateAvatar = async function(avatar){
+	try{
+		var result = await this.updateOne({avatar:avatar}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 userSchema.statics.getUserByEmail = async function(email){
 	try{
 		var result = await this.findOne({email:email}).populate('reset_password').exec();
@@ -84,7 +105,7 @@ userSchema.statics.listUser = async function(findObj,page,pageSize,sort){
 
 userSchema.statics.updateInfo = async function(id,fullname,email,phone,address){
 	try{
-		let result = await this.updateOne({id:_id},{fullname:fullname,email:email,phone:phone,address:address}).exec();
+		let result = await this.updateOne({_id:id},{fullname:fullname,email:email,phone:phone,address:address}).exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);

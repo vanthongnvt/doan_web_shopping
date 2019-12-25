@@ -32,21 +32,23 @@
 			var file=$("input[name='user_avatar']")[0].files[0];
 			if(file.length==0) {return;}
 			var formData = new FormData();
-			formData.append('image', file);
+			formData.append('avatar', file);
 			var _csrf = $('meta[name="csrf-token"]').attr('content');
 			formData.append('_csrf', _csrf);
+			$('.btn-save-avatar').hide();
 			$.ajax({
-				url:'/tai-khoan/update-avatar',
+				url:'/tai-khoan/update-avatar?_csrf='+_csrf,
 				type:'post',
 				data:formData,
 				processData: false,
 				contentType: false,
 				success:function(res){
 					if(res.error==false){
-						alert('Thay đổi ảnh đại diện thành công');
+						location.href = location.href;
 					}
 					else{
 						alert('Lỗi! Vui lòng thử lại sau');
+						$('.btn-save-avatar').show();
 					}
 				}
 			})

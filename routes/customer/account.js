@@ -27,9 +27,13 @@ router.get('/chinh-sua',authRedirectMiddleware,accountController.editInfoPage);
 
 router.post('/chinh-sua',authRedirectMiddleware,accountController.updateInfo);
 
+router.post('/update-avatar',authRedirectMiddleware,accountController.updateAvatar);
+
 router.get('/lich-su-mua-hang',authRedirectMiddleware,accountController.ordersHistory);
 
-router.get('/thay-doi-mat-khau',authRedirectMiddleware,accountController.changePassword);
+router.get('/thay-doi-mat-khau',authRedirectMiddleware,accountController.changePasswordPage);
+
+router.post('/thay-doi-mat-khau',authRedirectMiddleware,accountController.changePassword);
 
 router.get('/don-hang/:id',authRedirectMiddleware,accountController.orderDetail);
 

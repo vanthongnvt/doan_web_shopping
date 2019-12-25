@@ -5,6 +5,7 @@ var resetPasswordModel = require('../../models/resetPassword');
 var commentModel = require('../../models/comment');
 var orderModel = require('../../models/order');
 var Cart =  require('../../models/cart');
+var fs = require('fs');
 
 exports.userInfo = function(req,res,next){
 
@@ -12,7 +13,7 @@ exports.userInfo = function(req,res,next){
 }
 
 exports.signup = function(req,res,next){
- passport.authenticate('signup', function(error, user, info) {
+   passport.authenticate('signup', function(error, user, info) {
     if(error) {
         return res.status(500).json(error);
     }
@@ -53,10 +54,9 @@ exports.logout= function(req,res,next){
 }
 
 exports.editInfoPage = function(req,res,next){
-    
+
     let messages = req.flash('messages')[0]||{};
     let old = req.flash('old')[0]||{};
-    console.log(messages);
     res.render('./customer/edit_account',{messages:messages,old:old});
 }
 
@@ -69,13 +69,14 @@ exports.updateInfo = async function(req,res,next){
     let address = req.body.account_address?req.body.account_address:null;
     let userId = req.user._id;
     if(phone!=null){
-        req.checkBody('phone','Số điện thoại không hợp lệ').isMobilePhone();
+        req.checkBody('account_phone','Số điện thoại không hợp lệ').isMobilePhone();
     }
     if(email!=null){
-        req.checkBody('email','Email không hợp lệ').isEmail();
+        req.checkBody('account_email','Email không hợp lệ').isEmail();
     }
     let validateErr = req.validationErrors();
     if(validateErr){
+        console.log(validateErr);
         validateErr.forEach(function(error){
             let err_key = 'error_'+ error.param;
             messages[err_key] = error.msg;
@@ -96,10 +97,12 @@ exports.updateInfo = async function(req,res,next){
 
     let result = await userModel.updateInfo(userId,fullname,email,phone,address);
     if(result.error){
-        return res.send('503');
+        messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/chinh-sua');
     }
     else{
-        return res.redirect('/tai-khoan/chinh-sua');
+        return res.redirect('/tai-khoan');
     }
 }
 
@@ -128,8 +131,70 @@ exports.ordersHistory = async function(req,res,next){
     }
 }
 
-exports.changePassword = function(req,res,next){
-    res.render('./customer/change_password');
+exports.changePasswordPage = function(req,res,next){
+    let messages = req.flash('messages')[0]||{};
+    let old = req.flash('old')[0]||{};
+    console.log(messages);
+    res.render('./customer/change_password',{messages:messages,old:old});
+}
+
+exports.changePassword = async function(req,res,next){
+    let messages = {};
+    let old = req.body;
+    let password = req.body.account_password;
+    let new_password = req.body.new_password;
+    let password_confirmation = req.body.new_password_confirmation;
+    if(!req.user.validPassword(password)){
+        messages.password = 'Mật khẩu cũ không chính xác';
+    }
+    if(new_password.length<6){
+        messages.new_password = 'Mật khẩu tối thiểu 6 ký tự';
+    }
+    if(new_password!=password_confirmation){
+        messages.password_confirmation = 'Mật khẩu xác nhận không khớp';
+    }
+    if(messages && Object.keys(messages).length > 0){
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/thay-doi-mat-khau');
+    }
+
+    let result = await req.user.updatePassowrd(new_password);
+    if(result.error){
+        messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+        req.flash('messages',messages);
+        req.flash('old',old);
+        return res.redirect('/tai-khoan/thay-doi-mat-khau');
+    }
+    else{
+        messages.change_successfully = 'Thay đổi mật khẩu thành công';
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/thay-doi-mat-khau');
+    }
+}
+
+exports.updateAvatar = async function(req,res,next){
+    var fstream;
+    if(req.busboy){
+        req.pipe(req.busboy);
+        req.busboy.on('file', function (fieldname, file, filename) {
+            // console.log("Uploading: " + filename);
+
+            fstream = fs.createWriteStream(process.cwd()+'/public/images/avatars/'+ req.user._id + filename);
+            file.pipe(fstream);
+            fstream.on('close', function () {    
+                // console.log("Upload Finished of " + filename);
+                let result = req.user.updateAvatar(req.user._id+filename);
+                if(result.error){
+                    return res.send({error:true,messages:'Đã có lỗi xảy ra. Vui lòng thử lại sau'});
+                }else{              
+                    return res.send({error:false,messages:'successfully'});
+                }
+            });
+        });
+    }else{
+        return res.send({error:true,messages:'Đã có lỗi xảy ra. Vui lòng thử lại sau'});
+    }
 }
 
 exports.orderDetail = async function(req,res,next){

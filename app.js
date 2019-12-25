@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var expressSession = require('express-session');
 var MongoStore =require('connect-mongo')(expressSession);
 var bodyParser = require('body-parser');
+var busboy = require('connect-busboy');
 var flash=require('connect-flash');
 var validator = require('express-validator');
 var passport = require('passport');
@@ -57,6 +58,7 @@ app.use(expressSession({
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(busboy());
 app.use(flash());
 app.use(validator());
 app.use(passport.initialize());

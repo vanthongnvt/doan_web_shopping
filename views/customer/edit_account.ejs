@@ -47,6 +47,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				<div class="right col-lg-9">
 					<h4 class="mb-sm-4 mb-3">Chỉnh sửa thông tin tài khoản</h4>
 					<hr class="m-0">
+					<%if(messages.server_error){%>
+					<div class="alert alert-danger" role="alert">
+						<%=messages.server_error%>
+					</div>
+					<%}%>
 					<form action="/tai-khoan/chinh-sua" method="post">
 						<input type="hidden" name="_csrf" value="<%=csrfToken%>">
 						<div class="row">

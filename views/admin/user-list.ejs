@@ -32,7 +32,7 @@
                                         <i class="icofont icofont-home"></i>
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="#">Người dùng</a>
+                                <li class="breadcrumb-item"><a >Người dùng</a>
                                 </li>
                                 <li class="breadcrumb-item"><a href="/admin/nguoi-dung/danh-sach">Danh sách</a>
                                 </li>
@@ -97,11 +97,11 @@
                                         <% users.forEach(function(user){ %>
                                         <tr>
                                             <td title="<%=user.created%>"><%=getDateCreated(user.created)%></td>
-                                            <td class="text-center">
+                                            <td class="text-center user-avatar">
                                                 <%if(user.avatar){%>
-                                                <img src="/admin/images/avatars/<%=user.avatar%>" style="width:40%;height:40%;">
+                                                <img src="/images/avatars/<%=user.avatar%>">
                                                 <%}else{%>
-                                                <img src="/admin/images/avatar-1.png" style="width:40%;height:40%;">
+                                                <img src="/admin/images/avatar-1.png">
                                                 <%}%>
                                             </td>
                                             <td><%= user.fullname %></td>

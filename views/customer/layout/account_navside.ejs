@@ -1,6 +1,10 @@
 <div class="left-menu col-lg-3">
 	<div class="account-avatar border mb-3">
+		<%if(user.avatar){%>
+		<img src="/images/avatars/<%=user.avatar%>" width="100px" height="100px">
+		<%}else{%>
 		<img src="/images/avatars/unknown.png" width="100px" height="100px">
+		<%}%>
 		<button class="btn-change-avatar" type="button">Thay đổi</button>
 		<input type="file" name="user_avatar" accept="image/png,image/jpeg,image/jpg">
 		<button class="btn-save-avatar">Lưu</button>

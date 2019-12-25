@@ -1,14 +1,14 @@
 module.exports =  function (req, res, next) {
-	if (req.isAuthenticated()) {
+	if (!req.isAuthenticated()) {
 		if(req.xhr){
 			return res.send({error:true,message:'unAuthenticated'});
 		}
 		else{
-			next();
+			req.flash('req_login','true');
+			res.redirect('/');
 		}
 	}
 	else{
-		req.flash('req_login','true');
-		res.redirect('/');
+		next();
 	}
 }

@@ -81,7 +81,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									</div>
 								</td>
 								<td class="invert"><a href="<%= cartItem.item.link %>"><%= cartItem.item.name %></a></td>
-								<td class="invert"><%= cartItem.price %></td>
+								<td class="invert"><%= priceFormat(cartItem.price) %></td>
 								<td class="invert">
 									<div class="rem">
 										<div class="checkout-cart-remove" data-cart="<%=key%>"></div>
@@ -93,7 +93,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</table>
 				</div>
 				<div class="text-right my-2">
-					<p class="color-black-default">Tổng thanh toán: <b><%=session.cart.totalPrice%></b> vnđ</p>
+					<p class="color-black-default">Tổng thanh toán: <b><%=priceFormat(session.cart.totalPrice)%></b> vnđ</p>
 				</div>
 				<div class="form-group px-5 text-center">
 					<button class="btn btn-primary form-control my-3 w-50 update-cart" style="display: none">Lưu thay đổi</button>
@@ -116,7 +116,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 					</div>
 					<%}%>
 					<%if(messages.order_successfully){%>
-					<div class="alert alert alert-success" role="alert">
+					<div class="alert alert-success" role="alert">
 						<%=messages.order_successfully%>
 					</div>
 					<%}%>

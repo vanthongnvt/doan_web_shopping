@@ -72,7 +72,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 											<%=product.productId.name%></a>
 										</td>
 										<td class="invert"><%=product.quantity%></td>
-										<td class="invert"><%=product.quantity*product.price%> vnd <%if(product.discount>0){%>(Đã giảm <%=product.discount%>) <%}%></td>
+										<td class="invert"><%=priceFormat(product.quantity*product.price)%> vnd <%if(product.discount>0){%>(Đã giảm <%=product.discount%>) <%}%></td>
 									</tr>
 									<%})%>
 								</tbody>

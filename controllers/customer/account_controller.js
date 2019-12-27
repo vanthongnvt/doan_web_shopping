@@ -1,11 +1,11 @@
 var express = require('express');
 var passport =require('passport');
 var userModel= require('../../models/user');
-var resetPasswordModel = require('../../models/resetPassword');
 var commentModel = require('../../models/comment');
 var orderModel = require('../../models/order');
 var Cart =  require('../../models/cart');
 var fs = require('fs');
+var nodemailer = require('nodemailer');
 
 exports.userInfo = function(req,res,next){
 
@@ -134,7 +134,6 @@ exports.ordersHistory = async function(req,res,next){
 exports.changePasswordPage = function(req,res,next){
     let messages = req.flash('messages')[0]||{};
     let old = req.flash('old')[0]||{};
-    console.log(messages);
     res.render('./customer/change_password',{messages:messages,old:old});
 }
 
@@ -147,7 +146,7 @@ exports.changePassword = async function(req,res,next){
     if(!req.user.validPassword(password)){
         messages.password = 'Mật khẩu cũ không chính xác';
     }
-    if(new_password.length<6){
+    if(!new_password || new_password.length<6){
         messages.new_password = 'Mật khẩu tối thiểu 6 ký tự';
     }
     if(new_password!=password_confirmation){
@@ -209,17 +208,178 @@ exports.orderDetail = async function(req,res,next){
 }
 
 exports.forgotPassword = function(req,res,next){
-    res.render('./customer/forgot_password');
+    let messages = req.flash('messages')[0]||{};
+    let old = req.flash('old')[0]||{};
+    res.render('./customer/forgot_password',{messages:messages,old:old});
 }
 exports.sendEmailResetPassword = async function(req,res,next){
-    var user = userModel.getUserByEmail(); 
-    // let resetPassword = new resetPasswordModel();
-    // resetPassword. 
+    let messages={};
+    let old = req.body;
+    let email = req.body.email;
+    if(email!=null){
+        req.checkBody('email','Email không hợp lệ').isEmail();
+        let validateErr = req.validationErrors();
+        if(validateErr){
+            messages.error_email = 'Email không hợp lệ';
+            req.flash('messages',messages);
+        }
+    }
+    else{
+        messages.error_email = 'Email không hợp lệ';
+    }
+    if(messages && Object.keys(messages).length > 0){
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/quen-mat-khau');
+    }
 
+    let user = await userModel.getUserByEmail(email);
+    if(user.error){
+        messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+    }else if(!user.data){
+        messages.error_email = 'Email này chưa đăng ký tài khoản';
+    }
+    if(messages && Object.keys(messages).length > 0){
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/quen-mat-khau');
+    }
+    else{
+        let result = await userModel.createToken(user.data._id);
+        if(result.error){
+            messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+            req.flash('old',old);
+            req.flash('messages',messages);
+            return res.redirect('/tai-khoan/quen-mat-khau');
+        }else{
+            let token = result.data;
+            var transporter = nodemailer.createTransport({
+                service: process.env.MAIL_SERVICE,
+                host:process.env.MAIL_HOST,
+                port:process.env.MAIL_PORT,
+                secure:true,
+                auth: {
+                    user: process.env.MAIL_USERNAME,
+                    pass: process.env.MAIL_PASSWORD
+                }
+            });
+
+            var mailOptions = {
+                from: process.env.MAIL_USERNAME,
+                to: email,
+                subject: 'Khôi phục mật khẩu',
+                html: '<a href="'+process.env.APP_URL+':'+process.env.PORT+'/tai-khoan/tao-moi-mat-khau/'+token+'">Bấm vào link để khôi phục mật khẩu</a>'
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                    messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+                    req.flash('old',old);
+                    req.flash('messages',messages);
+                    return res.redirect('/tai-khoan/quen-mat-khau');
+                }else {
+                    console.log('Email sent: ' + info.response);
+                    messages.send_successfully = 'Một mail khôi phục mật khẩu đã được gửi tới hộp thư của bạn. Hãy kiểm tra';
+                    req.flash('messages',messages);
+                    return res.redirect('/tai-khoan/quen-mat-khau');
+                }
+            });
+        }
+    }
 }
 
-exports.resetPassword = function(req,res,next){
-    res.render('./customer/reset_password');
+exports.resetPasswordForm = async function(req,res,next){
+    let resetPasswordToken = req.params.resetPasswordToken;
+    let user = await userModel.findUserResetPassword(resetPasswordToken);
+    if(user.error){
+        messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+    }
+    else if(!user.data){
+        messages.server_error = 'Yêu cầu thay đổi mật khẩu không hợp lệ';
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+    }
+    else{
+        user = user.data;
+        let time = Date.parse(user.resetPassword.created_at)/1000;
+        let now = (new Date()).getTime()/1000;
+        if(now - time > 15*60){
+            messages.server_error = 'Yêu cầu thay đổi mật khẩu không hợp lệ';
+            req.flash('old',old);
+            req.flash('messages',messages);
+            return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+        }
+    }
+    let messages = req.flash('messages')[0]||{};
+    let old = req.flash('old')[0]||{};
+    res.render('./customer/reset_password',{resetPasswordToken:resetPasswordToken,messages:messages,old:old});
+}
+
+exports.resetPassword = async function(req,res,next){
+    let resetPasswordToken = req.params.resetPasswordToken;
+    let messages={};
+    let old = req.body;
+    let new_password = req.body.new_password;
+    let password_confirmation = req.body.new_password_confirmation;
+    if(!new_password || new_password.length<6){
+        messages.new_password = 'Mật khẩu tối thiểu 6 ký tự';
+    }
+    if(new_password!=password_confirmation){
+        messages.password_confirmation = 'Mật khẩu xác nhận không khớp';
+    }
+    if(messages && Object.keys(messages).length > 0){
+        req.flash('old',old);
+        req.flash('messages',messages);
+        return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+    }
+    if(new_password){
+        let user = await userModel.findUserResetPassword(resetPasswordToken);
+
+        if(user.error){
+            messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+            req.flash('old',old);
+            req.flash('messages',messages);
+            return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+        }
+        else if(!user.data){
+            messages.server_error = 'Yêu cầu thay đổi mật khẩu không hợp lệ';
+            req.flash('old',old);
+            req.flash('messages',messages);
+            return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+        }
+        else{
+            user = user.data;
+            let time = Date.parse(user.resetPassword.created_at)/1000;
+            let now = (new Date()).getTime()/1000;
+            if(now - time > 15*60){
+                messages.server_error = 'Yêu cầu thay đổi mật khẩu không hợp lệ';
+                req.flash('old',old);
+                req.flash('messages',messages);
+                return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+            }
+            let result = await user.updatePassowrd(new_password);
+            if(result.error){
+                messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
+                req.flash('old',old);
+                req.flash('messages',messages);
+                return res.redirect('/tai-khoan/tao-moi-mat-khau/'+resetPasswordToken);
+            }
+            else{
+                req.login(user, function(err) {
+                    if (err) { 
+                        console.log(err);
+                        // return res.send('503'); 
+                    }
+                    return res.redirect('/tai-khoan');
+                });
+            }
+        }
+    }
 }
 
 exports.order = async function(req,res,next){
@@ -257,7 +417,6 @@ exports.order = async function(req,res,next){
     }
     let result = await orderModel.createOrder(cart,userId,name,address,phone,note);
     if(result.error){
-        console.log('1');
         if(result.code == 1){
             messages.unavailable_products = 'Sản phẩm <a href="'+result.link+'">'+result.name+'</a> có thể đã hết hoặc không đủ số lượng';
             req.flash('messages',messages);

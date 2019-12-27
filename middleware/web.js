@@ -1,6 +1,7 @@
 var Cart =  require('../models/cart');
 module.exports =  function (req, res, next) {
 	if (req.isAuthenticated()) {
+		// console.log(req.user);
 		res.locals.logged=true;
 		res.locals.user=req.user;
 	}
@@ -19,6 +20,10 @@ module.exports =  function (req, res, next) {
 		var mm = String(date_time.getMonth() + 1).padStart(2, '0');
 		var yyyy = date_time.getFullYear();
 		return dd + '/' + mm + '/' + yyyy;
+	}
+	res.locals.priceFormat = function(price){
+		let res = Number((price).toFixed(1)).toLocaleString();
+		return res;
 	}
 	return next();
 }

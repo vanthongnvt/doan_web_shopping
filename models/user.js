@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto'); 
 var userSchema = mongoose.Schema({
 	username: {
 		type: String,
@@ -33,14 +34,12 @@ var userSchema = mongoose.Schema({
 	created: { 
 		type: Date,
 		default: Date.now
+	},
+	resetPassword:{
+		token:String,
+		created_at:Date
 	}
 },{collection:'users'});
-
-userSchema.virtual('reset_password', {
-	ref: 'ResetPassword',
-	localField: '_id',
-	foreignField: 'userId',
-});
 
 userSchema.methods.encryptPassword = function(password) {
 	return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
@@ -70,9 +69,33 @@ userSchema.methods.updateAvatar = async function(avatar){
 	}
 }
 
+userSchema.statics.createToken = async function(userId){
+	console.log(userId);
+	let token = crypto.randomBytes(48).toString('hex');
+	try{
+		let resetPassword = {token:token,created_at:Date.now()};
+		let result = await this.updateOne({_id:userId},{resetPassword:resetPassword}).exec();
+		return {error:false,data:token};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+	return token;
+}
+
+userSchema.statics.findUserResetPassword = async function(token){
+	try{
+		var result = await this.findOne({'resetPassword.token':token}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 userSchema.statics.getUserByEmail = async function(email){
 	try{
-		var result = await this.findOne({email:email}).populate('reset_password').exec();
+		var result = await this.findOne({email:email}).exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);

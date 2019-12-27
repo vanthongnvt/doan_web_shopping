@@ -73,12 +73,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 													<%if(product.discount>0){
 														%>
 
-														<span class="item_price"><%=product.price*product.discount%> VNĐ</span>
-														<del><%=product.price%> VNĐ</del>
+														<span class="item_price"><%=priceFormat(product.price*product.discount)%> VNĐ</span>
+														<del><%=priceFormat(product.price)%> VNĐ</del>
 														<%
 													} else{
 														%>
-														<span class="item_price"><%=product.price%> VNĐ</span>
+														<span class="item_price"><%=priceFormat(product.price)%> VNĐ</span>
 														<%
 													}%>
 												</div>

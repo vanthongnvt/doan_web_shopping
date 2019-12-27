@@ -39,7 +39,11 @@ router.get('/don-hang/:id',authRedirectMiddleware,accountController.orderDetail)
 
 router.get('/quen-mat-khau',accountController.forgotPassword);
 
-router.get('/tao-moi-mat-khau/:refreshToken',accountController.resetPassword);
+router.post('/send-email',accountController.sendEmailResetPassword);
+
+router.get('/tao-moi-mat-khau/:resetPasswordToken',accountController.resetPasswordForm);
+
+router.post('/tao-moi-mat-khau/:resetPasswordToken',accountController.resetPassword);
 
 router.post('/dat-hang',authRedirectMiddleware,accountController.order);
 

@@ -24,13 +24,13 @@
 						<button type="button" class="minicarts-remove" data-minicarts-idx="<%= key%>">&times;</button>
 					</div>
 					<div class="minicarts-details-price">
-						<span class="minicarts-price price-format"><%= cartItem.price %></span><sup>đ</sup>
+						<span class="minicarts-price price-format"><%= priceFormat(cartItem.price) %></span><sup>đ</sup>
 					</div>
 				</li>
 				<% } %>
 			</ul>
 			<div class="minicarts-footer">
-				<div class="minicarts-subtotal hide-if-empty">Tổng tiền: <span class="price-format"><%= session.cart.totalPrice %></span><sup>đ</sup></div>
+				<div class="minicarts-subtotal hide-if-empty">Tổng tiền: <span class="price-format"><%= priceFormat(session.cart.totalPrice) %></span><sup>đ</sup></div>
 				<a href="/don-hang" class="minicarts-submit btn hide-if-empty" data-minicarts-alt="Thanh toán">Đến thanh toán</a>
 				<p class="minicarts-empty-text">Chưa có sản phẩm trong giỏ hàng</p>
 			</div>
@@ -283,6 +283,10 @@
 			document.getElementById("password1").onchange = validatePassword;
 			document.getElementById("password2").onchange = validatePassword;
 		}
+		function priceFormat(price){
+			var res = Number((price).toFixed(1)).toLocaleString();
+			return res;
+		}
 
 		function validatePassword() {
 			var pass2 = document.getElementById("password2").value;
@@ -437,13 +441,13 @@
 							var qty= $('.minicarts-details-quantity input[name="quantity_'+id+'"]');
 							var targetPrice = qty.parents('.minicarts-details-quantity').siblings('.minicarts-details-price').find('.minicarts-price');
 							qty.val(parseInt(qty.val())+1);
-							targetPrice.html(res.storedItem.price);
+							targetPrice.html(priceFormat(res.storedItem.price));
 						}
 						else{
-							var cart_item = '<li class="minicarts-item"><div class="minicarts-details-image"><img src="/images/products/'+res.storedItem.item.images[0]+'"></div><div class="minicarts-details-name"><a class="minicarts-name" href="'+res.storedItem.item.link+'">'+res.storedItem.item.name+'</a><ul class="minicarts-attributes"></ul></div><div class="minicarts-details-quantity"><input class="minicarts-quantity" data-minicarts-idx="'+res.storedItem.item.id+'" name="quantity_'+res.storedItem.item.id+'" type="text" pattern="[0-9]*" value="'+res.storedItem.qty+'" autocomplete="off"></div><div class="minicarts-details-remove"><button type="button" class="minicarts-remove" data-minicarts-idx="'+res.storedItem.item.id+'">×</button></div><div class="minicarts-details-price"><span class="minicarts-price price-format">'+res.storedItem.item.price+'</span><sup>đ</sup></div></li>';
+							var cart_item = '<li class="minicarts-item"><div class="minicarts-details-image"><img src="/images/products/'+res.storedItem.item.images[0]+'"></div><div class="minicarts-details-name"><a class="minicarts-name" href="'+res.storedItem.item.link+'">'+res.storedItem.item.name+'</a><ul class="minicarts-attributes"></ul></div><div class="minicarts-details-quantity"><input class="minicarts-quantity" data-minicarts-idx="'+res.storedItem.item.id+'" name="quantity_'+res.storedItem.item.id+'" type="text" pattern="[0-9]*" value="'+res.storedItem.qty+'" autocomplete="off"></div><div class="minicarts-details-remove"><button type="button" class="minicarts-remove" data-minicarts-idx="'+res.storedItem.item.id+'">×</button></div><div class="minicarts-details-price"><span class="minicarts-price price-format">'+priceFormat(res.storedItem.item.price)+'</span><sup>đ</sup></div></li>';
 							$('.list-cart').append(cart_item);
 						}
-						$('.minicarts-subtotal').find('span').html(cart.totalPrice);
+						$('.minicarts-subtotal').find('span').html(priceFormat(cart.totalPrice));
 					}
 				})
 			});
@@ -473,8 +477,8 @@
 							cartItem.remove();
 						}
 						else{
-							targetPrice.html(cart.items[id].price);
-							$('.minicarts-subtotal').find('span').html(cart.totalPrice);
+							targetPrice.html(priceFormat(cart.items[id].price));
+							$('.minicarts-subtotal').find('span').html(priceFormat(cart.totalPrice));
 						}
 					}
 				})
@@ -490,7 +494,7 @@
 							$('#PPminicarts form').removeClass('minicarts-av').addClass('minicarts-empty');
 						}
 						cartItem.remove();
-						$('.minicarts-subtotal').find('span').html(cart.totalPrice);
+						$('.minicarts-subtotal').find('span').html(priceFormat(cart.totalPrice));
 					}
 				})
 			})

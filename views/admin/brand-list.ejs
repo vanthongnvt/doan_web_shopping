@@ -14,7 +14,7 @@
 		</div>
 		<% include layout/nav %>
 		<script>
-			var d = document.getElementById("navcategory");
+			var d = document.getElementById("navbrand");
 			d.className += " active";
 		</script>
 		<div class="content-wrapper">
@@ -28,13 +28,13 @@
 							<h4>Danh sách gian hàng</h4>
 							<ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
 								<li class="breadcrumb-item">
-									<a href="/">
+									<a href="/admin/">
 										<i class="icofont icofont-home"></i>
 									</a>
 								</li>
 								<li class="breadcrumb-item"><a>Hãng</a>
 								</li>
-								<li class="breadcrumb-item"><a href="/hang-sx/danh-sach">Danh sách</a>
+								<li class="breadcrumb-item"><a href="/admin/hang-sx/danh-sach">Danh sách</a>
 								</li>
 							</ol>
 						</div>
@@ -94,8 +94,8 @@
 										<% brands.forEach(function(brand, i){ %>
 										<tr>
 											<td class="text-center"><%= getDateCreated(brand.created) %></td>
-											<td><%= brand.categoryId.name %></td>
-											<td><%=brand.name%></td>
+											<td class="text-center"><%= brand.categoryId.name %></td>
+											<td class="text-center"><%=brand.name%></td>
 											<td class="text-center"><%= brand.numProducts %></td>
 											<td class="text-center">
 												<% if(brand.status == 1){ %>

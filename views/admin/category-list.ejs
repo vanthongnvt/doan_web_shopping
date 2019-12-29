@@ -28,13 +28,13 @@
                             <h4>Danh sách gian hàng</h4>
                             <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
                                 <li class="breadcrumb-item">
-                                    <a href="/">
+                                    <a href="/admin/">
                                         <i class="icofont icofont-home"></i>
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item"><a href="#">Gian hàng</a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="/gian-hang/danh-sach">Danh sách</a>
+                                <li class="breadcrumb-item"><a href="/admin/gian-hang/danh-sach">Danh sách</a>
                                 </li>
                             </ol>
                         </div>
@@ -93,7 +93,7 @@
                                         <% categories.forEach(function(category, i){ %>
                                         <tr>
                                             <td class="text-center"><%= getDateCreated(category.created) %></td>
-                                            <td><%= category.name %></td>
+                                            <td class="text-center"><%= category.name %></td>
                                             <td class="text-center">
                                                 <%if(category.isAccessories==true){%>
                                                 <i class="fa fa-check"></i>

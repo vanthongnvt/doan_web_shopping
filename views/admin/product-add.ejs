@@ -28,11 +28,12 @@
                             <div class="main-header">
                                 <h4>Thêm sản phẩm</h4>
                                 <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
-                                    <li class="breadcrumb-item"><a href="/"><i class="icofont icofont-home"></i></a>
+                                    <li class="breadcrumb-item"><a href="/admin/"><i
+                                                class="icofont icofont-home"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="#">Sản phẩm</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="/san-pham/them">Thêm</a>
+                                    <li class="breadcrumb-item"><a href="/admin/san-pham/them">Thêm</a>
                                     </li>
                                 </ol>
                             </div>
@@ -46,136 +47,223 @@
                         <!-- Textual inputs starts -->
                         <div style="margin: 1%" class="card">
                             <div class="card">
-                                <div class="card-header"><h5 class="card-header-text">NHẬP THÔNG TIN SẢN PHẨM</h5>
+                                <div class="card-header">
+                                    <h5 class="card-header-text">NHẬP THÔNG TIN SẢN PHẨM</h5>
                                 </div>
-                            <div class="card-block">
-                                <form>
-                                    <div class="form-group row">
-                                        <label for="example-text-input"
-                                            class="col-xs-2 col-form-label form-control-label">Tên sản phẩm</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" type="text" placeholder="Nhập tên của sản phẩm"
-                                                id="example-text-input">
+                                <div class="card-block">
+                                    <form method="POST" action="/admin/san-pham/them">
+                                        <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+                                        <div class="form-group row">
+                                            <label for="example-text-input"
+                                                class="col-md-2 col-form-label form-control-label">Gian
+                                                hàng</label>
+                                            <div class="col-md-10">
+                                                <select class="form-control" name='categorySelect'>
+                                                    <option value="" disabled selected>--- Chọn gian hàng ---</option>
+                                                    <% categoriesSelect.forEach(function(category, i){ %>
+                                                    <option value=<%= category._id%>
+                                                        <% if( data.categoryId == category._id){ %> selected="selected" <%}%> >
+                                                        <%= category.name %> </option> <% }) %> </select>
+                                                        <%if(dataError.msg_noCategory){%> <div
+                                                        class="invalid-feedback d-block" style="color: red">Bạn chưa
+                                                        chọn
+                                                        gian hàng</div>
+                                            <%}%>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="example-text-input"
-                                            class="col-xs-2 col-form-label form-control-label">Đơn giá sản phẩm</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" type="text" placeholder="Nhập đơn giá sản phẩm"
-                                                id="example-text-input">
+                                        <div class="form-group row">
+                                            <label for="example-text-input"
+                                                class="col-md-2 col-form-label form-control-label">Hãng</label>
+                                            <div class="col-md-10">
+                                                <select class="form-control" name='brandSelect'>
+                                                    <option selected disabled>--- Chọn hãng ---</option>
+                                                </select>
+                                                <%if(dataError.msg_noBrand){%>
+                                            <div class="invalid-feedback d-block" style="color: red">Bạn chưa chọn
+                                                hãng</div>
+                                            <%}%>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="example-search-input"
-                                            class="col-xs-2 col-form-label form-control-label">Mô tả</label>
-                                        <div class="col-sm-10">
-                                            <textarea class="form-control max-textarea"
-                                                placeholder="Nhập mô tả của sản phẩm" maxlength="255"
-                                                rows="4"></textarea>
+                                        <div class="form-group row">
+                                            <label for="example-text-input"
+                                                class="col-xs-2 col-form-label form-control-label">Tên sản phẩm</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" name="name"
+                                                    placeholder="Nhập tên của sản phẩm" value="<%= data.name%>">
+                                            <%if(dataError.msg_noName){%>
+                                            <div class="invalid-feedback d-block" style="color: red">Bạn chưa nhập
+                                                tên sản phẩm</div>
+                                            <%}%>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="example-email-input"
-                                            class="col-xs-2 col-form-label form-control-label">Tình trạng</label>
-                                        <div class="col-sm-10">
-                                            <div class="form-radio">
-                                                <form>
-
+                                        <div class="form-group row">
+                                            <label for="example-text-input"
+                                                class="col-xs-2 col-form-label form-control-label">Đơn giá</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" name="price"
+                                                    placeholder="Nhập đơn giá" value="<%= data.price%>">
+                                            <%if(dataError.msg_noPrice){%>
+                                            <div class="invalid-feedback d-block" style="color: red">Bạn chưa nhập
+                                                đơn giá của sản phẩm</div>
+                                            <%}%>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="example-text-input"
+                                                class="col-xs-2 col-form-label form-control-label">Số lượng</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" name="quantity"
+                                                    placeholder="Nhập số lượng" value="<%= data.quantity%>">
+                                            <%if(dataError.msg_noBrand){%>
+                                            <div class="invalid-feedback d-block" style="color: red">Bạn chưa nhập
+                                                số lượng sản phẩm</div>
+                                            <%}%>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="example-text-input"
+                                                class="col-xs-2 col-form-label form-control-label">Giảm giá</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" name="discount"
+                                                    placeholder="Nhập giảm giá" value="<%= data.discount%>">
+                                        </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="example-search-input"
+                                        class="col-xs-2 col-form-label form-control-label">Mô tả</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control max-textarea" name="detail"
+                                            placeholder="Nhập mô tả của sản phẩm" maxlength="255"
+                                            rows="4"><%= data.detail%></textarea>
+                                        <%if(dataError.msg_noDetail){%>
+                                        <div class="invalid-feedback d-block" style="color: red">Bạn chưa nhập
+                                            mô tả sản phẩm</div>
+                                        <%}%>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="example-email-input"
+                                                class="col-xs-2 col-form-label form-control-label">Tình trạng</label>
+                                            <div class="col-sm-10">
+                                                <div class="form-radio">
                                                     <div class="radio radiofill radio-inline">
                                                         <label>
-                                                            <input type="radio" name="radio">
-                                                            <i class="helper"></i>Còn hàng
+                                                            <input type="radio" name="radioStatus"
+                                                            <% if( data.status == true){ %> checked="checked" <%}%>
+                                                            value="Open">
+                                                            <i class="helper"></i>Mở
                                                         </label>
                                                     </div>
 
                                                     <div class="radio radiofill radio-inline">
                                                         <label>
-                                                            <input type="radio" name="radio" checked="checked">
-                                                            <i class="helper"></i>Hết hàng
+                                                            <input type="radio" name="radioStatus" 
+                                                            <% if(data.status == null || data.status == false){ %>
+                                                                checked="checked"
+                                                                <%}%>   
+                                                            value="Closed"
+                                                            >
+                                                            <i class="helper"></i>Đóng
                                                         </label>
                                                     </div>
-
-                                                </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="file" class="col-md-2 col-form-label form-control-label">File
-                                            ảnh</label>
-                                        <div class="col-md-9">
-                                            <label for="file" class="custom-file">
-                                                <input type="file" id="file" class="custom-file-input">
-                                                <span class="custom-file-control"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="file" class="col-md-2 col-form-label form-control-label">Gian hàng</label>
-                                        <div class="col-md-9">
-                                            <select class="form-control" id="exampleSelect1">
-                                                <option>Laptop</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <button type="submit"
-                                                    class="btn btn-success waves-effect waves-light">Thêm
-                                                </button>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 col-form-label form-control-label">File
+                                                ảnh</label>
+                                            <div class="col-md-9">
+                                                <label for="file" class="custom-file">
+                                                    <input type="file" id="file" name="product-avatar" class="custom-file-input"
+                                                        accept="image/png,image/jpeg,image/jpg">
+                                                    <span class="custom-file-control"></span>
+                                                </label>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col text-center">
+                                                    <button type="submit"
+                                                        class="btn btn-success waves-effect waves-light">Thêm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
+                            <!-- Textual inputs ends -->
                         </div>
-                        <!-- Textual inputs ends -->
+                        <!-- Row end -->
                     </div>
-                    <!-- Row end -->
+                    <!-- Main content ends -->
                 </div>
-                <!-- Main content ends -->
+                <!-- Container-fluid ends -->
             </div>
-            <!-- Container-fluid ends -->
         </div>
-    </div>
 
 
-    <!-- Required Jqurey -->
-    <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
-    <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+        <!-- Required Jqurey -->
+        <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+        <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
 
-    <!-- Required Fremwork -->
-    <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <!-- Required Fremwork -->
+        <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- waves effects.js -->
-    <script src="/admin/plugins/Waves/waves.min.js"></script>
+        <!-- waves effects.js -->
+        <script src="/admin/plugins/Waves/waves.min.js"></script>
 
-    <!-- Scrollbar JS-->
-    <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-    <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
+        <!-- Scrollbar JS-->
+        <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+        <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
 
-    <!--classic JS-->
-    <script src="/admin/plugins/classie/classie.js"></script>
+        <!--classic JS-->
+        <script src="/admin/plugins/classie/classie.js"></script>
 
-    <!-- notification -->
-    <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+        <!-- notification -->
+        <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
 
-    <!-- syntax highlighter js -->
-    <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shCore.js"></script>
-    <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
-    <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
-    <script type="text/javascript">SyntaxHighlighter.all();</script>
+        <!-- syntax highlighter js -->
+        <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shCore.js"></script>
+        <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+        <script type="text/javascript" src="/admin/plugins/syntaxhighlighter/scripts/shBrushXml.js"></script>
+        <script type="text/javascript">SyntaxHighlighter.all();</script>
 
-    <!-- custom js -->
-    <script type="text/javascript" src="/admin/js/main.min.js"></script>
-    <script type="text/javascript" src="admin/pages/elements.js"></script>
-    <script src="/admin/js/menu.min.js"></script>
+        <!-- custom js -->
+        <script type="text/javascript" src="/admin/js/main.min.js"></script>
+        <script type="text/javascript" src="/admin/pages/elements.js"></script>
+        <script src="/admin/js/menu.min.js"></script>
+
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+                $('select[name="categorySelect"]').on('change', function () {
+                    var categoryID = $(this).val();
+                    if (categoryID) {
+                        $.ajax({
+                            url: '/admin/san-pham/ajax/' + categoryID,
+                            type: "GET",
+                            dataType: "json",
+                            success: function (data) {
+                                $('select[name="brandSelect"]').empty();
+                                $('select[name="brandSelect"]').append('<option disabled selected>--- Chọn hãng ---</option>');
+                                $.each(data, function (key, value) {
+                                    $('select[name="brandSelect"]').append('<option value="' + value._id + '"' +
+                                        '<% if( data.brandId == ' + value._id + '){ %>'
+                                        + ' selected="selected" <%}%>'
+                                        + '>' + value.name + '</option>');
+                                });
+                            }
+                        });
+                    } else {
+                        $('select[name="brandSelect"]').empty();
+                    }
+                });
+            });
+        </script>
+
+       
 
 </body>
 

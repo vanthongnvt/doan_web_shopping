@@ -32,7 +32,7 @@
                                     </li>
                                     <li class="breadcrumb-item"><a>Gian hàng</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="/admin/gian-hang/them">Thêm</a>
+                                    <li class="breadcrumb-item"><a href="/admin/gian-hang/them">Cập nhật</a>
                                     </li>
                                 </ol>
                             </div>
@@ -45,17 +45,18 @@
                         <!-- Textual inputs starts -->
                         <div style="margin: 1%" class="card">
                             <div class="card-header">
-                                <h5 class="card-header-text">NHẬP THÔNG TIN GIAN HÀNG</h5>
+                                <h5 class="card-header-text">CẬP NHẬP THÔNG TIN GIAN HÀNG</h5>
                             </div>
                             <div class="card-block">
-                                <form method="POST" action="/admin/gian-hang/them">
+                                <form method="POST" action="/admin/gian-hang/update">
                                     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+                                    <input type="hidden" name = "id" value="<%= data._id%>">
                                     <div class="form-group row">
                                         <label for="example-text-input"
                                             class="col-xs-2 col-form-label form-control-label">Tên gian hàng</label>
                                         <div class="col-sm-10">
                                             <input class="form-control" type="text" placeholder="Nhập tên của gian hàng"
-                                                id="example-text-input" name="name" value="<%=data.categoryId%>">
+                                                id="example-text-input" name="name" value="<%= data.name %>">
                                                 <%if(dataError.msg_noName){%> 
                                                     <div
                                                 class="invalid-feedback d-block" style="color: red"><%= dataError.msg_noName%></div>
@@ -71,20 +72,21 @@
                                                 <div class="radio radiofill radio-inline">
                                                     <label>
                                                         <input type="radio" name="radioStatus"
-                                                        <% if( data.status == true){ %> checked="checked" <%}%>
-                                                        value="Mở"
-                                                        >
+                                                        <% if( data.status == true){ %>
+                                                            checked="checked"
+                                                            <%}%>
+                                                            value="Mở">
                                                         <i class="helper"></i>Mở
                                                     </label>
                                                 </div>
 
                                                 <div class="radio radiofill radio-inline">
                                                     <label>
-                                                        <input type="radio" name="radioStatus" 
-                                                        <% if(data.status == null || data.status == false){ %>
+                                                        <input type="radio" name="radioStatus"
+                                                        <% if(data == null || data.status == false){ %>
                                                             checked="checked"
                                                             <%}%>   
-                                                        value="Đóng">
+                                                         value="Đóng">
                                                         <i class="helper"></i>Đóng
                                                     </label>
                                                 </div>
@@ -95,17 +97,18 @@
                                         <label class="col-xs-2 col-form-label form-control-label">Loại phụ kiện</label>
                                         <div class="col-sm-10 text-left">
                                             <input style="width: auto;" type="checkbox" name="isAccessoriesRadio"
-                                            <% if( data.isAccessories == true){ %>
+                                                value='Phụ kiện'
+                                                 <% if( data.isAccessories == true){ %>
                                                 checked="checked"
                                                 <%}%>
-                                            value='Phụ kiện'>
+                                                >
                                         </div>
                                     </div>
                                     <div class="container">
                                         <div class="row">
                                             <div class="col text-center">
                                                 <button type="submit"
-                                                    class="btn btn-success waves-effect waves-light">Thêm</button>
+                                                    class="btn btn-success waves-effect waves-light">Cập nhật</button>
                                             </div>
                                         </div>
                                     </div>

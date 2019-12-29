@@ -14,7 +14,7 @@
         </div>
         <% include layout/nav %>
         <script>
-            var d = document.getElementById("navcategory");
+            var d = document.getElementById("navbrand");
             d.className += " active";
         </script>
         <div class="content-wrapper">
@@ -26,13 +26,14 @@
                     <div class="row">
                         <div class="col-sm-12 p-0">
                             <div class="main-header">
-                                <h4>Thêm gian hàng</h4>
+                                <h4>Thêm hãng sản xuất</h4>
                                 <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
-                                    <li class="breadcrumb-item"><a href="/admin/"><i class="icofont icofont-home"></i></a>
+                                    <li class="breadcrumb-item"><a href="/admin/"><i
+                                                class="icofont icofont-home"></i></a>
                                     </li>
-                                    <li class="breadcrumb-item"><a>Gian hàng</a>
+                                    <li class="breadcrumb-item"><a>Hãng</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="/admin/gian-hang/them">Thêm</a>
+                                    <li class="breadcrumb-item"><a href="/admin/hang-sx/them">Cập nhật</a>
                                     </li>
                                 </ol>
                             </div>
@@ -45,21 +46,23 @@
                         <!-- Textual inputs starts -->
                         <div style="margin: 1%" class="card">
                             <div class="card-header">
-                                <h5 class="card-header-text">NHẬP THÔNG TIN GIAN HÀNG</h5>
+                                <h5 class="card-header-text">CẬP NHẬP THÔNG TIN HÃNG SẢN XUẤT</h5>
                             </div>
                             <div class="card-block">
-                                <form method="POST" action="/admin/gian-hang/them">
+                                <form method="POST" action="/admin/hang-sx/update">
                                     <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+                                    <input type="hidden" name="_id" value="<%= data._id%>">
                                     <div class="form-group row">
                                         <label for="example-text-input"
-                                            class="col-xs-2 col-form-label form-control-label">Tên gian hàng</label>
+                                            class="col-xs-2 col-form-label form-control-label">Tên hãng sản xuất</label>
                                         <div class="col-sm-10">
-                                            <input class="form-control" type="text" placeholder="Nhập tên của gian hàng"
-                                                id="example-text-input" name="name" value="<%=data.categoryId%>">
-                                                <%if(dataError.msg_noName){%> 
-                                                    <div
-                                                class="invalid-feedback d-block" style="color: red"><%= dataError.msg_noName%></div>
-                                                <%}%>
+                                            <input class="form-control" type="text"
+                                                placeholder="Nhập tên của hãng sản xuất" id="example-text-input"
+                                                name="name" value="<%= data.name%>">
+                                            <%if(dataError.msg_noName){%>
+                                            <div class="invalid-feedback d-block" style="color: red">
+                                                <%=dataError.msg_noName%></div>
+                                            <%}%>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -71,9 +74,8 @@
                                                 <div class="radio radiofill radio-inline">
                                                     <label>
                                                         <input type="radio" name="radioStatus"
-                                                        <% if( data.status == true){ %> checked="checked" <%}%>
-                                                        value="Mở"
-                                                        >
+                                                            <% if( data.status == true){ %> checked="checked" <%}%>
+                                                        value="Mở">
                                                         <i class="helper"></i>Mở
                                                     </label>
                                                 </div>
@@ -82,9 +84,8 @@
                                                     <label>
                                                         <input type="radio" name="radioStatus" 
                                                         <% if(data.status == null || data.status == false){ %>
-                                                            checked="checked"
-                                                            <%}%>   
-                                                        value="Đóng">
+                                            checked="checked" <%}%>
+                                                            value="Đóng">
                                                         <i class="helper"></i>Đóng
                                                     </label>
                                                 </div>
@@ -92,23 +93,30 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-xs-2 col-form-label form-control-label">Loại phụ kiện</label>
-                                        <div class="col-sm-10 text-left">
-                                            <input style="width: auto;" type="checkbox" name="isAccessoriesRadio"
-                                            <% if( data.isAccessories == true){ %>
-                                                checked="checked"
-                                                <%}%>
-                                            value='Phụ kiện'>
+                                        <label for="file" class="col-md-2 col-form-label form-control-label">Gian
+                                            hàng</label>
+                                        <div class="col-md-9">
+                                            <select class="form-control" id="exampleSelect1" name='categorySelect'>
+                                                    <option selected disabled>--- Chọn gian hàng ---</option>
+                                                <% categoriesSelect.forEach(function(category, i){ %> <option
+                                                value=<%= category._id%>
+                                                <% if( data.categoryId + "" == category._id){ %>
+                                                selected="selected" <%}%>
+                                                    >
+                                                    <%= category.name %> </option> <% }) %> </select>
+                                                <%if(dataError.msg_noCategory){%> <div class="invalid-feedback d-block"
+                                                style="color: red"><%=dataError.msg_noCategory%></div>
+                                        <%}%>
+                                                 </div> </div>
+                                                <div class="container">
+                                                <div class="row">
+                                                    <div class="col text-center">
+                                                        <button type="submit"
+                                                            class="btn btn-success waves-effect waves-light">Cập
+                                                            nhật</button>
+                                                    </div>
+                                                </div>
                                         </div>
-                                    </div>
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col text-center">
-                                                <button type="submit"
-                                                    class="btn btn-success waves-effect waves-light">Thêm</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </form>
                             </div>
                         </div>

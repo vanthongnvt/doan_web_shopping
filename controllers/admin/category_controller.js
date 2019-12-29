@@ -1,78 +1,161 @@
 const express = require('express');
-const categoryModel= require('../../models/category');
+const categoryModel = require('../../models/category');
+var slug = require('slug');
+var mongoose = require('mongoose');
+var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, function (err) {
+	if (err) {
+		console.log(err);
+	}
+});
+var MAX_PAGE_SIZE = 100;
 
-exports.listCategory = async function(req,res,next){
-	
-	let page =1,pageSize =10,findObj = {};
-	let url = req.baseUrl + req.path+'?page=';
+exports.listCategory = async function (req, res, next) {
+
+	let page = 1, pageSize = MAX_PAGE_SIZE, findObj = {};
+	let url = req.baseUrl + req.path + '?page=';
 	let query = req.query;
-	if(query.page){
+	if (query.page) {
 		page = parseInt(req.query.page);
 		delete query.page;
 	}
-	if(query.q!=null){
-		url=url+'&q='+query.q;
-		findObj.name = { '$regex' : query.q ,'$options': 'i'};
+	if (query.q != null) {
+		url = url + '&q=' + query.q;
+		findObj.name = { '$regex': query.q, '$options': 'i' };
 	}
-	if(query.isAccessories!=null){
-		url=url+'&isAccessories='+query.isAccessories;
+	if (query.isAccessories != null) {
+		url = url + '&isAccessories=' + query.isAccessories;
 		findObj.isAccessories = query.isAccessories;
 	}
-	let sort={created:-1};
-	if(query.sort!=null){
-		url=url+'&sort='+query.sort;
-		if(query.sort=='name'){
-			sort={slug:1};
+	let sort = { created: -1 };
+	if (query.sort != null) {
+		url = url + '&sort=' + query.sort;
+		if (query.sort == 'name') {
+			sort = { slug: 1 };
 		}
-		else if(query.sort=='product'){
-			sort = {numProducts:-1};
+		else if (query.sort == 'product') {
+			sort = { numProducts: -1 };
 		}
-		else if(query.sort=='isAccessories'){
-			sort = {isAccessories:-1};
+		else if (query.sort == 'isAccessories') {
+			sort = { isAccessories: -1 };
 		}
-		else if(query.sort=='status'){
-			sort={status:-1};
+		else if (query.sort == 'status') {
+			sort = { status: -1 };
 		}
-		else{
-			sort={created:-1};
+		else {
+			sort = { created: -1 };
 		}
 	}
 	let rsCount = await categoryModel.countCategory(findObj);
-	if(rsCount.error){
-		return res.send({error:true,messsage:'server error'});
+	if (rsCount.error) {
+		return res.send({ error: true, messsage: 'server error' });
 	}
-	else{
-		if(Object.keys(query).length>0){
-			url=url+'&page=';
+	else {
+		if (Object.keys(query).length > 0) {
+			url = url + '&page=';
 		}
-		else{
-			url=url+'page=';
+		else {
+			url = url + 'page=';
 		}
 		let count = rsCount.count;
-		let rsList = await categoryModel.listCategory(findObj,page,pageSize,sort);
-		if(rsList.error){
-			return res.send({error:true,messsage:'server error'});
+		let rsList = await categoryModel.listCategory(findObj, page, pageSize, sort);
+		if (rsList.error) {
+			return res.send({ error: true, messsage: 'server error' });
 		}
-		else{
-			let pagination={totalPage:parseInt(count/pageSize)+1,curPage:page,totalItem:count,url:url};
-			return res.render('./admin/category-list',{categories:rsList.data,pagination:pagination,query:query});
+		else {
+			let pagination = { totalPage: parseInt(count / pageSize) + 1, curPage: page, totalItem: count, url: url };
+			return res.render('./admin/category-list', { categories: rsList.data, pagination: pagination, query: query });
 		}
 	}
 
 }
 
-exports.addCategoryPage = function(req,res,next){
-	res.render('./admin/category-add');
+exports.addCategoryPage = function (req, res, next) {
+	let data = req.flash('item')[0] || {};
+	let errorData = req.flash('errorItem')[0] || {};
+	res.render('./admin/category-add', { data: data, dataError: errorData });
 }
 
-exports.createCategory = async function(req,res,next){
+exports.createCategory = async function (req, res, next) {
+	var rqStatus = false;
+	var rqisAcccessories = false;
+	var statusRadio = req.body.radioStatus;
+	if (statusRadio === "Mở") {
+		rqStatus = true;
+	}
+	var isAccessoriesRadio = req.body.isAccessoriesRadio;
+	if (isAccessoriesRadio == 'Phụ kiện') {
+		rqisAcccessories = true;
+	}
+	var item = {
+		name: req.body.name,
+		slug: slug(req.body.name, { lower: true }),
+		status: rqStatus,
+		isAccessories: rqisAcccessories
+	}
+	var errorItem = {};
+	if (item.name.toString().trim() == "") {
+		console.log("not ok");
+		errorItem.msg_noName = "Bạn chưa nhập tên gian hàng";
+		req.flash('item', item);
+		req.flash('errorItem', errorItem);
+		res.redirect('/admin/gian-hang/them');
+	}
+	else {
+		console.log("ok");
+		var data = new categoryModel(item);
+		data.save();
+		res.redirect('/admin/gian-hang/danh-sach');
+	}
 
 }
 
-exports.editCategoryPage = async function(req,res,next){
+exports.editCategoryPage = async function (req, res, next) {
+	var id = req.params.id;
+	let itemdata = req.flash('item')[0] || null;
+	console.log(itemdata);
+	let errorData = req.flash('errorItem')[0] || {};
 
+
+	if (itemdata == null) {
+		var findObj = await categoryModel.findOne({ _id: id }).exec();
+		console.log(findObj);
+		res.render('./admin/category-edit', { data: findObj, dataError: errorData });
+	}
+	else {
+		console.log(itemdata);
+		res.render('./admin/category-edit', { data: itemdata, dataError: errorData });
+	}
 }
 
-exports.updateCategory = async function(req,res,next){
+exports.updateCategory = async function (req, res, next) {
+	var id = req.body.id;
+	console.log(id);
+	var errorItem = {};
+	var findObj = await categoryModel.findOne({ _id: id }).exec();
+	console.log(findObj);
+	findObj.name = req.body.name;
+	findObj.slug = slug(findObj.name, { lower: true });
+	if (req.body.radioStatus === "Mở") {
+		findObj.status = true;
+	}
+	else {
+		findObj.status = false;
+	}
+	if (req.body.isAccessoriesRadio == 'Phụ kiện') {
+		findObj.isAccessories = true;
+	}
+	else {
+		findObj.isAccessories = false;
+	}
+	if (findObj.name.toString().trim() == "") {
+		errorItem.msg_noName = "Bạn chưa nhập tên gian hàng";
+		req.flash('item', findObj);
+		req.flash('errorItem', errorItem);
+		res.redirect('/admin/gian-hang/sua/' + id);
+	}
+	else {
+		findObj.save();
+		res.redirect('/admin/gian-hang/danh-sach');
+	}
 
 }

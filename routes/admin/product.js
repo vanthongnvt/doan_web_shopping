@@ -15,4 +15,8 @@ router.get('/sua/:id',productController.editProductPage);
 
 router.post('/update',productController.updateProduct);
 
+router.get('/ajax/:id',productController.ajaxBrandOfCategory);
+
+//router.post('/ajax/upload-avatar',productController.ajaxUploadAvatar);
+
 module.exports = router;

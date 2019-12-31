@@ -93,15 +93,22 @@ exports.createCategory = async function (req, res, next) {
 		isAccessories: rqisAcccessories
 	}
 	var errorItem = {};
+	var checkSlug = categoryModel.findOne({slug: item.slug}).exec();
 	if (item.name.toString().trim() == "") {
-		console.log("not ok");
 		errorItem.msg_noName = "Bạn chưa nhập tên gian hàng";
 		req.flash('item', item);
 		req.flash('errorItem', errorItem);
+		console.log(item);
+		res.redirect('/admin/gian-hang/them');
+	}
+	else if(checkSlug != null){
+		errorItem.msg_noName = "Tên gian hàng bạn nhập đã tồn tại";
+		req.flash('item', item);
+		req.flash('errorItem', errorItem);
+		console.log(item);
 		res.redirect('/admin/gian-hang/them');
 	}
 	else {
-		console.log("ok");
 		var data = new categoryModel(item);
 		data.save();
 		res.redirect('/admin/gian-hang/danh-sach');
@@ -132,6 +139,7 @@ exports.updateCategory = async function (req, res, next) {
 	console.log(id);
 	var errorItem = {};
 	var findObj = await categoryModel.findOne({ _id: id }).exec();
+	var oldSlug = findObj.slug;
 	console.log(findObj);
 	findObj.name = req.body.name;
 	findObj.slug = slug(findObj.name, { lower: true });
@@ -147,8 +155,17 @@ exports.updateCategory = async function (req, res, next) {
 	else {
 		findObj.isAccessories = false;
 	}
+	console.log(findObj);
+	var checkSlug = await categoryModel.findOne({slug: findObj.slug}).exec();
+	
 	if (findObj.name.toString().trim() == "") {
 		errorItem.msg_noName = "Bạn chưa nhập tên gian hàng";
+		req.flash('item', findObj);
+		req.flash('errorItem', errorItem);
+		res.redirect('/admin/gian-hang/sua/' + id);
+	}
+	else if(findObj.slug != oldSlug && checkSlug != null){
+		errorItem.msg_noName = "Tên gian hàng bạn nhập đã tồn tại";
 		req.flash('item', findObj);
 		req.flash('errorItem', errorItem);
 		res.redirect('/admin/gian-hang/sua/' + id);

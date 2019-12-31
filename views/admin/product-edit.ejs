@@ -26,14 +26,14 @@
                     <div class="row">
                         <div class="col-sm-12 p-0">
                             <div class="main-header">
-                                <h4>Thêm sản phẩm</h4>
+                                <h4>Cập nhật sản phẩm</h4>
                                 <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
                                     <li class="breadcrumb-item"><a href="/admin/"><i
                                                 class="icofont icofont-home"></i></a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="#">Sản phẩm</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="/admin/san-pham/them">Thêm</a>
+                                    <li class="breadcrumb-item"><a href="#">Cập nhật</a>
                                     </li>
                                 </ol>
                             </div>
@@ -48,11 +48,12 @@
                         <div style="margin: 1%" class="card">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="card-header-text">NHẬP THÔNG TIN SẢN PHẨM</h5>
+                                    <h5 class="card-header-text">CẬP NHẬP THÔNG TIN SẢN PHẨM</h5>
                                 </div>
                                 <div class="card-block">
-                                    <form method="POST" action="/admin/san-pham/them?_csrf=<%=csrfToken%>" enctype="multipart/form-data">
+                                    <form method="POST" action="/admin/san-pham/update">
                                         <input type="hidden" name="_csrf" value="<%=csrfToken%>">
+                                        <input type="hidden" name="_id" value="<%=data._id%>">
                                         <div class="form-group row">
                                             <label for="example-text-input"
                                                 class="col-md-2 col-form-label form-control-label">Gian
@@ -62,7 +63,7 @@
                                                     <option value="" disabled selected>--- Chọn gian hàng ---</option>
                                                     <% categoriesSelect.forEach(function(category, i){ %>
                                                     <option value=<%= category._id%>
-                                                        <% if( data.categoryId+"" == category._id+""){ %> selected="selected" <%}%> >
+                                                        <%if( data.categoryId+"" == category._id+""){ %> selected="selected" <%}%> >
                                                         <%= category.name %> </option> <% }) %> </select>
                                                         <%if(dataError.msg_noCategory){%> <div
                                                         class="invalid-feedback d-block" style="color: red">
@@ -103,7 +104,7 @@
                                             <label for="example-text-input"
                                                 class="col-xs-2 col-form-label form-control-label">Đơn giá</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="number" name="price"
+                                                <input class="form-control" type="text" name="price"
                                                     placeholder="Nhập đơn giá" value="<%= data.price%>">
                                             <%if(dataError.msg_noPrice){%>
                                             <div class="invalid-feedback d-block" style="color: red">
@@ -115,7 +116,7 @@
                                             <label for="example-text-input"
                                                 class="col-xs-2 col-form-label form-control-label">Số lượng</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="number" name="quantity"
+                                                <input class="form-control" type="text" name="quantity"
                                                     placeholder="Nhập số lượng" value="<%= data.quantity%>">
                                             <%if(dataError.msg_noQuantity){%>
                                             <div class="invalid-feedback d-block" style="color: red">
@@ -127,7 +128,7 @@
                                             <label for="example-text-input"
                                                 class="col-xs-2 col-form-label form-control-label">Giảm giá</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="number" name="discount"
+                                                <input class="form-control" type="text" name="discount"
                                                     placeholder="Nhập giảm giá" value="<%= data.discount%>">
                                         </div>
                                 </div>
@@ -177,21 +178,17 @@
                                                 ảnh</label>
                                             <div class="col-md-9">
                                                 <label for="file" class="custom-file">
-                                                    <input type="file" id="file" name="avatar" class="custom-file-input"
+                                                    <input type="file" id="file" name="product-avatar" class="custom-file-input"
                                                         accept="image/png,image/jpeg,image/jpg">
                                                     <span class="custom-file-control"></span>
                                                 </label>
-                                                <%if(dataError.msg_noImg){%>
-                                                    <div class="invalid-feedback d-block" style="color: red">
-                                                        <%=dataError.msg_noImg%></div>
-                                                    <%}%>
                                             </div>
                                         </div>
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col text-center">
                                                     <button type="submit"
-                                                        class="btn btn-success waves-effect waves-light">Thêm
+                                                        class="btn btn-success waves-effect waves-light">Cập nhật
                                                     </button>
                                                 </div>
                                             </div>

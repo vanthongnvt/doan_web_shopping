@@ -82,9 +82,9 @@ exports.addBrandPage = async function (req, res, next) {
 		return res.send({ error: true, messsage: 'server error' });
 	}
 	else {
-		let item =  req.flash('item')[0]||{};
-		let errorItem = req.flash('errorItem')[0]||{};
-		return res.render('./admin/brand-add', { categoriesSelect: rsList.data , data: item, dataError: errorItem});
+		let item = req.flash('item')[0] || {};
+		let errorItem = req.flash('errorItem')[0] || {};
+		return res.render('./admin/brand-add', { categoriesSelect: rsList.data, data: item, dataError: errorItem });
 	}
 }
 
@@ -100,20 +100,27 @@ exports.createBrand = async function (req, res, next) {
 		slug: slug(req.body.name, { lower: true }),
 		status: rqStatus,
 	}
-	
+
 	var errorItem = {};
 	var checkInput = true;
 	if (item.categoryId == undefined) {
 		checkInput = false;
 		errorItem.msg_noCategory = 'Bạn chưa chọn gian hàng';
 	}
-	if (item.name == ""){
+	if (item.name == "") {
 		checkInput = false;
 		errorItem.msg_noName = 'Bạn chưa nhập tên hãng';
 	}
+	else {
+		var checkSlug = await brandModel.findOne({ slug: item.slug, categoryId: item.categoryId}).exec();
+		if (checkSlug != null) {
+			checkInput = false;
+			errorItem.msg_noName = 'Tên hãng bạn nhập đã tồn tại';
+		}
+	}
 	console.log(checkInput);
 	console.log(errorItem);
-	if(checkInput == false){
+	if (checkInput == false) {
 		req.flash('item', item);
 		req.flash('errorItem', errorItem);
 		res.redirect('/admin/hang-sx/them');
@@ -133,18 +140,18 @@ exports.editbrandPage = async function (req, res, next) {
 		return res.send({ error: true, messsage: 'server error' });
 	}
 	else {
-		let item =  req.flash('item')[0]||null;
-		let errorItem = req.flash('errorItem')[0]||{};
-		if(item == null){
+		let item = req.flash('item')[0] || null;
+		let errorItem = req.flash('errorItem')[0] || {};
+		if (item == null) {
 			var id = req.params.id;
 			var updateObj = await brandModel.findOne({ _id: id }).exec();
-			res.render('./admin/brand-edit', { data: updateObj, categoriesSelect: rsList.data, dataError: errorItem});
+			res.render('./admin/brand-edit', { data: updateObj, categoriesSelect: rsList.data, dataError: errorItem });
 		}
-		else{
+		else {
 			console.log(item);
-			res.render('./admin/brand-edit', { data: item, categoriesSelect: rsList.data, dataError: errorItem});
+			res.render('./admin/brand-edit', { data: item, categoriesSelect: rsList.data, dataError: errorItem });
 		}
-		
+
 	}
 
 }
@@ -152,33 +159,40 @@ exports.editbrandPage = async function (req, res, next) {
 exports.updateBrand = async function (req, res, next) {
 	var id = req.body._id;
 	var updateItem = await brandModel.findOne({ _id: id }).exec();
+	var oldSlug = updateItem.slug;
 	updateItem.name = req.body.name;
-	updateItem.slug = slug(updateItem.name, {lower:true});
-	if(req.body.radioStatus === "Mở"){
+	updateItem.slug = slug(updateItem.name, { lower: true });
+	if (req.body.radioStatus === "Mở") {
 		updateItem.status = true;
 	}
-	else{
+	else {
 		updateItem.status = false;
 	}
 	updateItem.categoryId = req.body.categorySelect;
 	var errorItem = {};
 	var checkInput = true;
-	if(updateItem.name.toString().trim() == ""){
+	if (updateItem.name.toString().trim() == "") {
 		checkInput = false;
 		errorItem.msg_noName = "Bạn chưa nhập tên hãng";
+	}else {
+		var checkSlug = await brandModel.findOne({ slug: updateItem.slug , categoryId: updateItem.categoryId}).exec();
+		if (updateItem.slug != oldSlug && checkSlug != null) {
+			checkInput = false;
+			errorItem.msg_noName = 'Tên hãng bạn nhập đã tồn tại';
+		}
 	}
-	if(updateItem.categoryId == undefined){
+	if (updateItem.categoryId == undefined) {
 		checkInput = false;
 		errorItem.msg_noCategory = "Bạn chưa chọn gian hàng";
 	}
-	
 
-	if(checkInput == false){
+
+	if (checkInput == false) {
 		req.flash('item', updateItem);
 		req.flash('errorItem', errorItem);
 		res.redirect('/admin/hang-sx/sua/' + id);
 	}
-	else{
+	else {
 		updateItem.save();
 		res.redirect('/admin/hang-sx/danh-sach');
 	}

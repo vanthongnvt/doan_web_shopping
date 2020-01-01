@@ -66,16 +66,16 @@ orderSchema.statics.createOrder = async function(cart,userId,name,address,phone,
 	order.totalPrice = cart.totalPrice;
 	order.products = [];
 	const session = await this.startSession();
-  	session.startTransaction();
-  	const opts = { session };
+	session.startTransaction();
+	const opts = { session };
 	for(id in cart.items){
 		try{
 			let itemProduct = cart.items[id].item;
 			let qty = cart.items[id].qty;
-			let result = await productModel.findOneAndUpdate({_id:id,status:true,quantity:{"$gte":qty}},{"$inc": { "quantity":-qty}},opts);
+			let result = await productModel.findOneAndUpdate({_id:id,status:true,quantity:{"$gte":qty}},{"$inc": { "quantity":-qty,'numberOfProductSold':qty}},opts);
 			if(!result){
 				await session.abortTransaction();
-    			session.endSession();
+				session.endSession();
 				return {error:true, message:'product is not available', code:1, name:itemProduct.name, link: cart.itemProduct.link};
 			}
 			else{
@@ -84,19 +84,19 @@ orderSchema.statics.createOrder = async function(cart,userId,name,address,phone,
 		}catch(err){
 			console.log(err);
 			await session.abortTransaction();
-    		session.endSession();
+			session.endSession();
 			return {error:true, message:'server error', code:0};
 		}
 	}
 	try{
 		let result = await this.create(order);
 		await session.commitTransaction();
-    	session.endSession();
+		session.endSession();
 		return {error:false, data:result};
 	}catch(err){
 		console.log(err);
 		await session.abortTransaction();
-    	session.endSession();
+		session.endSession();
 		return {error:true, message:'server error',code:0};
 	}
 
@@ -124,7 +124,7 @@ orderSchema.statics.getOrdersOfUser = async function(userId,page,pageSize){
 
 orderSchema.statics.getOrderById = async function(id){
 	try{
-		let result = await this.findOne({_id:id}).populate({path:'products.productId',populate:{path:'categoryId'}}).exec();
+		let result = await this.findOne({_id:id}).populate('userId').populate({path:'products.productId',populate:{path:'categoryId'}}).exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);
@@ -147,6 +147,16 @@ orderSchema.statics.listOrder = async function(findObj,page,pageSize,sort){
 		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).sort(sort).exec();
 		return {error:false,data:result};
 
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+orderSchema.statics.updateStatus = async function(id,status){
+	try{
+		let order = await this.findOneAndUpdate({_id:id},{status:status},{new:true}).exec();
+		return {error:false,data:order};
 	}catch(err){
 		console.log(err);
 		return {error:true,message:err};

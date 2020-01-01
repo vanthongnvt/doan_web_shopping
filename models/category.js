@@ -123,7 +123,7 @@ categorySchema.statics.listCategory = async function(findObj,page,pageSize,sort)
 
 categorySchema.statics.all = async function(){
 	try{
-		let result = await this.find().exec();
+		let result = await this.find({}).sort({created:1}).exec();
 		return {error:false,data:result};
 
 	}catch(err){

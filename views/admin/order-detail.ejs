@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <% include layout/header %>
+
+</head>
+
+<body class="sidebar-mini fixed">
+    <div class="wrapper">
+        <div class="loader-bg">
+            <div class="loader-bar">
+            </div>
+        </div>
+        <% include layout/nav %>
+        <script>
+            var d = document.getElementById("navorder");
+            d.className += " active";
+        </script>
+        <div class="content-wrapper">
+            <!-- Container-fluid starts -->
+            <div class="container-fluid">
+
+                <!-- Header Starts -->
+                <div class="row">
+                    <div class="col-sm-12 p-0">
+                        <div class="main-header">
+                            <h4>Chi tiết đơn hàng</h4>
+                            <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
+                                <li class="breadcrumb-item">
+                                    <a href="/admin/">
+                                        <i class="icofont icofont-home"></i>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="/admin/don-hang/danh-sach">Đơn hàng</a>
+                                </li>
+                                <li class="breadcrumb-item"><a>Chi tiết</a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <!-- Header end -->
+
+                <!-- Tables start -->
+                <div class="card">
+
+                    <div class="card-block">
+                        <p><span class="label label-primary">Mã đơn: </span><span><%=order._id%></span></p>
+                        <p><span class="label label-success">Tài khoản: </span>
+                            <a href="/admin/profile?userId<%=order.userId._id%>"><span><%=order.userId.username%></span></a>
+                        </p>
+                        <div class="row">
+                            <div class="col-sm-12 table-responsive">
+                                <table class="table" >
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center txt-primary pro-pic">STT</th>
+                                            <th class="text-center txt-primary">
+                                               Sản phẩm
+                                            </th>
+                                            <th class="text-center txt-primary pro-pic">
+                                                Tên
+                                            </th>
+                                            <th class="text-center txt-primary">
+                                               Số lượng
+                                            </th>
+                                            <th class="text-center txt-primary">
+                                            	Giá
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myList">
+                                        <% order.products.forEach(function(product,i){ %>
+                                        <tr>
+                                            <td class="text-center"><%= i+1%></td>
+                                            <td class="text-center"><img width="40px" height="40px" src="/images/products/<%= product.productId.images[0] %>"></td>
+                                            <td><a href="/<%=product.productId.categoryId.slug%>/<%=product.productId.slug%>"><%= product.productId.name %></a></td>
+                                            <td class="text-center"><%= product.quantity %></td>
+                                            <td class="text-center"><%= product.price*product.quantity %> <%if(product.discount){%>(-<%=product.discount%>)<%}%></td>
+                                        </tr>
+                                        <% }) %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="pt-4 ship-detail my-2">
+                            <table>
+                                <tr><td class="txt-primary p-10">Tổng thanh toán:</td> <td class="total-price"><%=priceFormat(order.totalPrice)%> VNĐ</td></tr>
+                                <tr><td class="txt-primary p-10">Người nhận hàng:</td> <td><%=order.fullname%></td></tr>
+                                <tr><td class="txt-primary p-10">SĐT:</td> <td><%=order.phone%></td></tr>
+                                <tr><td class="txt-primary p-10">Địa chỉ:</td> <td><%=order.address%></td></tr>
+                                <tr><td class="txt-primary p-10">Ghi chú:</td> <td><%=order.note%></td></tr>
+                                <tr><td class="txt-primary p-10">Ngày đặt hàng:</td> <td><%=getDateCreated(order.created)%></td></tr>
+                                <tr><td class="txt-primary p-10">Trạng thái:</td>
+                                    <td>
+                                    <%if(order.status==0){%>
+                                    <span class="lable label-warning">Đang giao</span>
+                                    <%}else if(order.status==1){%>
+                                    <span class="label label-success">Đã giao</span>
+                                    <%}else if(order.status==2){%>
+                                    <span class="label label-default">Đã hoàn trả</span>
+                                    <%}else{%>
+                                    <span class="label label-danger">Đã hủy</span>
+                                    <%}%>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Required Jqurey -->
+        <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+        <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+
+        <!-- Required Fremwork -->
+        <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+        <!-- waves effects.js -->
+        <script src="/admin/plugins/Waves/waves.min.js"></script>
+
+        <!-- Scrollbar JS-->
+        <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+        <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
+
+        <!--classic JS-->
+        <script src="/admin/plugins/classie/classie.js"></script>
+
+        <!-- notification -->
+        <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+
+        <!-- custom js -->
+        <script type="text/javascript" src="/admin/js/main.min.js"></script>
+        <script type="text/javascript" src="/admin/pages/elements.js"></script>
+        <script src="/admin/js/menu.min.js"></script>
+
+        <!-- search js -->
+    </div>
+</body>
+
+</html>

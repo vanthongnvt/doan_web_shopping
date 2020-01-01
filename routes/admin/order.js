@@ -5,7 +5,7 @@ var orderController=require('../../controllers/admin/order_controller');
 
 router.get('/danh-sach',orderController.listOrder);
 
-router.post('/change-status',orderController.changeOrderStatus);
+router.post('/update-status',orderController.changeOrderStatus);
 
 router.post('/mark-as-seen',orderController.markAsSeen);
 

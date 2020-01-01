@@ -3,19 +3,7 @@ const productModel = require('../../models/product');
 const categoryModel = require('../../models/category');
 const brandModel = require('../../models/brand');
 var slug = require('slug');
-var multer = require('multer');
 var fs = require('fs');
-
-var storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, '../../public/images/products')
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.originalname)
-	}
-})
-
-var upload = multer({ storage: storage }).single('avatar');
 
 var MAX_PAGE_SIZE = 100
 exports.listProduct = async function (req, res, next) {
@@ -116,63 +104,19 @@ exports.addProductPage = async function (req, res, next) {
 		return res.send({ error: true, messsage: 'server error' });
 	}
 	else {
-		let flag = req.flash('flag')[0] || null;
-		console.log("flag: "+flag);
-		if (flag == null) { // tao trang add ban dau
-			var item = {};
-			console.log("Nhan:\n");
-			console.log(item);
-			var categoryId = item.categoryId;
+		let item = req.flash('item')[0] || {};
+		var categoryId = item.categoryId;
+		let brandList=[];
+		if(categoryId){
 			let page = 1, pageSize = MAX_PAGE_SIZE, findObj = { categoryId: categoryId };
 			let sort = { created: -1 };
-			let brandList = await brandModel.listBrand(findObj, page, pageSize, sort);
-
-			res.render('./admin/product-add', { categoriesSelect: categoryList.data, brandsSelect: brandList.data, data: item, dataError: {} });
+			let rs = await brandModel.listBrand(findObj, page, pageSize, sort);
+			if(!rs.error){
+				brandList=rs.data;
+			}
 		}
-		else { // == {}, load lai trang vi nhap sai
-			let item = req.flash('item')[0] || {};
-			var errorItem = {};
-			if (item.categoryId == undefined) {
-				checkInput = false;
-				errorItem.msg_noCategory = 'Bạn chưa chọn gian hàng';
-			}
-			if (item.brandId == undefined) {
-				checkInput = false;
-				errorItem.msg_noBrand = 'Bạn chưa chọn hãng';
-			}
-			var checkSlug = await productModel.findOne({ slug: item.slug }).exec();
-			console.log(checkSlug);
-			if (item.name == "") {
-				checkInput = false;
-				errorItem.msg_noName = 'Bạn chưa nhập tên sản phẩm';
-			} else if (checkSlug != null) {
-				checkInput = false;
-				errorItem.msg_noName = 'Tên sản phẩm bị trùng';
-			}
-
-			if (item.price == "" || item.price == null) {
-				checkInput = false;
-				errorItem.msg_noPrice = 'Bạn chưa nhập giá sản phẩm';
-			}
-			if (item.detail == "" || item.detail == null) {
-				checkInput = false;
-				errorItem.msg_noDetail = 'Bạn chưa nhập mô tả sản phẩm';
-			}
-			if (item.quantity == "" || item.quantity == null) {
-				checkInput = false;
-				errorItem.msg_noQuantity = 'Bạn chưa nhập số lượng sản phẩm';
-			}
-			console.log(errorItem);
-
-			console.log("Nhan:\n");
-			console.log(item);
-			var categoryId = item.categoryId;
-			let page = 1, pageSize = MAX_PAGE_SIZE, findObj = { categoryId: categoryId };
-			let sort = { created: -1 };
-			let brandList = await brandModel.listBrand(findObj, page, pageSize, sort);
-
-			res.render('./admin/product-add', { categoriesSelect: categoryList.data, brandsSelect: brandList.data, data: item, dataError: errorItem });
-		}
+		let errorItem = req.flash('error_messsage')[0] || {};
+		return res.render('./admin/product-add', { categoriesSelect: categoryList.data, brandsSelect: brandList, data: item, dataError: errorItem});
 	}
 }
 
@@ -182,26 +126,37 @@ exports.createProduct = async function (req, res, next) {
 	var item = {
 		images: null,
 	};
-
+	let type;
+	let now = (new Date()).getTime();
 	if (req.busboy) {
 		req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+			type=mimetype;
 			if (filename == "") {
 				checkInput = false;
 				errorItem.msg_noImg = "Bạn chưa chọn ảnh cho sản phẩm";
-				//item.images = null;
-				req.flash('item', item);
-				req.flash('errorItem', errorItem);
-				res.redirect('/admin/san-pham/them');
-				//buggggg
+				file.resume();
+			}
+			else if(mimetype!=='image/png'&&mimetype!=='image/jpg'&&mimetype!=='image/jpeg'){
+				checkInput = false;
+				errorItem.msg_noImg = "Hình ảnh không hợp lệ";
+				file.resume();
 			}
 			else {
 
-				fstream = fs.createWriteStream(process.cwd() + '/public/images/products/' + filename);
+				fstream = fs.createWriteStream(process.cwd() + '/public/images/products/' + now + filename);
 				file.pipe(fstream);
 				fstream.on('close', function () {
-					console.log("Upload Finished of " + filename);
+					console.log("Upload Finished of " + now + filename);
 					item.images = new Array(1);
-					item.images[0] = filename;
+					item.images[0] = now + filename;
+					if(checkInput==false){
+						fs.unlink(process.cwd() + '/public/images/products/' + item.images[0],function(err){
+							if ( err ){
+								//ignore error 
+								// console.log('ERROR: ' + err)
+							};
+						});
+					}
 				});
 			}
 
@@ -238,46 +193,68 @@ exports.createProduct = async function (req, res, next) {
 		req.busboy.on('finish', async function () {
 			if (item.categoryId == undefined) {
 				checkInput = false;
+				errorItem.msg_noCategory = 'Bạn chưa chọn gian hàng';
 			}
 			if (item.brandId == undefined) {
 				checkInput = false;
+				errorItem.msg_noBrand = 'Bạn chưa chọn hãng';
 			}
 			var checkSlug = await productModel.findOne({ slug: item.slug }).exec();
-			console.log(checkSlug);
+			
 			if (item.name == "") {
 				checkInput = false;
+				errorItem.msg_noName = 'Bạn chưa nhập tên sản phẩm';
 			} else if (checkSlug != null) {
 				checkInput = false;
+				errorItem.msg_noName = 'Tên sản phẩm bị trùng';
 			}
 			if (item.price == "" || item.price == null) {
 				checkInput = false;
+				errorItem.msg_noPrice = 'Bạn chưa nhập giá sản phẩm';
 			}
 			if (item.detail == "" || item.detail == null) {
 				checkInput = false;
+				errorItem.msg_noDetail = 'Bạn chưa nhập mô tả sản phẩm';
 			}
 			if (item.quantity == "" || item.quantity == null) {
 				checkInput = false;
+				errorItem.msg_noQuantity = 'Bạn chưa nhập số lượng sản phẩm';
 			}
 			if (checkInput == false) {
-				var flag = {};
-				console.log("before flash flag: "+flag);
-				req.flash('flag', flag);
+				if(item.images){
+					fs.unlink(process.cwd() + '/public/images/products/' + item.images[0],function(err){
+						if ( err ){
+							//ignore error 
+							// console.log('ERROR: ' + err)
+						};
+					});
+				}
+				req.flash('error_messsage', errorItem);
 				req.flash('item', item);
-				res.redirect('/admin/san-pham/them');
+				return res.redirect('/admin/san-pham/them');
 			}
 			else {
+				type = '.' + type.substring(6);
+				let oldname = item.images[0];
+				let newname = item.slug + type;
+				fs.rename(process.cwd() + '/public/images/products/' + oldname, process.cwd() + '/public/images/products/'+newname, function(err) {
+					if ( err ){
+						//ignore error 
+						// console.log('ERROR: ' + err)
+					};
+				});
+				item.images[0] =newname;
 				var data = new productModel(item);
 				data.save();
-				res.redirect('/admin/san-pham/danh-sach');
+				return res.redirect('/admin/san-pham/danh-sach');
 			}
 		});
 
 		req.pipe(req.busboy);
-
-		return;
 	}
-
-
+	else{
+		return res.redirect('/admin/san-pham/danh-sach');
+	}
 }
 
 exports.changeProductStatus = async function (req, res, next) {

@@ -14,7 +14,8 @@ exports.listOrder = async function(req,res,next){
 		findObj.$or = [
 			{name:{ '$regex' : query.q ,'$options': 'i'}},
 			{phone:{ '$regex' : query.q ,'$options': 'i'}},
-			{address:{ '$regex' : query.q ,'$options': 'i'}}
+			{address:{ '$regex' : query.q ,'$options': 'i'}},
+			{_id:query.q}
 		];
 	}
 	if(query.status!=null){
@@ -74,6 +75,17 @@ exports.listOrder = async function(req,res,next){
 }
 
 exports.changeOrderStatus = async function(req,res,next){
+	let status = req.body.status;
+	let id = req.body.id;
+	if(status==null||id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await orderModel.updateStatus(id,status);
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
 
 }
 
@@ -82,5 +94,10 @@ exports.markAsSeen = async function(req,res,next){
 }
 
 exports.orderDetail = async function(req,res,next){
-
+	let id = req.params.id;
+	let result = await orderModel.getOrderById(id);
+	if(result.error||result.data==null){
+		return res.render('./admin/404');
+	}
+	return res.render('./admin/order-detail',{order:result.data});
 }

@@ -69,7 +69,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 					<div class="col-lg-7 single-right-left simpleCart_shelfItem">
 						<h3 class="mb-3"><%=product.name%></h3>
-						<p class="mb-3">
+						<p class="mb-2">
 							<%if(product.discount>0){
 								%>
 
@@ -81,6 +81,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 								<span class="item_price"><%=priceFormat(product.price)%> VNĐ</span>
 								<%
 							}%>
+						</p>
+						<p class="mb-2">
+							<a href="/<%=product.categoryId.slug%>"><span class="p-2 badge badge-primary"><%=product.categoryId.name%></span></a>
+							<span class="p-2 badge badge-success"><%=product.brandId.name%></span>
 						</p>
 						<div class="single-infoagile">
 							<ul>
@@ -190,7 +194,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 		<div class="panel-comment mb-3">
 			<h3 class="px-5">Bình luận (<%=product.comments_count%>)</h3>
-			<div class="row mt-3">
+			<div class="mt-3">
 				<div class="col-lg-8 pt-3  mx-sm-2 mx-lg-5 border-top">
 					<div class="comment-box">
 						<div class="form-group">

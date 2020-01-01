@@ -154,10 +154,9 @@
 								<div class="position-relative wr mr-sm-2">
 									<input class="form-control" type="search" name="t_key" placeholder="Tìm kiếm" aria-label="Search" required>
 									<select class="input-select form-control" name="t_category">
-										<option value="dien-thoai">Điện thoại</option>
-										<option value="laptop">Laptop</option>
-										<option value="tablet">Tablet</option>
-										<option value="tivi">Tivi</option>
+										<%menu.forEach(function(category){%>
+										<option value="<%=category.slug%>"><%=category.name%></option>
+										<%})%>
 									</select>
 								</div>
 								<button class="btn my-2 my-sm-0 btn-search-product" type="button" title="Tìm kiếm"><i class="fas fa-search"></i></button>
@@ -188,65 +187,68 @@
 	<div class="navbar-inner">
 		<div class="container">
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-							<!-- <div class="agileits-navi_search">
-								<form action="#" method="post">
-									<select id="agileinfo-nav_search" name="agileinfo_search" class="border" required="">
-										<option value="">Tất cả danh mục</option>
-										<option value="Televisions">TV</option>
-										<option value="Headphones">Tai nghe</option>
-										<option value="Computers">Máy tính</option>
-										<option value="Appliances">Thiết bị gia dụng</option>
-										<option value="Mobiles">Điện thoại</option>
-										<option value="Fruits &amp; Vegetables">Tv &amp; Video</option>
-										<option value="iPad & Tablets">iPad & Tablets</option>
-										<option value="Cameras & Camcorders">Cameras & Camcorders</option>
-										<option value="Home Audio & Theater">Giàn âm thanh sân khấu</option>
-									</select>
-								</form>
-							</div> -->
-							<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-								<span class="navbar-toggler-icon"></span>
-							</button>
-							<div class="collapse navbar-collapse" id="navbarSupportedContent">
-								<ul class="navbar-nav ml-auto text-center mr-xl-5">
-									<li class="nav-item active mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link" href="/">Trang chủ
-											<span class="sr-only">(current)</span>
-										</a>
-									</li>
-									<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link" href="/dien-thoai">Điện thoại</a>
-									</li>
-									<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link" href="/laptop">Laptop</a>
-									</li>
-									<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link" href="/tablet">Tablet</a>
-									</li>
-									<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link" href="/tivi">Tivi</a>
-									</li>
-									<li class="nav-item dropdown mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											Phụ kiện
-										</a>
-										<div class="dropdown-menu">
-											<a class="dropdown-item" href="/tai-nghe">Tai nghe</a>
-											<div class="dropdown-divider"></div>
-											<a class="dropdown-item" href="/loa">Loa</a>
-											<div class="dropdown-divider"></div>
-											<a class="dropdown-item" href="/usb">USB</a>
-										</div>
-									</li>
-									<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
-										<a class="nav-link" href="/gioi-thieu">Giới thiệu</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" href="/lien-he">Liên hệ</a>
-									</li>
-								</ul>
-							</div>
-						</nav>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ml-auto text-center mr-xl-5">
+						<li class="nav-item active mr-lg-2 mb-lg-0 mb-2">
+							<a class="nav-link" href="/">Trang chủ
+								<span class="sr-only">(current)</span>
+							</a>
+						</li>
+						<%let count = 0%>
+						<%menu.every(function(category,i){%>
+							<%if(!category.isAccessories){
+								count++;
+								%>
+								<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
+									<a class="nav-link" href="/<%=category.slug%>"><%=category.name%></a>
+								</li>
+								<%}%>
+								<%if(count==3){
+									return false;
+								}
+								else{
+									return true;
+								}%>
+								<%})%>
+								<li class="nav-item dropdown mr-lg-2 mb-lg-0 mb-2">
+									<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Khác
+									</a>
+									<div class="dropdown-menu">
+										<%menu.every(function(category,i){%>
+										<%if(!category.isAccessories){%>
+										<a class="dropdown-item" href="<%=category.slug%>"><%=category.name%></a>
+										<div class="dropdown-divider"></div>
+										<%}%>
+										<%return true
+									})%>
+								</div>
+							</li>
+							<li class="nav-item dropdown mr-lg-2 mb-lg-0 mb-2">
+								<a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Phụ kiện
+								</a>
+								<div class="dropdown-menu">
+									<%menu.forEach(function(category){%>
+									<%if(category.isAccessories){%>
+									<a class="dropdown-item" href="<%=category.slug%>"><%=category.name%></a>
+									<div class="dropdown-divider"></div>
+									<%}%>
+									<%})%>
+								</div>
+							</li>
+							<li class="nav-item mr-lg-2 mb-lg-0 mb-2">
+								<a class="nav-link" href="/gioi-thieu">Giới thiệu</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/lien-he">Liên hệ</a>
+							</li>
+						</ul>
 					</div>
-				</div>
+				</nav>
+			</div>
+		</div>
 	<!-- //navigation -->

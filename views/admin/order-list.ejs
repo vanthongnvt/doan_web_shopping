@@ -34,7 +34,7 @@
                                 </li>
                                 <li class="breadcrumb-item"><a>Đơn hàng</a>
                                 </li>
-                                <li class="breadcrumb-item"><a href="/admin/gian-hang/danh-sach">Danh sách</a>
+                                <li class="breadcrumb-item"><a href="/admin/don-hang/danh-sach">Danh sách</a>
                                 </li>
                             </ol>
                         </div>
@@ -116,19 +116,19 @@
                                             <td><%= order.name %></td>
                                             <td><%= order.phone %></td>
                                             <td><%= order.address %></td>
-                                            <td><%= order.totalPrice %></td>
+                                            <td><%= priceFormat(order.totalPrice) %></td>
                                             <td class="text-center">
-                                                <% if(order.status == 1){ %>
-                                                <span class="label label-success m-t-20">Đã
-                                                giao</span>
-                                                <% }else if(order.status == 0){ %>
-                                                <span class="label label-warning">Đang giao</span>
-                                                <% }else if(order.status == 2){ %>
-                                                <span class="label label-warning">Đã hoàn trả</span>
-                                                <% }else{ %>
-                                                <span class="label label-danger">Đã hủy</span>
-                                                <% } %>
-
+                                                <span  style="cursor: pointer;" data-status="<%=order.status%>" data-id="<%=order._id%>" class="change-status label
+                                                    <% if(order.status == 1){ %>
+                                                    label-success">Đã giao
+                                                    <% }else if(order.status == 0){ %>
+                                                    label-warning">Đang giao
+                                                    <% }else if(order.status == 2){ %>
+                                                    label-default">Đã hoàn trả
+                                                    <% }else{ %>
+                                                    label-danger">Đã hủy
+                                                    <% } %>
+                                                </span>
                                             </td>
                                             <td class="text-center">
                                                 <%if(!order.seen){%>
@@ -138,10 +138,12 @@
                                                 <%}%>
                                             </td>
                                             <td class="faq-table-btn">
-                                                <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="View">
-                                                    <i class="icofont icofont-eye-alt"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                <a href="/admin/don-hang/chi-tiet/<%=order._id%>">
+                                                    <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="View">
+                                                        <i class="icofont icofont-eye-alt"></i>
+                                                    </button>
+                                                </a>
+                                                <button type="button" class="btn btn-danger waves-effect waves-light delete-order" data-toggle="tooltip" data-placement="top" title="Delete" data-id="<%=order._id%>">
                                                     <i class="icofont icofont-ui-delete"></i>
                                                 </button>
                                             </td>
@@ -182,9 +184,13 @@
         <!-- notification -->
         <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
 
+        <!-- sweetalert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
         <!-- custom js -->
         <script type="text/javascript" src="/admin/js/main.min.js"></script>
         <script type="text/javascript" src="/admin/pages/elements.js"></script>
+        
         <script src="/admin/js/menu.min.js"></script>
 
         <!-- search js -->
@@ -249,6 +255,68 @@
 
                     window.location= url+serialize(mquery);
                 });
+
+                $('.change-status').click(function(){
+                    var id = $(this).attr('data-id');
+                    var status = $(this).attr('data-status');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    console.log(status);
+                    Swal.fire({
+                        title: 'Cập nhật trạng thái đơn hàng',
+                        input: 'radio',
+                        inputOptions: {'0':'Đang Giao','1':'Đã giao','2':'Đã hoàn trả','-1':'Đã hủy'},
+                        inputValue:status,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==status) {
+                                return;
+                            }
+                            else{
+                                $.ajax({
+                                    url:'/admin/don-hang/update-status',
+                                    type:'post',
+                                    data:{id:id,status:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                })
+
+                $('.delete-order').click(function(){
+                    var id = $(this).attr('data-id');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    Swal.fire({
+                      title: 'Xóa đơn hàng này?',
+                      text: "Đơn hàng sẽ bị xóa khỏi hệ thống!",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#d33',
+                      confirmButtonText: 'Xóa!',
+                      cancelButtonText:'Hủy',
+                  }).then((result) => {
+                      if (result.value) {
+                        //TODO ajax request
+                        Swal.fire(
+                          'Deleted!',
+                          'Your file has been deleted.',
+                          'success'
+                          )
+                    }
+                })
+              })
             });
         </script>
     </div>

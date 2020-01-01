@@ -329,6 +329,12 @@ ul.multi-column-dropdown li a:hover {
 .dropdown-item {
     font-size: 15px;
 }
+.dropdown-menu{
+    margin-top: 0;
+}
+.dropdown:hover .dropdown-menu{
+    display: block !important;
+}
 
 .dropdown-item.active,
 .dropdown-item:active {
@@ -533,6 +539,8 @@ h3.tittle-w3l span {
 
 #PPminicarts ul {
     width: 548px !important;
+    max-height: 350px;
+    overflow-y: auto;
 }
 
 #PPminicarts .minicarts-item a {

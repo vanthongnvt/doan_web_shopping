@@ -124,7 +124,9 @@
 									</tbody>
 								</table>
 								<!-- end of table -->
-
+								<%if(pagination.totalItem>0){%>
+                                <%-include('layout/pagination',{pagination:pagination});%>
+                                <%}%>
 
 							</div>
 						</div>

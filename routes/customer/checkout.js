@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var authRedirectMiddleware=require('../../middleware/auth_redirect');
 var checkoutController=require('../../controllers/customer/checkout_controller');
+const getMenu = require('../../middleware/get_menu');
 
-router.get('/', checkoutController.checkout);
+router.get('/', getMenu,checkoutController.checkout);
 
 module.exports = router;

@@ -83,7 +83,7 @@ exports.updateInfo = async function(req,res,next){
         })
     }
     if(fullname!=null&&fullname.length > 50){
-        messages.error_phone = 'Tên tối đa 50 ký tự';
+        messages.error_fullname = 'Tên tối đa 50 ký tự';
     }
 
     if(address!=null&&address.length>300){

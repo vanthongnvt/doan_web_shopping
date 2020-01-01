@@ -126,7 +126,9 @@
                                     </tbody>
                                 </table>
                                 <!-- end of table -->
-
+                                <%if(pagination.totalItem>0){%>
+                                <%-include('layout/pagination',{pagination:pagination});%>
+                                <%}%>
 
                             </div>
                         </div>
@@ -180,8 +182,8 @@
                 $("#myInput").on("keyup", function () {
                     var value = $(this).val().toLowerCase();
                     $("#myList tr").filter(function () {
-                       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                   });
+                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                 });
                 });
 
                 var url =window.location.href.split('?')[0];

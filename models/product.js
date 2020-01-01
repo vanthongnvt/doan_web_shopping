@@ -93,8 +93,8 @@ productSchema.statics.findProductById = async function(id){
 
 productSchema.statics.getProductByName=async function(name){
 	try{
-		var result = await this.findOne({slug:name}).populate('categoryId').populate('comments_count').exec();
-		return {error:false,data:result};
+		var product = await this.findOneAndUpdate({slug:name},{"$inc": { "view":1}}).populate('categoryId').populate('brandId').populate('comments_count').exec();
+		return {error:false,data:product};
 	}catch(err){
 		console.log(err);
 		return {error:true,message:err};

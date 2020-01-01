@@ -134,13 +134,15 @@
                                             <td><%= product.brandId.name %></td>
                                             <td style="width: 20%"><a href="/<%=product.categoryId.slug%>/<%=product.slug%>"><%= product.name %></a></td>
                                             <td><%= product.price %></td>
-                                            <td class="text-center"><%= product.quantity %></td>
-                                            <td class="text-center"><%if(product.discount>0){%><%=product.discount%>%<%}%></td>
+                                            <td class="text-center">
+                                                <span class="label label-default change-quantity" style="cursor: pointer;" data-id="<%=product._id%>" data-quantity="<%=product.quantity%>"><%= product.quantity %></span>
+                                            </td>
+                                            <td class="text-center"><%if(product.discount>0){%><%=product.discount%>%<%}else{%>-<%}%></td>
                                             <td class="text-center"><%=product.numberOfProductSold%></td>
                                             <td class="text-center"><%=product.view%></td>
                                             <td class="text-center">
                                                 <% if(product.status == 1){ %>
-                                                <span class="label label-success m-t-20">Mở</span>
+                                                <span class="label label-success">Mở</span>
                                                 <% }else{ %>
                                                 <span class="label label-danger">Đóng</span>
                                                 <% } %>
@@ -190,6 +192,9 @@
 
         <!-- notification -->
         <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+
+        <!-- sweetalert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
         <!-- custom js -->
         <script type="text/javascript" src="/admin/js/main.min.js"></script>
@@ -277,6 +282,46 @@
 
                 $('.submit-search').click(function(){
                     $('#form-search').submit();
+                });
+
+
+
+                $('.change-quantity').click(function(){
+                    var id = $(this).attr('data-id');
+                    var quantity = $(this).attr('data-quantity');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    console.log(status);
+                    Swal.fire({
+                        title: 'Cập nhật số lượng sản phẩm',
+                        input: 'number',
+                        inputValue:quantity,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==quantity) {
+                                return;
+                            }
+                            else{
+                                // $.ajax({
+                                //     url:'/admin/don-hang/update-status',
+                                //     type:'post',
+                                //     data:{id:id,status:value,_csrf:_csrf},
+                                //     success:function(res){
+                                //         if(res.error){
+                                //             Swal.fire({
+                                //              icon: 'error',
+                                //              title: 'Oops...',
+                                //              text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                //          })
+                                //         }
+                                //         else{
+                                //             location.href = location.href;
+                                //         }
+                                //     }
+                                // })
+                            }
+                        }
+                    })
                 })
 
             });

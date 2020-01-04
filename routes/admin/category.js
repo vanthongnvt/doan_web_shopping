@@ -13,7 +13,11 @@ router.get('/sua/:id',categoryController.editCategoryPage);
 
 router.post('/update',categoryController.updateCategory);
 
-// router.post('/change-status',categoryController.changeCategoryStatus);
+router.post('/update-status',categoryController.changeCategoryStatus);
+
+router.post('/update-isAccessories',categoryController.changeIsAccessories);
+
+router.post('/delete-category',categoryController.deleteCategory);
 
 
 module.exports = router;

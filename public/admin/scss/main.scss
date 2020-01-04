@@ -23,6 +23,7 @@ File: main.css
 	- Responsive media class
 
 ============= */
+@import '~@sweetalert2/theme-material-ui/material-ui.scss';
 @import url( '../plugins/waves/waves.min.css');
 @import url( '../plugins/notification/css/animate.min.css');
 @import url( '../plugins/notification/css/notification.css');

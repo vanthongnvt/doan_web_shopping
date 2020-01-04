@@ -11,4 +11,6 @@ router.post('/mark-as-seen',orderController.markAsSeen);
 
 router.get('/chi-tiet/:id',orderController.orderDetail);
 
+router.post('/delete-order',orderController.deleteOrder);
+
 module.exports = router;

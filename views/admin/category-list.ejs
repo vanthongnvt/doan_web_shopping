@@ -95,19 +95,24 @@
                                             <td class="text-center"><%= getDateCreated(category.created) %></td>
                                             <td class="text-center"><%= category.name %></td>
                                             <td class="text-center">
-                                                <%if(category.isAccessories==true){%>
-                                                <i class="fa fa-check"></i>
-                                                <%}else{%>
-                                                <i class="fa fa-times"></i>
-                                                <%}%>
+                                                    <i class="fa 
+                                                    <%if(category.isAccessories==true){%>
+                                                        fa-check
+                                                    <%}else{%>
+                                                        fa-times
+                                                    <%}%>
+                                                    change-isAccessories" data-id="<%=category._id%>" data-input="<%=category.isAccessories%>"></i>
+                                                
                                             </td>
                                             <td class="text-center"><%= category.numProducts %></td>
                                             <td class="text-center">
-                                                <% if(category.status == 1){ %>
-                                                <span class="label label-success m-t-20">Mở</span>
-                                                <% }else{ %>
-                                                <span class="label label-danger">Đóng</span>
-                                                <% } %>
+                                                <span  style="cursor: pointer;" data-name="<%=category.name%>" data-status="<%=category.status%>" data-id="<%=category._id%>" class="change-status label
+                                                    <% if(category.status == true){ %>
+                                                    label-success m-t-20">Mở
+                                                    <% }else{ %>
+                                                    label-danger">Đóng
+                                                    <% } %>
+                                                </span>
                                             </td>
                                             <td class="faq-table-btn text-center">
                                                 <a href="/admin/gian-hang/sua/<%=category._id%>">
@@ -115,7 +120,12 @@
                                                         <i class="icofont icofont-ui-edit"></i>
                                                     </button>
                                                 </a>
-                                                <button type="button"class="btn btn-danger waves-effect waves-light"data-toggle="tooltip" data-placement="top" title="Delete">
+                                                <a href="/<%=category.slug%>">
+													<button type="button" class="btn btn-success waves-effect waves-light"data-toggle="tooltip" data-placement="top" title="View">
+															<i class="icofont icofont-eye-alt"></i>
+														</button>
+												</a>
+                                                <button type="button"class="btn btn-danger waves-effect waves-light delete-category" data-id="<%=category._id%>" data-numProducts="<%=category.numProducts%>" data-toggle="tooltip" data-placement="top" title="Delete">
                                                     <i class="icofont icofont-ui-delete"></i>
                                                 </button>
                                             </td>
@@ -157,6 +167,9 @@
 
         <!-- notification -->
         <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+
+         <!-- sweetalert -->
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
         <!-- custom js -->
         <script type="text/javascript" src="/admin/js/main.min.js"></script>
@@ -213,7 +226,128 @@
                 $('.submit-search').click(function(){
                     $('#form-search').submit();
                 })
+
+                $('.change-status').click(function(){
+                    var id = $(this).attr('data-id');
+                    var name = $(this).attr('data-name');
+                    var status = $(this).attr('data-status');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    console.log(status);
+                    Swal.fire({
+                        title: 'Cập nhật trạng thái gian hàng '+ name,
+                        input: 'radio',
+                        inputOptions: {'true': 'Mở', 'false':'Đóng'},
+                        inputValue:status,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==status) {
+                                return;
+                            }
+                            else{
+                                $.ajax({
+                                    url:'/admin/gian-hang/update-status',
+                                    type:'post',
+                                    data:{id:id,status:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                })
+
+                $('.change-isAccessories').click(function(){
+                    var id = $(this).attr('data-id');
+                    var input = $(this).attr('data-input');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    Swal.fire({
+                        title: 'Cập nhật loại phụ kiện cho gian hàng',
+                        input: 'radio',
+                        inputOptions: {'true': 'Phụ kiện', 'false':'Không phụ kiện'},
+                        inputValue:input,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==input) {
+                                return;
+                            }
+                            else{
+                                $.ajax({
+                                    url:'/admin/gian-hang/update-isAccessories',
+                                    type:'post',
+                                    data:{id:id,data:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                })
+
+                $('.delete-category').click(function(){
+					var id = $(this).attr('data-id');
+					var numProducts = $(this).attr('data-numProducts')
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    Swal.fire({
+                      title: 'Xóa gian hàng sản xuất này?',
+                      text: "Các hãng sản xuất cùng với "+numProducts+" sản phẩm thuộc gian hàng cũng cũng sẽ bị xóa khỏi hệ thống!",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#d33',
+                      confirmButtonText: 'Xóa!',
+                      cancelButtonText:'Hủy',
+                  }).then((result) => {
+                      if (result.value) {
+                        $.ajax({
+                                    url:'/admin/gian-hang/delete-category',
+                                    type:'post',
+                                    data:{id:id,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                        Swal.fire(
+                          'Đã xóa!',
+                          'Gian hàng đã bị xóa khỏi danh sách',
+                          'success'
+                          )
+                    }
+                })
+              })
+
             });
+
+            
         </script>
 
     </div>

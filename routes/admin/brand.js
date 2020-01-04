@@ -13,6 +13,8 @@ router.get('/sua/:id',brandController.editbrandPage);
 
 router.post('/update',brandController.updateBrand);
 
-// router.post('/change-status',brandController.changebrandStatus);
+router.post('/update-status',brandController.changeBrandStatus);
+
+router.post('/delete-brand',brandController.deleteBrand);
 
 module.exports = router;

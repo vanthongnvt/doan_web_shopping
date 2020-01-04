@@ -133,19 +133,32 @@
                                             <td><%= product.categoryId.name %></td>
                                             <td><%= product.brandId.name %></td>
                                             <td style="width: 20%"><a href="/<%=product.categoryId.slug%>/<%=product.slug%>"><%= product.name %></a></td>
-                                            <td><%= product.price %></td>
+                                            <td class="text-center">
+                                                <span class="label label-info change-price" style="cursor: pointer;" data-id="<%=product._id%>" data-price="<%=product.price%>"><%= product.price %></span>
+                                            </td>
                                             <td class="text-center">
                                                 <span class="label label-default change-quantity" style="cursor: pointer;" data-id="<%=product._id%>" data-quantity="<%=product.quantity%>"><%= product.quantity %></span>
                                             </td>
-                                            <td class="text-center"><%if(product.discount>0){%><%=product.discount%>%<%}else{%>-<%}%></td>
+                                            <td class="text-center">
+                                                <span class="label label-warning change-discount" style="cursor: pointer;" data-id="<%=product._id%>" data-discount="<%=product.discount%>">
+                                                <%if(product.discount > 0){%>
+                                                    <%=product.discount%>%
+                                                <%}else{%>
+                                                    -
+                                                <%}%>
+                                                </span>
+                                                
+                                            </td>
                                             <td class="text-center"><%=product.numberOfProductSold%></td>
                                             <td class="text-center"><%=product.view%></td>
                                             <td class="text-center">
-                                                <% if(product.status == 1){ %>
-                                                <span class="label label-success">Mở</span>
-                                                <% }else{ %>
-                                                <span class="label label-danger">Đóng</span>
-                                                <% } %>
+                                                <span  style="cursor: pointer;" data-status="<%=product.status%>" data-id="<%=product._id%>" class="change-status label
+                                                    <% if(product.status == true){ %>
+                                                    label-success m-t-20">Mở
+                                                    <% }else{ %>
+                                                    label-danger">Đóng
+                                                    <% } %>
+                                                </span>
                                             </td>
                                             <td class="faq-table-btn">
                                                 <a href="/admin/san-pham/sua/<%=product._id%>">
@@ -153,7 +166,7 @@
                                                             <i class="icofont icofont-ui-edit"></i>
                                                         </button>
                                                 </a>                                               
-                                                <button type="button" class="btn btn-danger waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                <button type="button" class="btn btn-danger waves-effect waves-light delete-product" data-id="<%=product._id%>" data-toggle="tooltip" data-placement="top" title="Delete">
                                                     <i class="icofont icofont-ui-delete"></i>
                                                 </button>
                                             </td>
@@ -284,6 +297,44 @@
                     $('#form-search').submit();
                 });
 
+                $('.change-status').click(function(){
+                    var id = $(this).attr('data-id');
+                    var status = $(this).attr('data-status');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    console.log(status);
+                    Swal.fire({
+                        title: 'Cập nhật trạng thái cho sản phẩm',
+                        input: 'radio',
+                        inputOptions: {'true': 'Mở', 'false':'Đóng'},
+                        inputValue:status,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==status) {
+                                return;
+                            }
+                            else{
+                                $.ajax({
+                                    url:'/admin/san-pham/update-status',
+                                    type:'post',
+                                    data:{id:id,status:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                })
 
 
                 $('.change-quantity').click(function(){
@@ -302,29 +353,144 @@
                                 return;
                             }
                             else{
-                                // $.ajax({
-                                //     url:'/admin/don-hang/update-status',
-                                //     type:'post',
-                                //     data:{id:id,status:value,_csrf:_csrf},
-                                //     success:function(res){
-                                //         if(res.error){
-                                //             Swal.fire({
-                                //              icon: 'error',
-                                //              title: 'Oops...',
-                                //              text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
-                                //          })
-                                //         }
-                                //         else{
-                                //             location.href = location.href;
-                                //         }
-                                //     }
-                                // })
+                                $.ajax({
+                                    url:'/admin/san-pham/update-quantity',
+                                    type:'post',
+                                    data:{id:id,quantity:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
                             }
                         }
                     })
                 })
 
+                $('.change-price').click(function(){
+                    var id = $(this).attr('data-id');
+                    var price = $(this).attr('data-price');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    Swal.fire({
+                        title: 'Cập nhật giá sản phẩm',
+                        input: 'number',
+                        inputValue:price,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==price) {
+                                return;
+                            }
+                            else{
+                                $.ajax({
+                                    url:'/admin/san-pham/update-price',
+                                    type:'post',
+                                    data:{id:id,price:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                })
+
+                $('.change-discount').click(function(){
+                    var id = $(this).attr('data-id');
+                    var discount = $(this).attr('data-discount');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    Swal.fire({
+                        title: 'Cập nhật giảm giá của sản phẩm',
+                        input: 'number',
+                        inputValue:discount,
+                        showCancelButton:true,
+                        cancelButtonText:'Hủy',
+                        inputValidator: (value) => {
+                            if (value==discount) {
+                                return;
+                            }
+                            else{
+                                $.ajax({
+                                    url:'/admin/san-pham/update-discount',
+                                    type:'post',
+                                    data:{id:id,discount:value,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                })
+
+                $('.delete-product').click(function(){
+                    var id = $(this).attr('data-id');
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
+                    Swal.fire({
+                      title: 'Xóa sản phẩm này?',
+                      text: "Sản phẩm sẽ bị xóa khỏi hệ thống!",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#d33',
+                      confirmButtonText: 'Xóa!',
+                      cancelButtonText:'Hủy',
+                  }).then((result) => {
+                      if (result.value) {
+                        $.ajax({
+                                    url:'/admin/san-pham/delete-product',
+                                    type:'post',
+                                    data:{id:id,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
+                        Swal.fire(
+                          'Đã xóa!',
+                          'Sản phẩm đã bị xóa khỏi danh sách',
+                          'success'
+                          )
+                    }
+                })
+              })
+
             });
+
+            
 
         </script>
     </div>

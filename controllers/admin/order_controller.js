@@ -90,7 +90,17 @@ exports.changeOrderStatus = async function(req,res,next){
 }
 
 exports.markAsSeen = async function(req,res,next){
-
+	let id = req.body.id;
+	let obj = await orderModel.findById(id);
+	console.log('obj: '+obj);
+	if(obj.error){
+		return res.send({error:true,messsage:'server error'});
+	}else{
+		obj.checked = true;
+		obj.save();
+		console.log('xong');
+		return res.send({error:false, messsage:'successfull'});
+	}
 }
 
 exports.orderDetail = async function(req,res,next){
@@ -100,4 +110,18 @@ exports.orderDetail = async function(req,res,next){
 		return res.render('./admin/404');
 	}
 	return res.render('./admin/order-detail',{order:result.data});
+}
+
+exports.deleteOrder = async function(req,res,next){
+	let id = req.body.id;
+	if(id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await orderModel.findByIdAndRemove(id);
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
+
 }

@@ -85,3 +85,34 @@ exports.blockUser =async function(req,res,next){
 exports.userOrderHistory = async function(req,res,next){
 
 }
+
+exports.changeUserStatus = async function(req,res,next){
+	let status = req.body.status;
+	let id = req.body.id;
+	if(status==null||id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await userModel.findById(id);
+	result.block = status; // true: block, false: active
+	result.save();
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
+
+}
+
+exports.deleteUser = async function(req,res,next){
+	let id = req.body.id;
+	if(id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await userModel.findByIdAndRemove(id);
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
+
+}

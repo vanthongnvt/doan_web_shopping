@@ -131,11 +131,14 @@
                                                 </span>
                                             </td>
                                             <td class="text-center">
-                                                <%if(!order.seen){%>
-                                                <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="Mark as seen">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                <%}%>
+                                                    <%if(!order.checked){%>
+                                                        <button type="button"
+                                                            class="btn btn-primary waves-effect waves-light mark-as-seen"
+                                                            data-id="<%=order._id%>" data-toggle="tooltip" data-placement="top"
+                                                            title="Mark as seen">
+                                                            <i class="fa fa-check"></i>
+                                                        </button>
+                                                        <%}%>
                                             </td>
                                             <td class="faq-table-btn">
                                                 <a href="/admin/don-hang/chi-tiet/<%=order._id%>">
@@ -260,7 +263,6 @@
                     var id = $(this).attr('data-id');
                     var status = $(this).attr('data-status');
                     var _csrf = $('meta[name="csrf-token"]').attr('content');
-                    console.log(status);
                     Swal.fire({
                         title: 'Cập nhật trạng thái đơn hàng',
                         input: 'radio',
@@ -308,16 +310,56 @@
                       cancelButtonText:'Hủy',
                   }).then((result) => {
                       if (result.value) {
-                        //TODO ajax request
+                        $.ajax({
+                                    url:'/admin/don-hang/delete-order',
+                                    type:'post',
+                                    data:{id:id,_csrf:_csrf},
+                                    success:function(res){
+                                        if(res.error){
+                                            Swal.fire({
+                                             icon: 'error',
+                                             title: 'Oops...',
+                                             text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                         })
+                                        }
+                                        else{
+                                            location.href = location.href;
+                                        }
+                                    }
+                                })
                         Swal.fire(
-                          'Deleted!',
-                          'Your file has been deleted.',
+                          'Đã xóa!',
+                          'Đơn hàng đã bị xóa khỏi danh sách',
                           'success'
                           )
                     }
                 })
               })
+
+              $('.mark-as-seen').click(function () {
+                    var id = $(this).attr('data-id');
+                    console.log('id: '+id);
+                    $.ajax({
+                        url: '/admin/don-hang/mark-as-seen',
+                        type: 'post',
+                        data: { id: id, _csrf: _csrf },
+                        success: function (res) {
+                            if (res.error) {
+                                Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: 'Đã có lỗi xảy ra. Vui lòng thử lại sau!',
+                                        })
+                            }
+                            else {
+                                location.href = location.href;
+                            }
+                        }
+                    })
+                });
+             
             });
+           
         </script>
     </div>
 </body>

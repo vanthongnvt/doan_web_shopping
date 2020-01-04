@@ -17,6 +17,14 @@ router.post('/update',productController.updateProduct);
 
 router.get('/ajax/:id',productController.ajaxBrandOfCategory);
 
-//router.post('/ajax/upload-avatar',productController.ajaxUploadAvatar);
+router.post('/update-status',productController.changeProductStatus);
+
+router.post('/update-quantity',productController.updateProductQuantity);
+
+router.post('/update-price',productController.updateProductPrice);
+
+router.post('/update-discount',productController.updateProductDiscount);
+
+router.post('/delete-product',productController.deleteProduct);
 
 module.exports = router;

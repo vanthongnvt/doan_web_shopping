@@ -1,5 +1,7 @@
 const express = require('express');
 const categoryModel = require('../../models/category');
+const brandModel = require('../../models/brand');
+const productModel = require('../../models/product');
 var slug = require('slug');
 var mongoose = require('mongoose');
 var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, function (err) {
@@ -7,7 +9,7 @@ var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNew
 		console.log(err);
 	}
 });
-var MAX_PAGE_SIZE = 100;
+var MAX_PAGE_SIZE = 10;
 
 exports.listCategory = async function (req, res, next) {
 
@@ -176,3 +178,68 @@ exports.updateCategory = async function (req, res, next) {
 	}
 
 }
+
+exports.changeCategoryStatus = async function(req,res,next){
+	let status = req.body.status;
+	let id = req.body.id;
+	if(status==null||id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await categoryModel.findById(id);
+	result.status = status; 
+	result.save();
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
+
+}
+
+exports.changeIsAccessories = async function(req,res,next){
+	let data = req.body.data;
+	console.log('data: '+data);
+	let id = req.body.id;
+	console.log('id: '+id);
+	if(data==null||id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await categoryModel.findById(id);
+	result.isAccessories = data; 
+	result.save();
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
+
+}
+
+exports.deleteCategory = async function(req,res,next){
+	let id = req.body.id;
+	if(id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+	let deleteProductsInCategory = await productModel.deleteMany({categoryId: id});
+	if(deleteProductsInCategory.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	else{
+		console.log('da xoa san  pham');
+		let deleteBrandsInCategory = await brandModel.deleteMany({categoryId: id});
+		if(deleteBrandsInCategory.error){
+			return res.send({error:true,messsage:'server error'});
+		}
+		console.log('da xoa hang san xuat');
+		let result = await categoryModel.findByIdAndRemove(id);
+		if(result.error){
+			return res.send({error:true,messsage:'server error'});
+		}
+		console.log('da xoa gian hang');
+		return res.send({error:false, messsage:'successfull'});
+	}
+	
+
+}
+
+

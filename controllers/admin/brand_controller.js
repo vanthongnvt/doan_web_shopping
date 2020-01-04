@@ -1,6 +1,7 @@
 const express = require('express');
 const brandModel = require('../../models/brand');
 const categoryModel = require('../../models/category');
+const productModel = require('../../models/product');
 var slug = require('slug');
 var mongoose = require('mongoose');
 var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, function (err) {
@@ -9,7 +10,7 @@ var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNew
 	}
 });
 
-var MAX_PAGE_SIZE = 100;
+var MAX_PAGE_SIZE = 10;
 exports.listBrand = async function (req, res, next) {
 
 	let page = 1, pageSize = MAX_PAGE_SIZE, findObj = {};
@@ -196,4 +197,41 @@ exports.updateBrand = async function (req, res, next) {
 		updateItem.save();
 		res.redirect('/admin/hang-sx/danh-sach');
 	}
+}
+
+exports.changeBrandStatus = async function(req,res,next){
+	let status = req.body.status;
+	let id = req.body.id;
+	if(status==null||id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+
+	let result = await brandModel.findById(id);
+	result.status = status; 
+	result.save();
+	if(result.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	return res.send({error:false, messsage:'successfull'});
+
+}
+
+exports.deleteBrand = async function(req,res,next){
+	let id = req.body.id;
+	if(id==null){
+		return res.send({error:true,messsage:'invalid params'});
+	}
+	let deleteProductsInBrand = await productModel.deleteMany({brandId: id});
+	if(deleteProductsInBrand.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	else{
+		let result = await brandModel.findByIdAndRemove(id);
+		if(result.error){
+			return res.send({error:true,messsage:'server error'});
+		}
+		return res.send({error:false, messsage:'successfull'});
+	}
+	
+
 }

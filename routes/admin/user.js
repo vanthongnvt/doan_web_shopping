@@ -9,4 +9,8 @@ router.post('/block',userController.blockUser);
 
 router.get('/lich-su-mua-hang',userController.userOrderHistory);
 
+router.post('/update-status',userController.changeUserStatus);
+
+router.post('/delete-user',userController.deleteUser);
+
 module.exports = router;

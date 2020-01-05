@@ -450,6 +450,9 @@
 						$('.minicarts-subtotal').find('span').html(priceFormat(cart.totalPrice));
 					}
 				})
+				.fail(function(res){
+					alert(res.responseJSON.message);
+				})
 			});
 
 			$('.quick-view-cart').click(function(e){

@@ -6,17 +6,20 @@ exports.detail = async function(req,res,next){
 	let result = await productModel.getProductByName(product);
 	if(!result.error){
 		if(result.data!=null&&result.data.categoryId.slug==category){
-			let relateProduct = await productModel.getRelateProducts(result.data);
-			if(!relateProduct.error){
-				res.render('./customer/single',{product:result.data, relateProducts:relateProduct.data});
+			if(result.data.status==true||(req.isAuthenticated()&&req.user.isAdmin)){
+				let relateProduct = await productModel.getRelateProducts(result.data);
+				if(!relateProduct.error){
+					res.render('./customer/single',{product:result.data, relateProducts:relateProduct.data});
+				}
+				else{
+					return res.send('500');
+				}
 			}
 			else{
-				return res.send('500');
+				return res.send('404');
 			}
 		}
-		else{
-			return res.send('404');
-		}
+		return res.send('404');
 	}
 	else{
 		return res.send('500');

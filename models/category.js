@@ -53,6 +53,7 @@ categorySchema.statics.getNewProduct= async function(){
 		var result = await this.aggregate([{
 			$match: {
 				isAccessories: false,
+				status:true,
 			}
 		},
 		{
@@ -68,7 +69,8 @@ categorySchema.statics.getNewProduct= async function(){
 				pipeline: [
 				{ 
 					$match: {
-						$expr: { $eq: [ '$categoryId', '$$indicator_id' ] }
+						'status':true,
+						$expr: { $eq: [ '$categoryId', '$$indicator_id' ]}
 					}
 				},
 				{ $limit: 4 }
@@ -85,13 +87,13 @@ categorySchema.statics.getNewProduct= async function(){
 
 categorySchema.statics.paginateFilterProducts= async function(category,sort,eqs,page){
 	try{
-		var countProduct = await this.findOne({slug:category}).populate({path:'numProducts',match:eqs}).exec();
+		var countProduct = await this.findOne({slug:category,status:true}).populate({path:'numProducts',match:eqs}).exec();
 		if(countProduct==null){
 			return {error:false,data:null};
 		}
 		else{
 			let count=countProduct.numProducts;
-			var products = await this.findOne({slug:category}).populate({path:'products',match:eqs,options:{skip:9*(page-1),limit:9,sort:sort}}).populate('brands').exec();
+			var products = await this.findOne({slug:category,status:true}).populate({path:'products',match:eqs,options:{skip:9*(page-1),limit:9,sort:sort}}).populate('brands').exec();
 			return {error:false,data:products,total:count};
 		}
 	}catch(err){

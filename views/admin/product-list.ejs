@@ -130,11 +130,11 @@
                                         <% products.forEach(function(product){ %>
                                         <tr>
                                             <td title="<%=product.created%>"><%= getDateCreated(product.created) %></td>
-                                            <td><%= product.categoryId.name %></td>
-                                            <td><%= product.brandId.name %></td>
-                                            <td style="width: 20%"><a href="/<%=product.categoryId.slug%>/<%=product.slug%>"><%= product.name %></a></td>
+                                            <td><%= product.categoryId?product.categoryId.name:null %></td>
+                                            <td><%= product.brandId?product.brandId.name:null %></td>
+                                            <td style="width: 20%"><a href="/<%=product.categoryId?product.categoryId.slug:null%>/<%=product.slug%>"><%= product.name %></a></td>
                                             <td class="text-center">
-                                                <span class="label label-info change-price" style="cursor: pointer;" data-id="<%=product._id%>" data-price="<%=product.price%>"><%= product.price %></span>
+                                                <span class="label label-info change-price" style="cursor: pointer;" data-id="<%=product._id%>" data-price="<%=product.price%>"><%= priceFormat(product.price) %></span>
                                             </td>
                                             <td class="text-center">
                                                 <span class="label label-default change-quantity" style="cursor: pointer;" data-id="<%=product._id%>" data-quantity="<%=product.quantity%>"><%= product.quantity %></span>

@@ -73,8 +73,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<%if(product.discount>0){
 								%>
 
-								<span class="item_price"><%=priceFormat(product.price*product.discount)%> VNĐ</span>
+								<span class="item_price"><%=priceAfterDiscount(product.price,product.discount)%> VNĐ</span>
 								<del class="mx-2 font-weight-light"><%=priceFormat(product.price)%> VNĐ</del>
+								<span class="p-2 badge badge-success">-<%=product.discount%>%</span>
 								<%
 							} else{
 								%>
@@ -83,8 +84,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							}%>
 						</p>
 						<p class="mb-2">
-							<a href="/<%=product.categoryId.slug%>"><span class="p-2 badge badge-primary"><%=product.categoryId.name%></span></a>
-							<span class="p-2 badge badge-success"><%=product.brandId.name%></span>
+							<a href="/<%=product.categoryId?product.categoryId.slug:null%>"><span class="p-2 badge badge-primary"><%=product.categoryId?product.categoryId.name:null%></span></a>
+							<span class="p-2 badge badge-success"><%=product.brandId?product.brandId.name:null%></span>
+						</p>
+						<p class="mb-2">
+							<%if(product.quantity>0){%>
+							<span class="p-2 badge badge-success">Còn <b><%=product.quantity%></b></span>
+							<%}else{%>
+							<span class="p-2 badge badge-danger">Hết hàng</span>
+							<%}%>
 						</p>
 						<div class="single-infoagile">
 							<ul>
@@ -114,10 +122,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 										<input type="hidden" name="cmd" value="_cart" />
 										<input type="hidden" name="add" value="1" />
 										<input type="hidden" name="business" value=" " />
-										<input type="hidden" name="item_name" value="Samsung Galaxy J7 Prime" />
-										<input type="hidden" name="amount" value="200.00" />
-										<input type="hidden" name="discount_amount" value="1.00" />
-										<input type="hidden" name="currency_code" value="USD" />
+										<input type="hidden" name="item_name" value="<%=product.name%>" />
+										<input type="hidden" name="amount" value="<%=product.price*product.discount%>" />
+										<input type="hidden" name="discount_amount" value="<%=product.discount%>" />
+										<input type="hidden" name="currency_code" value="VNĐ" />
 										<input type="hidden" name="return" value=" " />
 										<input type="hidden" name="cancel_return" value=" " />
 										<input type="submit" name="submit" value="Thêm vào giỏ hàng" class="button add-to-cart" />
@@ -157,7 +165,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									<%if(product.discount>0){
 										%>
 
-										<span class="item_price"><%=priceFormat(product.price*product.discount)%> VNĐ</span>
+										<span class="item_price"><%=priceAfterDiscount(product.price,product.discount)%> VNĐ</span>
 										<del><%=priceFormat(product.price)%> VNĐ</del>
 										<%
 									} else{
@@ -166,6 +174,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 										<%
 									}%>
 								</div>
+								<%if(product.discount>0){%>
+								<span class="product-new-top">-<%=product.discount%>%</span>
+								<%}%>
 								<div class="snipcart-details top_brand_home_details item_add single-item hvr-outline-out">
 									<form action="#" method="post">
 										<fieldset>
@@ -319,7 +330,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			$('input[name="comment_user"]').keyup(function(){
 				$('.invalid-comment-user').hide();
 			});
-		
+
 			$.get('/comment/list-comment-product?page=1&productId=<%=product._id%>',function(res){
 				if(typeof res.error == 'undefined' || res.error==false){
 					$('.payload-comments').html(res);
@@ -330,10 +341,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 				e.preventDefault();
 				var url = '/comment' + $(this).attr('data-url');
 				$.get(url,function(res){
-				if(typeof res.error == 'undefined' || res.error==false){
-					$('.payload-comments').html(res);
-				}
-			});
+					if(typeof res.error == 'undefined' || res.error==false){
+						$('.payload-comments').html(res);
+					}
+				});
 			})
 		});
 

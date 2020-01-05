@@ -338,7 +338,7 @@
 
               $('.mark-as-seen').click(function () {
                     var id = $(this).attr('data-id');
-                    console.log('id: '+id);
+                    var _csrf = $('meta[name="csrf-token"]').attr('content');
                     $.ajax({
                         url: '/admin/don-hang/mark-as-seen',
                         type: 'post',

@@ -25,5 +25,10 @@ module.exports =  function (req, res, next) {
 		let res = Number((price).toFixed(1)).toLocaleString();
 		return res;
 	}
+
+	res.locals.priceAfterDiscount = function(price,discount){
+		let rs = price*(100-discount)/100;
+		return res.locals.priceFormat(rs);
+	}
 	return next();
 }

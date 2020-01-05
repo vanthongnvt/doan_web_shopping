@@ -40,6 +40,9 @@ exports.addComment = async function(req,res,next){
     else{
         return res.send({error:true,messsage:'invalid params'});
     }
+    if(comment.length>=300){
+        return res.send({error:true,messsage:'Bình luận tối đa 300 ký tự'});
+    }
     if(req.isAuthenticated()){
         let user = req.user;
         comment.userId = user._id;

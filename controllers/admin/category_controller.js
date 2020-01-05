@@ -4,17 +4,13 @@ const brandModel = require('../../models/brand');
 const productModel = require('../../models/product');
 var slug = require('slug');
 var mongoose = require('mongoose');
-var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, function (err) {
-	if (err) {
-		console.log(err);
-	}
-});
+
 var MAX_PAGE_SIZE = 10;
 
 exports.listCategory = async function (req, res, next) {
 
 	let page = 1, pageSize = MAX_PAGE_SIZE, findObj = {};
-	let url = req.baseUrl + req.path + '?page=';
+	let url = req.baseUrl + req.path  + '?';
 	let query = req.query;
 	if (query.page) {
 		page = parseInt(req.query.page);
@@ -95,19 +91,19 @@ exports.createCategory = async function (req, res, next) {
 		isAccessories: rqisAcccessories
 	}
 	var errorItem = {};
-	var checkSlug = categoryModel.findOne({slug: item.slug}).exec();
+	var checkSlug = await categoryModel.findOne({slug: item.slug}).exec();
 	if (item.name.toString().trim() == "") {
 		errorItem.msg_noName = "Bạn chưa nhập tên gian hàng";
 		req.flash('item', item);
 		req.flash('errorItem', errorItem);
-		console.log(item);
+		// console.log(item);
 		res.redirect('/admin/gian-hang/them');
 	}
 	else if(checkSlug != null){
 		errorItem.msg_noName = "Tên gian hàng bạn nhập đã tồn tại";
 		req.flash('item', item);
 		req.flash('errorItem', errorItem);
-		console.log(item);
+		// console.log(item);
 		res.redirect('/admin/gian-hang/them');
 	}
 	else {
@@ -121,28 +117,28 @@ exports.createCategory = async function (req, res, next) {
 exports.editCategoryPage = async function (req, res, next) {
 	var id = req.params.id;
 	let itemdata = req.flash('item')[0] || null;
-	console.log(itemdata);
+	// console.log(itemdata);
 	let errorData = req.flash('errorItem')[0] || {};
 
 
 	if (itemdata == null) {
 		var findObj = await categoryModel.findOne({ _id: id }).exec();
-		console.log(findObj);
+		// console.log(findObj);
 		res.render('./admin/category-edit', { data: findObj, dataError: errorData });
 	}
 	else {
-		console.log(itemdata);
+		// console.log(itemdata);
 		res.render('./admin/category-edit', { data: itemdata, dataError: errorData });
 	}
 }
 
 exports.updateCategory = async function (req, res, next) {
 	var id = req.body.id;
-	console.log(id);
+	// console.log(id);
 	var errorItem = {};
 	var findObj = await categoryModel.findOne({ _id: id }).exec();
 	var oldSlug = findObj.slug;
-	console.log(findObj);
+	// console.log(findObj);
 	findObj.name = req.body.name;
 	findObj.slug = slug(findObj.name, { lower: true });
 	if (req.body.radioStatus === "Mở") {
@@ -157,7 +153,7 @@ exports.updateCategory = async function (req, res, next) {
 	else {
 		findObj.isAccessories = false;
 	}
-	console.log(findObj);
+	// console.log(findObj);
 	var checkSlug = await categoryModel.findOne({slug: findObj.slug}).exec();
 	
 	if (findObj.name.toString().trim() == "") {
@@ -198,9 +194,9 @@ exports.changeCategoryStatus = async function(req,res,next){
 
 exports.changeIsAccessories = async function(req,res,next){
 	let data = req.body.data;
-	console.log('data: '+data);
+	// console.log('data: '+data);
 	let id = req.body.id;
-	console.log('id: '+id);
+	// console.log('id: '+id);
 	if(data==null||id==null){
 		return res.send({error:true,messsage:'invalid params'});
 	}
@@ -225,17 +221,17 @@ exports.deleteCategory = async function(req,res,next){
 		return res.send({error:true,messsage:'server error'});
 	}
 	else{
-		console.log('da xoa san  pham');
+		// console.log('da xoa san  pham');
 		let deleteBrandsInCategory = await brandModel.deleteMany({categoryId: id});
 		if(deleteBrandsInCategory.error){
 			return res.send({error:true,messsage:'server error'});
 		}
-		console.log('da xoa hang san xuat');
+		// console.log('da xoa hang san xuat');
 		let result = await categoryModel.findByIdAndRemove(id);
 		if(result.error){
 			return res.send({error:true,messsage:'server error'});
 		}
-		console.log('da xoa gian hang');
+		// console.log('da xoa gian hang');
 		return res.send({error:false, messsage:'successfull'});
 	}
 	

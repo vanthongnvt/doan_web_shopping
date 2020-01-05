@@ -10,6 +10,7 @@ exports.listProduct = async function(req,res,next){
 	// console.log(url);
 
 	let eqs=new Object(),sort=new Object();
+	eqs.status = {'$eq':true};
 	let page;
 	if(query.page!=null){
 		page=parseInt(query.page)>=0?parseInt(query.page):1;

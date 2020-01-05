@@ -43,7 +43,7 @@ brandSchema.statics.getBrandByName=async function(name){
 }
 brandSchema.statics.getBrandsByCategory=async function(categoryId){
 	try{
-		var result = await this.find({categoryId:categoryId}).exec();
+		var result = await this.find({categoryId:categoryId,status:true}).exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);

@@ -4,18 +4,24 @@ var Cart =  require('../../models/cart');
 exports.addToCart = async function(req,res,next){
 	let id = req.params.id;
 	let product = await productModel.findProductById(id);
-	if(product&&!product.error&&product.status==true){
+	if(product.error){
+		res.status(404);
+		return res.send({message:"Lối. Vui lòng thử lại sau"});
+	}
+	if(product.data&&product.data.status==true){
+		if(product.quantity<=0){
+			return res.status(404).send({message:'Sản phẩm đã hết hàng'});
+		}
 		let cart = new Cart(req.session.cart?req.session.cart:{});
 		// console.log(cart);
 		let storedItem = cart.addItem(product.data,id);
 		// cart.clear();
 		req.session.cart= cart;
-		res.status(200);
-		res.send({message:"success",storedItem:storedItem,cart:cart});
+		return res.send({message:"success",storedItem:storedItem,cart:cart});
 	}
 	else{
 		res.status(404);
-		res.send({message:"fail"});
+		return res.send({message:"Sản phẩm không tồn tại"});
 	}
 }
 

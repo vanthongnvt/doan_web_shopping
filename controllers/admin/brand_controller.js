@@ -4,11 +4,6 @@ const categoryModel = require('../../models/category');
 const productModel = require('../../models/product');
 var slug = require('slug');
 var mongoose = require('mongoose');
-var db = mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, function (err) {
-	if (err) {
-		console.log(err);
-	}
-});
 
 var MAX_PAGE_SIZE = 10;
 exports.listBrand = async function (req, res, next) {
@@ -21,7 +16,7 @@ exports.listBrand = async function (req, res, next) {
 	else {
 		categoryList = categoryList.data;
 	}
-	let url = req.baseUrl + req.path + '?page=';
+	let url = req.baseUrl + req.path + '?';
 	let query = req.query;
 	if (query.page) {
 		page = parseInt(req.query.page);
@@ -119,8 +114,8 @@ exports.createBrand = async function (req, res, next) {
 			errorItem.msg_noName = 'Tên hãng bạn nhập đã tồn tại';
 		}
 	}
-	console.log(checkInput);
-	console.log(errorItem);
+	// console.log(checkInput);
+	// console.log(errorItem);
 	if (checkInput == false) {
 		req.flash('item', item);
 		req.flash('errorItem', errorItem);
@@ -149,7 +144,7 @@ exports.editbrandPage = async function (req, res, next) {
 			res.render('./admin/brand-edit', { data: updateObj, categoriesSelect: rsList.data, dataError: errorItem });
 		}
 		else {
-			console.log(item);
+			// console.log(item);
 			res.render('./admin/brand-edit', { data: item, categoriesSelect: rsList.data, dataError: errorItem });
 		}
 

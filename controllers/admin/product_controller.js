@@ -127,33 +127,38 @@ exports.createProduct = async function (req, res, next) {
 		images: null,
 	};
 	let type;
-	let now = (new Date()).getTime();
+	item.images = [];
+	let now = (new Date()).getTime(),streamTimes=0;
 	if (req.busboy) {
 		req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-			type = mimetype;
-			if (filename == "") {
-				checkInput = false;
-				errorItem.msg_noImg = "Bạn chưa chọn ảnh cho sản phẩm";
-				file.resume();
+			if(streamTimes==0){
+				
+				type = mimetype;
+				if (filename == "") {
+					checkInput = false;
+					errorItem.msg_noImg = "Bạn chưa chọn ảnh cho sản phẩm";
+					file.resume();
+				}
+				else if (mimetype !== 'image/png' && mimetype !== 'image/jpg' && mimetype !== 'image/jpeg') {
+					checkInput = false;
+					errorItem.msg_noImg = "Hình ảnh không hợp lệ";
+					file.resume();
+				}
 			}
-			else if (mimetype !== 'image/png' && mimetype !== 'image/jpg' && mimetype !== 'image/jpeg') {
-				checkInput = false;
-				errorItem.msg_noImg = "Hình ảnh không hợp lệ";
-				file.resume();
-			}
-			else {
-
-				fstream = fs.createWriteStream(process.cwd() + '/public/images/products/' + now + filename);
+			if(errorItem.msg_noImg==null){
+				if(streamTimes==0&&filename){
+					item.images[0] = now + filename;
+				}
+				streamTimes++;
+				fstream = fs.createWriteStream(process.cwd() + '/public/images/products/' + item.images[0]);
 				file.pipe(fstream);
 				fstream.on('close', function () {
-					console.log("Upload Finished of " + now + filename);
-					item.images = new Array(1);
-					item.images[0] = now + filename;
+					console.log("Upload Finished of " + item.images[0]);;
 					if (checkInput == false) {
 						fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
 							if (err) {
 								//ignore error 
-								// console.log('ERROR: ' + err)
+								console.log(err);
 							};
 						});
 					}
@@ -184,13 +189,22 @@ exports.createProduct = async function (req, res, next) {
 			else if (key == 'detail') {
 				item.detail = value;
 			}
-			if (item.name == null || item.name == "") item.slug = "";
-			else item.slug = slug(item.name, { lower: true });
+			else if(key=='discount'){
+				item.discount= parseInt(value);
+				if(item.discount<0){
+					item.discount=0;
+				}
+				else if(item.discount>100){
+					item.discount=100;
+				}
+			}
 
 
 		});
 
 		req.busboy.on('finish', async function () {
+			if (item.name == null || item.name == "") item.slug = "";
+			else item.slug = slug(item.name, { lower: true });
 			if (item.categoryId == undefined) {
 				checkInput = false;
 				errorItem.msg_noCategory = 'Bạn chưa chọn gian hàng';
@@ -212,6 +226,12 @@ exports.createProduct = async function (req, res, next) {
 				checkInput = false;
 				errorItem.msg_noPrice = 'Bạn chưa nhập giá sản phẩm';
 			}
+			else{
+				item.price = parseInt(item.price);
+				if(item.price<0){
+					item.price=0;
+				}
+			}
 			if (item.detail == "" || item.detail == null) {
 				checkInput = false;
 				errorItem.msg_noDetail = 'Bạn chưa nhập mô tả sản phẩm';
@@ -220,12 +240,18 @@ exports.createProduct = async function (req, res, next) {
 				checkInput = false;
 				errorItem.msg_noQuantity = 'Bạn chưa nhập số lượng sản phẩm';
 			}
+			else{
+				item.quantity = parseInt(item.quantity);
+				if(item.quantity<0){
+					item.quantity=0;
+				}
+			}
 			if (checkInput == false) {
-				if (item.images) {
+				if (item.images.length>0) {
 					fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
 						if (err) {
 							//ignore error 
-							// console.log('ERROR: ' + err)
+							console.log(err)
 						};
 					});
 				}
@@ -240,7 +266,7 @@ exports.createProduct = async function (req, res, next) {
 				fs.rename(process.cwd() + '/public/images/products/' + oldname, process.cwd() + '/public/images/products/' + newname, function (err) {
 					if (err) {
 						//ignore error 
-						// console.log('ERROR: ' + err)
+						console.log(err)
 					};
 				});
 				item.images[0] = newname;

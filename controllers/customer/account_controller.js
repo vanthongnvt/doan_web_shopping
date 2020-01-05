@@ -13,7 +13,7 @@ exports.userInfo = function(req,res,next){
 }
 
 exports.signup = function(req,res,next){
-   passport.authenticate('signup', function(error, user, info) {
+ passport.authenticate('signup', function(error, user, info) {
     if(error) {
         return res.status(500).json(error);
     }
@@ -37,6 +37,9 @@ exports.login = function(req,res,next){
         }
         if(!user) {
             return res.status(401).json(info);
+        }
+        if(user.block==true){
+            return res.status(401).json({username:'Tài khoản này đã bị khóa'});
         }
         req.login(user, function(err) {
             if (err) {
@@ -174,16 +177,27 @@ exports.changePassword = async function(req,res,next){
 
 exports.updateAvatar = async function(req,res,next){
     var fstream;
+    let type,streamTimes=0;
     if(req.busboy){
         req.pipe(req.busboy);
-        req.busboy.on('file', function (fieldname, file, filename) {
+        req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
             // console.log("Uploading: " + filename);
+            if(streamTimes==0){
+                if(mimetype!=='image/png'&&mimetype!=='image/jpg'&&mimetype!=='image/jpeg'){
+                    return res.send({error:true,messages:'Hình ảnh không hợp lệ'});
 
-            fstream = fs.createWriteStream(process.cwd()+'/public/images/avatars/'+ req.user._id + filename);
+                    file.resume();
+                }
+                else{
+                    type = mimetype.substring(6);
+                }
+            }
+            streamTimes++;
+            fstream = fs.createWriteStream(process.cwd()+'/public/images/avatars/'+ req.user._id + '.'+ type);
             file.pipe(fstream);
             fstream.on('close', function () {    
                 // console.log("Upload Finished of " + filename);
-                let result = req.user.updateAvatar(req.user._id+filename);
+                let result = req.user.updateAvatar(rreq.user._id + '.'+ type);
                 if(result.error){
                     return res.send({error:true,messages:'Đã có lỗi xảy ra. Vui lòng thử lại sau'});
                 }else{              

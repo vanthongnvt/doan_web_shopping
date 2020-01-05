@@ -104,7 +104,7 @@
                                                 class="col-xs-2 col-form-label form-control-label">Đơn giá</label>
                                             <div class="col-sm-10">
                                                 <input class="form-control" type="number" name="price"
-                                                    placeholder="Nhập đơn giá" value="<%= data.price%>">
+                                                    placeholder="Nhập đơn giá" min="0 value="<%= data.price%>">
                                             <%if(dataError.msg_noPrice){%>
                                             <div class="invalid-feedback d-block" style="color: red">
                                                 <%=dataError.msg_noPrice%></div>
@@ -116,7 +116,7 @@
                                                 class="col-xs-2 col-form-label form-control-label">Số lượng</label>
                                             <div class="col-sm-10">
                                                 <input class="form-control" type="number" name="quantity"
-                                                    placeholder="Nhập số lượng" value="<%= data.quantity%>">
+                                                    placeholder="Nhập số lượng" min="0" value="<%= data.quantity%>">
                                             <%if(dataError.msg_noQuantity){%>
                                             <div class="invalid-feedback d-block" style="color: red">
                                                 <%=dataError.msg_noQuantity%></div>
@@ -128,7 +128,7 @@
                                                 class="col-xs-2 col-form-label form-control-label">Giảm giá</label>
                                             <div class="col-sm-10">
                                                 <input class="form-control" type="number" name="discount"
-                                                    placeholder="Nhập giảm giá" value="<%= data.discount%>">
+                                                    placeholder="Nhập giảm giá" min="0" max="100" value="<%= data.discount%>">
                                         </div>
                                 </div>
                                 <div class="form-group row">
@@ -268,36 +268,6 @@
                 });
             });
         </script>
-
-<script type="text/javascript">
-
-    $(document).ready(function () {
-        $('select[name="categorySelect"]').on('click', function () {
-            var categoryID = $(this).val();
-            if (categoryID) {
-                $.ajax({
-                    url: '/admin/san-pham/ajax/' + categoryID,
-                    type: "GET",
-                    dataType: "json",
-                    success: function (data) {
-                        $('select[name="brandSelect"]').empty();
-                        $('select[name="brandSelect"]').append('<option disabled selected>--- Chọn hãng ---</option>');
-                        $.each(data, function (key, value) {
-                            $('select[name="brandSelect"]').append('<option value="' + value._id + '"' +
-                                '<% if( data.brandId == ' + value._id + '){ %>'
-                                + ' selected="selected" <%}%>'
-                                + '>' + value.name + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('select[name="brandSelect"]').empty();
-            }
-        });
-    });
-</script>
-
-       
 
 </body>
 

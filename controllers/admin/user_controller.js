@@ -3,7 +3,7 @@ const userModel = require('../../models/user');
 
 exports.listUser = async function(req,res,next){
 	let page =1,pageSize =10,findObj = {};
-	let url = req.baseUrl + req.path+'?page=';
+	let url = req.baseUrl + req.path+'?';
 	let query=req.query;
 	if(query.page){
 		page = parseInt(req.query.page);

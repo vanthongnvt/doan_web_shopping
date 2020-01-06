@@ -182,9 +182,7 @@ exports.changeCategoryStatus = async function(req,res,next){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
-	let result = await categoryModel.findById(id);
-	result.status = status; 
-	result.save();
+	let result = await categoryModel.changeCategoryStatus(id, status);
 	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
@@ -194,16 +192,12 @@ exports.changeCategoryStatus = async function(req,res,next){
 
 exports.changeIsAccessories = async function(req,res,next){
 	let data = req.body.data;
-	// console.log('data: '+data);
 	let id = req.body.id;
-	// console.log('id: '+id);
 	if(data==null||id==null){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
-	let result = await categoryModel.findById(id);
-	result.isAccessories = data; 
-	result.save();
+	let result = await categoryModel.changeIsAccessories(id, data);
 	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
@@ -216,24 +210,11 @@ exports.deleteCategory = async function(req,res,next){
 	if(id==null){
 		return res.send({error:true,messsage:'invalid params'});
 	}
-	let deleteProductsInCategory = await productModel.deleteMany({categoryId: id});
-	if(deleteProductsInCategory.error){
-		return res.send({error:true,messsage:'server error'});
-	}
-	else{
-		// console.log('da xoa san  pham');
-		let deleteBrandsInCategory = await brandModel.deleteMany({categoryId: id});
-		if(deleteBrandsInCategory.error){
-			return res.send({error:true,messsage:'server error'});
-		}
-		// console.log('da xoa hang san xuat');
-		let result = await categoryModel.findByIdAndRemove(id);
+	let result = await categoryModel.removeCategory(id);
 		if(result.error){
 			return res.send({error:true,messsage:'server error'});
 		}
-		// console.log('da xoa gian hang');
 		return res.send({error:false, messsage:'successfull'});
-	}
 	
 
 }

@@ -93,9 +93,7 @@ exports.changeUserStatus = async function(req,res,next){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
-	let result = await userModel.findById(id);
-	result.block = status; // true: block, false: active
-	result.save();
+	let result = await userModel.updateUserStatus(id, status);
 	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
@@ -109,10 +107,21 @@ exports.deleteUser = async function(req,res,next){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
-	let result = await userModel.findByIdAndRemove(id);
+	let result = await userModel.removeUser(id);
 	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
 	return res.send({error:false, messsage:'successfull'});
+
+}
+
+exports.userInfoPage = async function(req,res,next){
+	let id = req.params.id;
+	var user = await userModel.findUserById(id);
+	if(user.error){
+		return res.send({error:true,messsage:'server error'});
+	}
+	console.log(user);
+	return res.render('./admin/user-info', {user: user.data});
 
 }

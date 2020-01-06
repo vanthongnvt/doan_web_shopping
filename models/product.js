@@ -131,6 +131,61 @@ productSchema.statics.listProduct = async function(findObj,page,pageSize,sort){
 	}
 }
 
+productSchema.statics.changeProductStatus = async function(id,status){
+	try{
+		let result = await this.findOneAndUpdate({_id: id},{status: status}).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+productSchema.statics.updateProductQuantity = async function(id,quantity){
+	try{
+		let result = await this.findOneAndUpdate({_id: id},{quantity: quantity}).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+productSchema.statics.updateProductPrice = async function(id,price){
+	try{
+		let result = await this.findOneAndUpdate({_id: id},{price: price}).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+productSchema.statics.updateProductDiscount = async function(id,discount){
+	try{
+		let result = await this.findOneAndUpdate({_id: id},{discount: discount}).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+productSchema.statics.removeProduct = async function(id){
+	try{
+		let result = await this.findByIdAndRemove(id).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 var Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;

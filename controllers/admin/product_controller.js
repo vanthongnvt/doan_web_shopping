@@ -128,11 +128,11 @@ exports.createProduct = async function (req, res, next) {
 	};
 	let type;
 	item.images = [];
-	let now = (new Date()).getTime(),streamTimes=0;
+	let now = (new Date()).getTime(), streamTimes = 0;
 	if (req.busboy) {
 		req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-			if(streamTimes==0){
-				
+			if (streamTimes == 0) {
+
 				type = mimetype;
 				if (filename == "") {
 					checkInput = false;
@@ -145,8 +145,8 @@ exports.createProduct = async function (req, res, next) {
 					file.resume();
 				}
 			}
-			if(errorItem.msg_noImg==null){
-				if(streamTimes==0&&filename){
+			if (errorItem.msg_noImg == null) {
+				if (streamTimes == 0 && filename) {
 					item.images[0] = now + filename;
 				}
 				streamTimes++;
@@ -189,13 +189,13 @@ exports.createProduct = async function (req, res, next) {
 			else if (key == 'detail') {
 				item.detail = value;
 			}
-			else if(key=='discount'){
-				item.discount= parseInt(value);
-				if(item.discount<0){
-					item.discount=0;
+			else if (key == 'discount') {
+				item.discount = parseInt(value);
+				if (item.discount < 0) {
+					item.discount = 0;
 				}
-				else if(item.discount>100){
-					item.discount=100;
+				else if (item.discount > 100) {
+					item.discount = 100;
 				}
 			}
 
@@ -226,10 +226,10 @@ exports.createProduct = async function (req, res, next) {
 				checkInput = false;
 				errorItem.msg_noPrice = 'Bạn chưa nhập giá sản phẩm';
 			}
-			else{
+			else {
 				item.price = parseInt(item.price);
-				if(item.price<0){
-					item.price=0;
+				if (item.price < 0) {
+					item.price = 0;
 				}
 			}
 			if (item.detail == "" || item.detail == null) {
@@ -240,14 +240,14 @@ exports.createProduct = async function (req, res, next) {
 				checkInput = false;
 				errorItem.msg_noQuantity = 'Bạn chưa nhập số lượng sản phẩm';
 			}
-			else{
+			else {
 				item.quantity = parseInt(item.quantity);
-				if(item.quantity<0){
-					item.quantity=0;
+				if (item.quantity < 0) {
+					item.quantity = 0;
 				}
 			}
 			if (checkInput == false) {
-				if (item.images.length>0) {
+				if (item.images.length > 0) {
 					fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
 						if (err) {
 							//ignore error 
@@ -324,49 +324,47 @@ exports.editProductPage = async function (req, res, next) {
 	}
 }
 
+
 exports.updateProduct = async function (req, res, next) {
-	var id;
 	var item = {};
 	var errorItem = {};
 	var oldSlug;
 	var checkInput = true;
 	let type;
-	let now = (new Date()).getTime();
+	item.images = [];
+	let now = (new Date()).getTime(), streamTimes = 0;
 	if (req.busboy) {
 		req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-			// type = mimetype;
-			if (filename == "") {
+			type = mimetype;
+
+			if (filename == "" || streamTimes == 0) {
 				file.resume();
 			}
-			// else if (mimetype !== 'image/png' && mimetype !== 'image/jpg' && mimetype !== 'image/jpeg') {
-			// 	checkInput = false;
-			// 	errorItem.msg_noImg = "Hình ảnh không hợp lệ";
-			// 	file.resume();
-			// }
-			// else {
 
-			// 	fstream = fs.createWriteStream(process.cwd() + '/public/images/products/' + now + filename);
-			// 	file.pipe(fstream);
-			// 	fstream.on('close', function () {
-			// 		console.log("Upload Finished of " + now + filename);
-			// 		item.images = new Array(1);
-			// 		item.images[0] = now + filename;
-			// 		if (checkInput == false) {
-			// 			fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
-			// 				if (err) {
-			// 					//ignore error 
-			// 					// console.log('ERROR: ' + err)
-			// 				};
-			// 			});
-			// 		}
-			// 	});
-			// }
+			if (filename != null) {
+				if (streamTimes == 0 && filename) {
+					item.images[0] = now + filename;
+				}
+				streamTimes++;
+				fstream = fs.createWriteStream(process.cwd() + '/public/images/products/' + item.images[0]);
+				file.pipe(fstream);
+				fstream.on('close', function () {
+					console.log("Upload Finished of " + item.images[0]);;
+					if (checkInput == false) {
+						fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
+							if (err) {
+								//ignore error 
+								console.log(err);
+							};
+						});
+					}
+				});
+			}
 
 		});
-
 		req.busboy.on('field', async function (key, value, keyTruncated, valueTruncated) {
 			if (key == '_id') {
-				item._id = value;	
+				item._id = value;
 			}
 			else if (key == 'name') {
 				item.name = value;
@@ -391,17 +389,23 @@ exports.updateProduct = async function (req, res, next) {
 				item.detail = value;
 			}
 			else if (key == 'discount') {
-				item.discount = value;
+				item.discount = parseInt(value);
+				if (item.discount < 0) {
+					item.discount = 0;
+				}
+				else if (item.discount > 100) {
+					item.discount = 100;
+				}
 			}
 			if (item.name == null || item.name == "") item.slug = "";
 			else item.slug = slug(item.name, { lower: true });
-
 
 		});
 
 		req.busboy.on('finish', async function () {
 			let findObj = await productModel.findOne({ _id: item._id }).exec();
-			oldSlug = item.slug;
+			oldSlug = findObj.slug;
+			var oldImgName = findObj.images[0];
 			findObj.name = item.name;
 			findObj.slug = item.slug;
 			findObj.categoryId = item.categoryId;
@@ -411,10 +415,9 @@ exports.updateProduct = async function (req, res, next) {
 			findObj.quantity = item.quantity;
 			findObj.discount = item.discount;
 			findObj.status = item.status;
-			if(item.images != null){
+			if (item.images[0] != null) {
 				findObj.images = Array.from(item.images);
 			}
-			
 
 			if (item.categoryId == undefined) {
 				checkInput = false;
@@ -425,8 +428,8 @@ exports.updateProduct = async function (req, res, next) {
 				errorItem.msg_noBrand = 'Bạn chưa chọn hãng';
 			}
 			var checkSlug = await productModel.findOne({ slug: item.slug }).exec();
-			
-			if (item.name == "" || item.name == null) {
+
+			if (item.name == "") {
 				checkInput = false;
 				errorItem.msg_noName = 'Bạn chưa nhập tên sản phẩm';
 			} else if (item.slug != oldSlug && checkSlug != null) {
@@ -437,6 +440,12 @@ exports.updateProduct = async function (req, res, next) {
 				checkInput = false;
 				errorItem.msg_noPrice = 'Bạn chưa nhập giá sản phẩm';
 			}
+			else {
+				item.price = parseInt(item.price);
+				if (item.price < 0) {
+					item.price = 0;
+				}
+			}
 			if (item.detail == "" || item.detail == null) {
 				checkInput = false;
 				errorItem.msg_noDetail = 'Bạn chưa nhập mô tả sản phẩm';
@@ -445,34 +454,41 @@ exports.updateProduct = async function (req, res, next) {
 				checkInput = false;
 				errorItem.msg_noQuantity = 'Bạn chưa nhập số lượng sản phẩm';
 			}
-			
+			else {
+				item.quantity = parseInt(item.quantity);
+				if (item.quantity < 0) {
+					item.quantity = 0;
+				}
+			}
 
 			if (checkInput == false) {
-				// if (item.images) {
-				// 	fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
-				// 		if (err) {
-				// 			//ignore error 
-				// 			// console.log('ERROR: ' + err)
-				// 		};
-				// 	});
-				// }
+				if (item.images.length > 0) {
+					fs.unlink(process.cwd() + '/public/images/products/' + item.images[0], function (err) {
+						if (err) {
+							//ignore error 
+							console.log(err)
+						};
+					});
+				}
 				req.flash('error_messsage', errorItem);
 				req.flash('item', findObj);
 
-				return res.redirect('/admin/san-pham/sua/'+item._id);
+				return res.redirect('/admin/san-pham/sua/' + item._id);
 			}
 			else {
-				// type = '.' + type.substring(6);
-				// let oldname = item.images[0];
-				// let newname = item.slug + type;
-				// fs.rename(process.cwd() + '/public/images/products/' + oldname, process.cwd() + '/public/images/products/' + newname, function (err) {
-				// 	if (err) {
-				// 		//ignore error 
-				// 		// console.log('ERROR: ' + err)
-				// 	};
-				// });
-				// item.images[0] = newname;
+				type = '.' + type.substring(6);
+				let oldname = item.images[0];
+				let newname = item.slug + type;
+				fs.rename(process.cwd() + '/public/images/products/' + oldname, process.cwd() + '/public/images/products/' + newname, function (err) {
+					if (err) {
+						//ignore error 
+						console.log(err)
+					};
+				});
+				findObj.images[0] = newname;
 				findObj.save();
+				if (oldSlug != findObj.slug)
+					fs.unlinkSync(process.cwd() + '/public/images/products/' + oldImgName + type);
 				return res.redirect('/admin/san-pham/danh-sach');
 			}
 		});
@@ -498,86 +514,78 @@ exports.ajaxBrandOfCategory = async function (req, res, next) {
 	}
 }
 
-exports.changeProductStatus = async function(req,res,next){
+exports.changeProductStatus = async function (req, res, next) {
 	let status = req.body.status;
 	let id = req.body.id;
-	if(status==null||id==null){
-		return res.send({error:true,messsage:'invalid params'});
+	if (status == null || id == null) {
+		return res.send({ error: true, messsage: 'invalid params' });
 	}
 
-	let result = await productModel.findById(id);
-	result.status = status; 
-	result.save();
-	if(result.error){
-		return res.send({error:true,messsage:'server error'});
+	let result = await productModel.changeProductStatus(id, status);
+	if (result.error) {
+		return res.send({ error: true, messsage: 'server error' });
 	}
-	return res.send({error:false, messsage:'successfull'});
+	return res.send({ error: false, messsage: 'successfull' });
 
 }
 
 
-exports.updateProductQuantity = async function(req,res,next){
+exports.updateProductQuantity = async function (req, res, next) {
 	let quantity = req.body.quantity;
 	let id = req.body.id;
-	if(quantity==null||id==null){
-		return res.send({error:true,messsage:'invalid params'});
+	if (quantity == null || id == null) {
+		return res.send({ error: true, messsage: 'invalid params' });
 	}
 
-	let result = await productModel.findById(id);
-	result.quantity = quantity; 
-	result.save();
-	if(result.error){
-		return res.send({error:true,messsage:'server error'});
+	let result = await productModel.updateProductQuantity(id, quantity);
+	if (result.error) {
+		return res.send({ error: true, messsage: 'server error' });
 	}
-	return res.send({error:false, messsage:'successfull'});
+	return res.send({ error: false, messsage: 'successfull' });
 
 }
 
-exports.updateProductPrice = async function(req,res,next){
+exports.updateProductPrice = async function (req, res, next) {
 	let price = req.body.price;
 	let id = req.body.id;
-	if(price==null||id==null){
-		return res.send({error:true,messsage:'invalid params'});
+	if (price == null || id == null) {
+		return res.send({ error: true, messsage: 'invalid params' });
 	}
 
-	let result = await productModel.findById(id);
-	result.price = price; 
-	result.save();
-	if(result.error){
-		return res.send({error:true,messsage:'server error'});
+	let result = await productModel.updateProductPrice(id, price);
+	if (result.error) {
+		return res.send({ error: true, messsage: 'server error' });
 	}
-	return res.send({error:false, messsage:'successfull'});
+	return res.send({ error: false, messsage: 'successfull' });
 
 }
 
-exports.updateProductDiscount = async function(req,res,next){
+exports.updateProductDiscount = async function (req, res, next) {
 	let discount = req.body.discount;
 	let id = req.body.id;
-	if(discount==null||id==null){
-		return res.send({error:true,messsage:'invalid params'});
+	if (discount == null || id == null) {
+		return res.send({ error: true, messsage: 'invalid params' });
 	}
 
-	let result = await productModel.findById(id);
-	result.discount = discount; 
-	result.save();
-	if(result.error){
-		return res.send({error:true,messsage:'server error'});
+	let result = await productModel.updateProductDiscount(id, discount);
+	if (result.error) {
+		return res.send({ error: true, messsage: 'server error' });
 	}
-	return res.send({error:false, messsage:'successfull'});
+	return res.send({ error: false, messsage: 'successfull' });
 
 }
 
-exports.deleteProduct = async function(req,res,next){
+exports.deleteProduct = async function (req, res, next) {
 	let id = req.body.id;
-	if(id==null){
-		return res.send({error:true,messsage:'invalid params'});
+	if (id == null) {
+		return res.send({ error: true, messsage: 'invalid params' });
 	}
 
-	let result = await productModel.findByIdAndRemove(id);
-	if(result.error){
-		return res.send({error:true,messsage:'server error'});
+	let result = await productModel.removeProduct(id);
+	if (result.error) {
+		return res.send({ error: true, messsage: 'server error' });
 	}
-	return res.send({error:false, messsage:'successfull'});
+	return res.send({ error: false, messsage: 'successfull' });
 
 }
 

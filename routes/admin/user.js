@@ -13,4 +13,6 @@ router.post('/update-status',userController.changeUserStatus);
 
 router.post('/delete-user',userController.deleteUser);
 
+router.get('/:id',userController.userInfoPage);
+
 module.exports = router;

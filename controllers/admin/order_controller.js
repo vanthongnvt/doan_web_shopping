@@ -91,14 +91,11 @@ exports.changeOrderStatus = async function(req,res,next){
 
 exports.markAsSeen = async function(req,res,next){
 	let id = req.body.id;
-	let obj = await orderModel.findById(id);
+	let obj = await orderModel.findAndMarkOrderById(id);
 	console.log('obj: '+obj);
 	if(obj.error){
 		return res.send({error:true,messsage:'server error'});
 	}else{
-		obj.checked = true;
-		obj.save();
-		console.log('xong');
 		return res.send({error:false, messsage:'successfull'});
 	}
 }
@@ -118,10 +115,11 @@ exports.deleteOrder = async function(req,res,next){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
-	let result = await orderModel.findByIdAndRemove(id);
+	let result = await orderModel.findAndRemoveOrderById(id);
 	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
 	return res.send({error:false, messsage:'successfull'});
 
 }
+

@@ -156,10 +156,11 @@
                 <!-- 3-1-block start -->
                 <div class="row">
                     <!-- Recent Items start -->
+
                     <div class="col-lg-6 col-md-12 grid-item">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-header-text">Top 10 sản phẩm</h5>
+                                <h5 class="card-header-text">Top 10 gian hàng có sản phẩm được bán nhiều nhất</h5>
                                 <span class="m-t-10 text-capitalize d-block">Mới cập nhật</span>
                             </div>
                             <div class="card-block">
@@ -168,42 +169,25 @@
                                         <thead>
                                             <tr class="text-uppercase">
                                                 <th class="p-t-0">STT</th>
-                                                <th class="p-t-0">Item Name</th>
+                                                <th class="p-t-0">Tên gian hàng</th>
                                                 <th class="p-t-0">Đã bán</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <%topTenSoldCategories.forEach(function(category, i){%>
                                             <tr>
-                                                <th>1</th>
-                                                <td>Dell Inspiron 3555 Laptop</td>
-                                                <td><a href="#">$600</a>
-                                                </td>
-
+                                                <th><%=i+1%></th>
+                                                <td><%= category.name %></td>
+                                                <td><%=category.sumSold%></td>
                                             </tr>
+                                            <%})%>
+                                            <% for( var count= topTenCategoryLength +1 ; count <= 10; count++) { %>
                                             <tr>
-                                                <th>2</th>
-                                                <td>HP 15-Ay008tx Laptop</td>
-                                                <td><a href="#">$857</a>
-                                                </td>
+                                                <th><%=count%></th>
+                                                <td>-</td>
+                                                <td>-</td>
                                             </tr>
-                                            <tr>
-                                                <th>3</th>
-                                                <td>HP Pavilion 13-S102TU X360 </td>
-                                                <td><a href="#">$860</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>4</th>
-                                                <td>Dell Inspiron 3555 Laptop</td>
-                                                <td><a href="#">$600</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>5</th>
-                                                <td>HP Pavilion Notebook</td>
-                                                <td><a href="#">$700</a>
-                                                </td>
-                                            </tr>
+                                            <% } %>
                                         </tbody>
                                     </table>
                                 </div>
@@ -211,10 +195,11 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-6 col-md-12 grid-item">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-header-text">Top 10 gian hàng</h5>
+                                <h5 class="card-header-text">Top 10 sản phẩm đươc bán nhiều nhất</h5>
                                 <span class="m-t-10 text-capitalize d-block">Mới cập nhật</span>
                             </div>
                             <div class="card-block">
@@ -223,42 +208,28 @@
                                         <thead>
                                             <tr class="text-uppercase">
                                                 <th class="p-t-0">STT</th>
-                                                <th class="p-t-0">Item Name</th>
+                                                <th class="p-t-0">Tên sản phẩm</th>
                                                 <th class="p-t-0">Đã bán</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <%topTenSoldProducts.forEach(function(product, i){%>
                                             <tr>
-                                                <th>1</th>
-                                                <td>Dell Inspiron 3555 Laptop</td>
-                                                <td><a href="#">$600</a>
+                                                <th><%=i+1%></th>
+                                                <td><a
+                                                        href="/<%=product.categoryId?product.categoryId.slug:null%>/<%=product.slug%>"><%= product.name %></a>
                                                 </td>
-
-                                            </tr>
-                                            <tr>
-                                                <th>2</th>
-                                                <td>HP 15-Ay008tx Laptop</td>
-                                                <td><a href="#">$857</a>
+                                                <td><%=product.numberOfProductSold%></a>
                                                 </td>
                                             </tr>
+                                            <%})%>
+                                            <% for( var count= topTenProductLength +1 ; count <= 10; count++) { %>
                                             <tr>
-                                                <th>3</th>
-                                                <td>HP Pavilion 13-S102TU X360 </td>
-                                                <td><a href="#">$860</a>
-                                                </td>
+                                                <th><%=count%></th>
+                                                <td>-</td>
+                                                <td>-</td>
                                             </tr>
-                                            <tr>
-                                                <th>4</th>
-                                                <td>Dell Inspiron 3555 Laptop</td>
-                                                <td><a href="#">$600</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>5</th>
-                                                <td>HP Pavilion Notebook</td>
-                                                <td><a href="#">$700</a>
-                                                </td>
-                                            </tr>
+                                            <% } %>
                                         </tbody>
                                     </table>
                                 </div>
@@ -266,7 +237,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Recent Items end -->
 
                 </div>
@@ -279,25 +249,25 @@
                         <div class="tab-header">
                             <ul class="nav nav-tabs md-tabs tab-timeline" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" href="#daily" role="tab">Ngày
+                                    <a class="nav-link active" data-toggle="tab" href="#daily" id="dailytab" role="tab">Ngày
                                     </a>
                                     <div class="slide"></div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#weekly" role="tab">Tuần</a>
+                                    <a class="nav-link" data-toggle="tab" href="#weekly" id="weeklytab" role="tab">Tuần</a>
                                     <div class="slide"></div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#monthly" role="tab">Tháng
+                                    <a class="nav-link" data-toggle="tab" href="#monthly" id="monthlytab" role="tab">Tháng
                                     </a>
                                     <div class="slide"></div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#quarterly" role="tab">Quý</a>
+                                    <a class="nav-link" data-toggle="tab" href="#quarterly" id="quarterlytab" role="tab">Quý</a>
                                     <div class="slide"></div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#yearly" role="tab">Năm</a>
+                                    <a class="nav-link" data-toggle="tab" href="#yearly" id="yearlytab" role="tab">Năm</a>
                                     <div class="slide"></div>
                                 </li>
                             </ul>
@@ -307,8 +277,11 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="daily" role="tabpanel">
                                 <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-header-text">Thống kê doanh thu theo ngày</h5>
+                                    </div>
                                     <div class="card-block">
-                                         Thống kê theo ngày
+                                        <div id="line-revenue-by-day"></div>
                                     </div>
                                 </div>
 
@@ -318,59 +291,71 @@
                             <!-- end of about us tab-pane -->
 
                             <!-- start tab-pane of project tab -->
-                            <div class="tab-pane" id="weekly" role="tabpanel">
+                            <div class="tab-pane active" id="weekly" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-header-text">Thống kê doanh thu theo tuần</h5>
+                                    </div>
+                                    <div class="card-block">
+                                        <div id="line-revenue-by-week"></div>
+                                    </div>
+                                </div>
+                                    <!-- end of card-main -->
+                                </div>
+                                <!-- end of project pane -->
+
+                                <!-- start a question pane  -->
+
+                                <div class="tab-pane active" id="monthly" role="tabpanel">
                                     <div class="card">
-                                            <div class="card-block">
-                                                 Thống kê theo tuần
-                                            </div>
+                                        <div class="card-header">
+                                        <h5 class="card-header-text">Thống kê doanh thu theo tháng</h5>
+                                    </div>
+                                        <div class="card-block">
+                                            <div id="line-revenue-by-month"></div>
                                         </div>
-                                <!-- end of card-main -->
-                            </div>
-                            <!-- end of project pane -->
+                                    </div>
+                                    <!-- end of row -->
+                                </div>
+                                <!-- end of tab pane question -->
 
-                            <!-- start a question pane  -->
+                                <!-- start memeber ship tab pane -->
 
-                            <div class="tab-pane" id="monthly" role="tabpanel">
+                                <div class="tab-pane active" id="quarterly" role="tabpanel">
                                     <div class="card">
-                                            <div class="card-block">
-                                                 Thống kê theo tháng
-                                            </div>
+                                        <div class="card-header">
+                                        <h5 class="card-header-text">Thống kê doanh thu theo quý</h5>
+                                    </div>
+                                        <div class="card-block">
+                                            <div id="line-revenue-by-quarter"></div>
                                         </div>
-                                <!-- end of row -->
-                            </div>
-                            <!-- end of tab pane question -->
-
-                            <!-- start memeber ship tab pane -->
-
-                            <div class="tab-pane" id="quarterly" role="tabpanel">
-                                    <div class="card">
-                                            <div class="card-block">
-                                                 Thống kê theo quý
-                                            </div>
-                                        </div>
-                                <!-- end of row -->
-                            </div>
-                            <!-- end of memebership tab pane -->
-
-                            <div class="tab-pane" id="yearly" role="tabpanel">
-                                    <div class="card">
-                                            <div class="card-block">
-                                                 Thống kê theo năm
-                                            </div>
-                                        </div>
+                                    </div>
                                     <!-- end of row -->
                                 </div>
                                 <!-- end of memebership tab pane -->
 
+                                <div class="tab-pane active" id="yearly" role="tabpanel">
+                                    <div class="card">
+                                        <div class="card-header">
+                                        <h5 class="card-header-text">Thống kê doanh thu theo năm</h5>
+                                    </div>
+                                        <div class="card-block">
+                                            <div id="line-revenue-by-year"></div>
+                                        </div>
+                                    </div>
+                                    <!-- end of row -->
+                                </div>
+                                <!-- end of memebership tab pane -->
+
+                            </div>
+                            <!-- end of main tab content -->
                         </div>
-                        <!-- end of main tab content -->
                     </div>
                 </div>
             </div>
+            <!-- Main content ends -->
+            <!-- Container-fluid ends -->
         </div>
-        <!-- Main content ends -->
-        <!-- Container-fluid ends -->
-    </div>
     </div>
 
 
@@ -415,6 +400,7 @@
     <!-- Morris Chart js -->
     <script src="/admin/plugins/raphael/raphael.min.js"></script>
     <script src="/admin/plugins/morris.js/morris.js"></script>
+    <script src="/admin/pages/chart-morris.js"></script>
 
     <script>
         var $window = $(window);
@@ -427,6 +413,162 @@
                 nav.removeClass('active');
             }
         });
+
+        function contain(id, data) {
+           for(var i=0;i<data.length;i++){
+               if(data[i]._id == id){
+                   return true;
+               }
+           }
+           return false;
+        }   
+
+        $('#dailytab').click(function(){
+            $('#daily').show();
+            $('#weekly').hide();
+            $('#monthly').hide();
+            $('#quarterly').hide();
+            $('#yearly').hide();
+        })
+
+        $('#weeklytab').click(function(){
+            $('#daily').hide();
+            $('#weekly').show();
+            $('#monthly').hide();
+            $('#quarterly').hide();
+            $('#yearly').hide();
+        })
+
+        $('#monthlytab').click(function(){
+            $('#daily').hide();
+            $('#weekly').hide();
+            $('#monthly').show();
+            $('#quarterly').hide();
+            $('#yearly').hide();
+        })
+
+        $('#quarterlytab').click(function(){
+            $('#daily').hide();
+            $('#weekly').hide();
+            $('#monthly').hide();
+            $('#quarterly').show();
+            $('#yearly').hide();
+        })
+
+        $('#yearlytab').click(function(){
+            $('#daily').hide();
+            $('#weekly').hide();
+            $('#monthly').hide();
+            $('#quarterly').hide();
+            $('#yearly').show();
+        })
+
+
+        // revenue daily:
+        var dataRevenueByDay = <%- JSON.stringify(dataRevenueByDay) %>;
+        var fullDataRevenueDay = [];
+        dataRevenueByDay.forEach(function (data) {
+            fullDataRevenueDay.push({ 'day': data._id, 'totalSold': data.totalSold })
+        })
+        for (var i = 1; i <= 30; i++) {
+            if (!contain(i, dataRevenueByDay)) {
+                fullDataRevenueDay.push({ 'day': i, 'totalSold': 0 });
+            }
+        }
+        console.log(fullDataRevenueDay);
+        new Morris.Line({
+            element: 'line-revenue-by-day',
+            data: fullDataRevenueDay,
+            xkey: 'day',
+            ykeys: ['totalSold'],
+            labels: ['Doanh thu'],
+            lineColors: ['#2196F3']
+        });
+        
+        
+
+
+        // revenue weekly:
+        var dataRevenueByWeek = <%- JSON.stringify(dataRevenueByWeek) %>;
+        var fullDataRevenueWeek = [];
+        dataRevenueByWeek.forEach(function (data) {
+            fullDataRevenueWeek.push({ 'week': data._id, 'totalSold': data.totalSold })
+        })
+        for (var i = 1; i <= 4; i++) {
+            if (!contain(i, dataRevenueByWeek)) {
+              fullDataRevenueWeek.push({ 'week': i, 'totalSold': 0 });
+        }
+        }
+        new Morris.Line({
+            element: 'line-revenue-by-week',
+            data: fullDataRevenueWeek,
+            xkey: 'week',
+            ykeys: ['totalSold'],
+            labels: ['Doanh thu'],
+            lineColors: ['#2196F3']
+        });
+
+        // revenue monthly:
+        var dataRevenueByMonth = <%- JSON.stringify(dataRevenueByMonth) %>;
+        var fullDataRevenueMonth = [];
+        dataRevenueByMonth.forEach(function (data) {
+            fullDataRevenueMonth.push({ 'month': data._id, 'totalSold': data.totalSold })
+        })
+        for (var i = 1; i <= 12; i++) {
+            if (!contain(i, dataRevenueByMonth)) {
+              fullDataRevenueMonth.push({ 'month': i, 'totalSold': 0 });
+        }
+        }
+        new Morris.Line({
+            element: 'line-revenue-by-month',
+            data: fullDataRevenueMonth,
+            xkey: 'month',
+            ykeys: ['totalSold'],
+            labels: ['Doanh thu'],
+            lineColors: ['#2196F3']
+        });
+
+        // revenue quarterly:
+        var dataRevenueByQuarter = <%- JSON.stringify(dataRevenueByQuarter) %>;
+        var fullDataRevenueQuarter = [];
+        dataRevenueByQuarter.forEach(function (data) {
+            fullDataRevenueQuarter.push({ 'quarter': data._id, 'totalSold': data.totalSold })
+        })
+        for (var i = 1; i <= 4; i++) {
+            if (!contain(i, dataRevenueByQuarter)) {
+            fullDataRevenueQuarter.push({ 'quarter': i, 'totalSold': 0 });
+        }
+        }
+        new Morris.Line({
+            element: 'line-revenue-by-quarter',
+            data: fullDataRevenueQuarter,
+            xkey: 'quarter',
+            ykeys: ['totalSold'],
+            labels: ['Doanh thu'],
+            lineColors: ['#2196F3']
+        });
+
+        // revenue yearly:
+        var dataRevenueByYear = <%- JSON.stringify(dataRevenueByYear) %>;
+        var fullDataRevenueYear = [];
+        dataRevenueByYear.forEach(function (data) {
+            fullDataRevenueYear.push({ 'year': data._id, 'totalSold': data.totalSold })
+        })
+        var beg = parseInt(dataRevenueByYear[0]._id) -9;
+        for (var i = beg; i <= beg + 9; i++) {
+            if (!contain(i, dataRevenueByYear)) {
+            fullDataRevenueYear.push({ 'year': i, 'totalSold': 0 });
+        }
+        }
+        new Morris.Line({
+            element: 'line-revenue-by-year',
+            data: fullDataRevenueYear,
+            xkey: 'year',
+            ykeys: ['totalSold'],
+            labels: ['Doanh thu'],
+            lineColors: ['#2196F3']
+        });
+
     </script>
 </body>
 

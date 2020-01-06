@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include layout/header %>
+
+</head>
+
+<body class="sidebar-mini fixed">
+    <div class="wrapper">
+        <div class="loader-bg">
+            <div class="loader-bar">
+            </div>
+        </div>
+        <% include layout/nav %>
+        <script>
+            var d = document.getElementById("navuser");
+            d.className += " active";
+        </script>
+        <div class="content-wrapper">
+            <!-- Container-fluid starts -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="main-header">
+                        <h4>Profile</h4>
+                        <ol class="breadcrumb breadcrumb-title breadcrumb-arrow">
+                            <li class="breadcrumb-item"><a href="/"><i class="icofont icofont-home"></i></a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="#">Người dùng</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="#">Thông tin</a>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- Header end -->
+                <div class="row">
+                    <!-- start col-lg-9 -->
+                    <div class="col-xl-12 col-lg-8">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="personal" role="tabpanel">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-header-text">Thông tin người dùng</h5>
+
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="view-info">
+                                            <div class="row">
+                                                <div class="col-xl-3">
+                                                    <div class="text-center">
+                                                        <%if(user.avatar){%>
+                                                        <img width="250px" src="/images/avatars/<%=user.avatar%>">
+                                                        <%}else{%>
+                                                        <img width="250px" src="/admin/images/avatar-1.png">
+                                                        <%}%>
+                                                    </div>
+                                                        
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <div class="general-info">
+                                                        <div class="row">
+                                                            <div class="col-lg-9 col-xl-12">
+                                                                <input type="hidden" name="_csrf"
+                                                                    value="<%=csrfToken%>">
+                                                        <table class="table m-0">
+                                                            <tbody>
+
+                                                                <tr>
+                                                                    <th scope="row">Họ và tên</th>
+                                                                    <td><%=user.fullname%></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">User name</th>
+                                                                    <td><%=user.username%></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Tình trạng</th>
+                                                                    <td>
+                                                                        <% if(user.block == false){ %>
+                                                                        Mở
+                                                                        <% }else{ %>
+                                                                        Khóa
+                                                                        <% } %>
+                                                                    </td>
+                                                                </tr>
+
+                                                                <tr>
+                                                                    <th scope="row">Email</th>
+                                                                    <td><%=user.email%></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">SĐT</th>
+                                                                    <td><%=user.phone%></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th scope="row">Địa chỉ</th>
+                                                                    <td><%=user.address%></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <!-- end of table col-lg-6 -->
+
+                                                </div>
+                                                <!-- end of row -->
+                                            </div>
+                                            <!-- end of general info -->
+                                        </div>
+                                        <!-- end of col-lg-12 -->
+                                    </div>
+                                    <!-- end of row -->
+                                </div>
+                                <!-- end of view-info -->
+
+
+                                <!-- end of view-info -->
+                            </div>
+                            <!-- end of card-block -->
+                        </div>
+                        <!-- end of card-->
+
+                    </div>
+                    <!-- end of main tab content -->
+                </div>
+            </div>
+
+        </div>
+        <!-- Container-fluid ends -->
+    </div>
+    </div>
+
+    <!-- Required Jqurey -->
+    <script src="/admin/plugins/jquery/dist/jquery.min.js"></script>
+    <script src="/admin/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/admin/plugins/tether/dist/js/tether.min.js"></script>
+
+    <!-- Required Fremwork -->
+    <script src="/admin/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- waves effects.js -->
+    <script src="/admin/plugins/Waves/waves.min.js"></script>
+
+    <!-- Scrollbar JS-->
+    <script src="/admin/plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+    <script src="/admin/plugins/jquery.nicescroll/jquery.nicescroll.min.js"></script>
+
+    <!--classic JS-->
+    <script src="/admin/plugins/classie/classie.js"></script>
+
+    <!-- notification -->
+    <script src="/admin/plugins/notification/js/bootstrap-growl.min.js"></script>
+
+    <!-- pie chart.js -->
+    <script type="text/javascript"
+        src="/admin/plugins/bower-jquery-easyPieChart/dist/jquery.easypiechart.min.js"></script>
+    <script type="text/javascript" src="/admin/pages/counter.js"></script>
+
+    <!-- Date picker.js -->
+    <script type="text/javascript" src="/admin/plugins/moment/moment.js"></script>
+    <script type="text/javascript"
+        src="/admin/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+
+    <!-- custom js -->
+    <script type="text/javascript" src="/admin/js/main.min.js"></script>
+    <script type="text/javascript" src="/admin/pages/profile.js"></script>
+    <script type="text/javascript" src="/admin/pages/elements.js"></script>
+    <script type="text/javascript" src="/admin/js/menu.min.js"></script>
+
+</body>
+
+</html>

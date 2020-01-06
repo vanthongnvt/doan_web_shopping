@@ -136,6 +136,36 @@ userSchema.statics.updateInfo = async function(id,fullname,email,phone,address){
 	}
 }
 
+userSchema.statics.updateUserStatus = async function(id, status){
+	try{
+		let result = await this.findOneAndUpdate({_id: id}, {block: status}).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+userSchema.statics.removeUser = async function(id){
+	try{
+		let result = await this.findByIdAndRemove(id).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+userSchema.statics.findUserById = async function(id){
+	try{
+		let result = await this.findById(id).exec();
+		return {error:false,data:result};
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;

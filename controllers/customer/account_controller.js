@@ -197,7 +197,7 @@ exports.updateAvatar = async function(req,res,next){
             file.pipe(fstream);
             fstream.on('close', function () {    
                 // console.log("Upload Finished of " + filename);
-                let result = req.user.updateAvatar(rreq.user._id + '.'+ type);
+                let result = req.user.updateAvatar(req.user._id + '.'+ type);
                 if(result.error){
                     return res.send({error:true,messages:'Đã có lỗi xảy ra. Vui lòng thử lại sau'});
                 }else{              

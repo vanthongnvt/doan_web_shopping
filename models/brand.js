@@ -72,6 +72,28 @@ brandSchema.statics.listBrand = async function(findObj,page,pageSize,sort){
 	}
 }
 
+brandSchema.statics.changeBrandStatus = async function(id, status){
+	try{
+		let result = await this.findOneAndUpdate({_id: id}, {status: status}).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
+brandSchema.statics.removeBrand = async function(id){
+	try{
+		let result = await this.findByIdAndRemove(id).exec();
+		return {error:false,data:result};
+
+	}catch(err){
+		console.log(err);
+		return {error:true,message:err};
+	}
+}
+
 var Brand = mongoose.model('Brand', brandSchema);
 
 module.exports = Brand;

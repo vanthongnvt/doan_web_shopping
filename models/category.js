@@ -1,29 +1,29 @@
 var mongoose = require('mongoose');
-// var mongoosePaginate = require('mongoose-paginate-v2');
+
 var categorySchema = mongoose.Schema({
 	name: {
 		type: String,
 		required: true
 	},
-	slug:{
-		type:String,
-		required:true
+	slug: {
+		type: String,
+		required: true
 	},
-	status:{
+	status: {
 		type: Boolean,
-		required:true,
-		default:true
+		required: true,
+		default: true
 	},
-	isAccessories:{
+	isAccessories: {
 		type: Boolean,
-		required:true,
-		default:false
+		required: true,
+		default: false
 	},
-	created: { 
+	created: {
 		type: Date,
 		default: Date.now
 	}
-},{collection:'categories'});
+}, { collection: 'categories' });
 categorySchema.virtual('products', {
 	ref: 'Product',
 	localField: '_id',
@@ -40,7 +40,7 @@ categorySchema.virtual('numProducts', {
 	ref: 'Product',
 	localField: '_id',
 	foreignField: 'categoryId',
-	count:true,
+	count: true,
 });
 
 // categorySchema.plugin(mongoosePaginate);
@@ -48,12 +48,12 @@ categorySchema.virtual('numProducts', {
 categorySchema.set('toObject', { virtuals: true });
 // categorySchema.set('toJSON', { virtuals: true });
 
-categorySchema.statics.getNewProduct= async function(){
-	try{
+categorySchema.statics.getNewProduct = async function () {
+	try {
 		var result = await this.aggregate([{
 			$match: {
 				isAccessories: false,
-				status:true,
+				status: true,
 			}
 		},
 		{
@@ -67,72 +67,108 @@ categorySchema.statics.getNewProduct= async function(){
 				as: "products",
 				let: { indicator_id: '$_id' },
 				pipeline: [
-				{ 
-					$match: {
-						'status':true,
-						$expr: { $eq: [ '$categoryId', '$$indicator_id' ]}
-					}
-				},
-				{ $limit: 4 }
+					{
+						$match: {
+							'status': true,
+							$expr: { $eq: ['$categoryId', '$$indicator_id'] }
+						}
+					},
+					{ $limit: 4 }
 				]
 			}
 		},
 		]).exec();
-		return {error:false,data:result};
-	}catch{
+		return { error: false, data: result };
+	} catch{
 		console.log(err);
-		return {error:true,message:err};
+		return { error: true, message: err };
 	}
 }
 
-categorySchema.statics.paginateFilterProducts= async function(category,sort,eqs,page){
-	try{
-		var countProduct = await this.findOne({slug:category,status:true}).populate({path:'numProducts',match:eqs}).exec();
-		if(countProduct==null){
-			return {error:false,data:null};
+categorySchema.statics.paginateFilterProducts = async function (category, sort, eqs, page) {
+	try {
+		var countProduct = await this.findOne({ slug: category, status: true }).populate({ path: 'numProducts', match: eqs }).exec();
+		if (countProduct == null) {
+			return { error: false, data: null };
 		}
-		else{
-			let count=countProduct.numProducts;
-			var products = await this.findOne({slug:category,status:true}).populate({path:'products',match:eqs,options:{skip:9*(page-1),limit:9,sort:sort}}).populate('brands').exec();
-			return {error:false,data:products,total:count};
+		else {
+			let count = countProduct.numProducts;
+			var products = await this.findOne({ slug: category, status: true }).populate({ path: 'products', match: eqs, options: { skip: 9 * (page - 1), limit: 9, sort: sort } }).populate('brands').exec();
+			return { error: false, data: products, total: count };
 		}
-	}catch(err){
+	} catch (err) {
 		console.log(err);
-		return {error:true,message:err};
+		return { error: true, message: err };
 	}
 
 }
-categorySchema.statics.countCategory = async function(findObj){
-	try{
+categorySchema.statics.countCategory = async function (findObj) {
+	try {
 		let result = await this.countDocuments(findObj).exec();
-		return {error:false,count:result};
-	}catch(err){
+		return { error: false, count: result };
+	} catch (err) {
 		console.log(err);
-		return {error:true,message:err};
+		return { error: true, message: err };
 	}
 }
 
-categorySchema.statics.listCategory = async function(findObj,page,pageSize,sort){
-	try{
-		let result = await this.find(findObj).skip((page-1)*pageSize).limit(pageSize).populate('numProducts').sort(sort).exec();
-		return {error:false,data:result};
+categorySchema.statics.listCategory = async function (findObj, page, pageSize, sort) {
+	try {
+		let result = await this.find(findObj).skip((page - 1) * pageSize).limit(pageSize).populate('numProducts').sort(sort).exec();
+		return { error: false, data: result };
 
-	}catch(err){
+	} catch (err) {
 		console.log(err);
-		return {error:true,message:err};
+		return { error: true, message: err };
 	}
 }
 
-categorySchema.statics.all = async function(){
-	try{
-		let result = await this.find({}).sort({created:1}).exec();
-		return {error:false,data:result};
+categorySchema.statics.all = async function () {
+	try {
+		let result = await this.find({}).sort({ created: 1 }).exec();
+		return { error: false, data: result };
 
-	}catch(err){
+	} catch (err) {
 		console.log(err);
-		return {error:true,message:err};
+		return { error: true, message: err };
 	}
 }
+
+categorySchema.statics.changeCategoryStatus = async function (id, status) {
+	try {
+		let result = await this.findOneAndUpdate({ _id: id }, { status: status }).exec();
+		return { error: false, data: result };
+
+	} catch (err) {
+		console.log(err);
+		return { error: true, message: err };
+	}
+}
+
+categorySchema.statics.changeIsAccessories = async function (id, data) {
+	try {
+		let result = await this.findOneAndUpdate({ _id: id }, { isAccessories: data }).exec();
+		return { error: false, data: result };
+
+	} catch (err) {
+		console.log(err);
+		return { error: true, message: err };
+	}
+}
+
+categorySchema.statics.removeCategory = async function (id) {
+	try {
+		let result = await this.findByIdAndRemove(id).exec();
+		return { error: false, data: result };
+
+	} catch (err) {
+		console.log(err);
+		return { error: true, message: err };
+	}
+}
+
+
+
 
 var Category = mongoose.model('Category', categorySchema);
 

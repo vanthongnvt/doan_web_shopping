@@ -201,9 +201,7 @@ exports.changeBrandStatus = async function(req,res,next){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
-	let result = await brandModel.findById(id);
-	result.status = status; 
-	result.save();
+	let result = await brandModel.changeBrandStatus(id, status);
 	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
@@ -216,17 +214,11 @@ exports.deleteBrand = async function(req,res,next){
 	if(id==null){
 		return res.send({error:true,messsage:'invalid params'});
 	}
-	let deleteProductsInBrand = await productModel.deleteMany({brandId: id});
-	if(deleteProductsInBrand.error){
+
+	let result = await brandModel.removeBrand(id);
+	if(result.error){
 		return res.send({error:true,messsage:'server error'});
 	}
-	else{
-		let result = await brandModel.findByIdAndRemove(id);
-		if(result.error){
-			return res.send({error:true,messsage:'server error'});
-		}
-		return res.send({error:false, messsage:'successfull'});
-	}
-	
 
+	return res.send({error:false, messsage:'successfull'});
 }

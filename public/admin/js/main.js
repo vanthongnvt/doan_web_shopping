@@ -3,7 +3,6 @@
  Email: phoenixcoded@gmail.com
  File: main.js
  */
-import Swal from 'sweetalert2/src/sweetalert2.js'
 'use strict';
 $(window).on('load', function() {
     var $window = $(window);

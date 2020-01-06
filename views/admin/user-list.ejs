@@ -119,16 +119,19 @@
                                                 </span>
                                             </td>
                                             <td class="faq-table-btn text-center">
-                                                <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="tooltip" data-placement="top" title="View">
-                                                    <i class="icofont icofont-eye-alt"></i>
-                                                </button>
+                                                <a href="/admin/nguoi-dung/<%=user._id%>">
+                                                    <button type="button"
+                                                        class="btn btn-success waves-effect waves-light"
+                                                        title="View">
+                                                        <i class="icofont icofont-eye-alt"></i>
+                                                    </button>
+                                                </a>
                                                 <button type="button" class="btn btn-danger waves-effect waves-light delete-user" data-id="<%=user._id%>" data-name="<%=user.username%>" Wdata-toggle="tooltip" data-placement="top" title="Delete">
                                                     <i class="icofont icofont-ui-delete"></i>
                                                 </button>
                                             </td>
                                         </tr>
                                         <% }) %>
-
 
                                     </tbody>
                                 </table>

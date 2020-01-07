@@ -339,15 +339,15 @@
         }
     });
 
-    function contain(id, data) {
+    function contain(index, data) {
        for(var i=0;i<data.length;i++){
-           if(data[i]._id == id){
-               return true;
+           if(data[i]._id == index){
+               return i;
            }
        }
-       return false;
+       return -1;
    }   
-
+   
         // $('#dailytab').click(function(){
         //     $('#daily').show();
         //     $('#weekly').hide();
@@ -392,13 +392,15 @@
         // revenue daily:
         var dataRevenueByDay = <%- JSON.stringify(dataRevenueByDay) %>;
         var fullDataRevenueDay = [];
-        dataRevenueByDay.forEach(function (data) {
-            fullDataRevenueDay.push({ 'day': data._id, 'totalSold': data.totalSold })
-        })
         for (var i = 1; i <= 30; i++) {
-            if (!contain(i, dataRevenueByDay)) {
-                fullDataRevenueDay.push({ 'day': i, 'totalSold': 0 });
-            }
+            fullDataRevenueDay.push({ 'day': i, 'totalSold': 0 });
+        }
+        for (var i = 1; i <= 30; i++) {
+            var index = contain(i, dataRevenueByDay);
+            if(index != -1){
+                fullDataRevenueDay[i-1].day = dataRevenueByDay[index]._id;
+                fullDataRevenueDay[i-1].totalSold = dataRevenueByDay[index].totalSold;
+            }            
         }
         var dayChart = new Morris.Line({
             element: 'line-revenue-by-day',
@@ -416,15 +418,17 @@
         // revenue weekly:
         var dataRevenueByWeek = <%- JSON.stringify(dataRevenueByWeek) %>;
         var fullDataRevenueWeek = [];
-        dataRevenueByWeek.forEach(function (data) {
-            fullDataRevenueWeek.push({ 'week': data._id, 'totalSold': data.totalSold })
-        })
         for (var i = 1; i <= 4; i++) {
-            if (!contain(i, dataRevenueByWeek)) {
-              fullDataRevenueWeek.push({ 'week': i, 'totalSold': 0 });
+            fullDataRevenueWeek.push({ 'week': i, 'totalSold': 0 });
           }
-      }
-      var weekChart = new Morris.Line({
+        for (var i = 1; i <= 4; i++) {
+            var index = contain(i, dataRevenueByWeek);
+            if(index != -1){
+                fullDataRevenueWeek[i-1].week = dataRevenueByWeek[index]._id;
+                fullDataRevenueWeek[i-1].totalSold = dataRevenueByWeek[index].totalSold;
+            }            
+        }
+        var weekChart = new Morris.Line({
         element: 'line-revenue-by-week',
         data: fullDataRevenueWeek,
         xkey: 'week',
@@ -437,14 +441,16 @@
         // revenue monthly:
         var dataRevenueByMonth = <%- JSON.stringify(dataRevenueByMonth) %>;
         var fullDataRevenueMonth = [];
-        dataRevenueByMonth.forEach(function (data) {
-            fullDataRevenueMonth.push({ 'month': data._id, 'totalSold': data.totalSold })
-        })
         for (var i = 1; i <= 12; i++) {
-            if (!contain(i, dataRevenueByMonth)) {
-              fullDataRevenueMonth.push({ 'month': i, 'totalSold': 0 });
-          }
-      }
+            fullDataRevenueMonth.push({ 'month': i, 'totalSold': 0 });
+        }
+        for (var i = 1; i <= 12; i++) {
+            var index = contain(i, dataRevenueByMonth);
+            if(index != -1){
+                fullDataRevenueMonth[i-1].month = dataRevenueByMonth[index]._id;
+                fullDataRevenueMonth[i-1].totalSold = dataRevenueByMonth[index].totalSold;
+            }            
+        }
       var monthChart = new Morris.Line({
         element: 'line-revenue-by-month',
         data: fullDataRevenueMonth,
@@ -460,13 +466,15 @@
         var fullDataRevenueQuarter = [];
         
         for (var i = 1; i <= 4; i++) {
-            if (!contain(i, dataRevenueByQuarter)) {
-                fullDataRevenueQuarter.push({ 'quarter': i, 'totalSold': 0 });
-            }
+            fullDataRevenueQuarter.push({ 'quarter': i, 'totalSold': 0 });
         }
-        dataRevenueByQuarter.forEach(function (data) {
-            fullDataRevenueQuarter.push({ 'quarter': data._id, 'totalSold': data.totalSold })
-        })
+        for (var i = 1; i <= 4; i++) {
+            var index = contain(i, dataRevenueByQuarter);
+            if(index != -1){
+                fullDataRevenueQuarter[i-1].quarter = dataRevenueByQuarter[index]._id;
+                fullDataRevenueQuarter[i-1].totalSold = dataRevenueByQuarter[index].totalSold;
+            }            
+        }
         var quaterChart = new Morris.Line({
             element: 'line-revenue-by-quarter',
             data: fullDataRevenueQuarter,
@@ -482,13 +490,17 @@
         var fullDataRevenueYear = [];
         var beg = parseInt(dataRevenueByYear[0]._id) -9;
         for (var i = beg; i <= beg + 9; i++) {
-            if (!contain(i, dataRevenueByYear)) {
-                fullDataRevenueYear.push({ 'year': i, 'totalSold': 0 });
-            }
+            fullDataRevenueYear.push({ 'year': i, 'totalSold': 0 });
         }
-        dataRevenueByYear.reverse().forEach(function (data) {
-            fullDataRevenueYear.push({ 'year': data._id, 'totalSold': data.totalSold })
-        })
+        console.log(fullDataRevenueYear)
+        console.log(dataRevenueByYear)
+        for (var i = beg, j=0; i <= beg + 9; i++,j++) {
+            var index = contain(i, dataRevenueByYear);
+            if(index != -1){
+                fullDataRevenueYear[j].year = dataRevenueByYear[index]._id;
+                fullDataRevenueYear[j].totalSold = dataRevenueByYear[index].totalSold;
+            }            
+        }
         var yearChart = new Morris.Line({
             element: 'line-revenue-by-year',
             data: fullDataRevenueYear,

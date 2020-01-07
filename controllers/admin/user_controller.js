@@ -89,7 +89,7 @@ exports.userOrderHistory = async function(req,res,next){
 exports.changeUserStatus = async function(req,res,next){
 	let status = req.body.status;
 	let id = req.body.id;
-	if(status==null||id==null){
+	if(status==null||id==null&&id!=req.user._id){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
@@ -103,7 +103,7 @@ exports.changeUserStatus = async function(req,res,next){
 
 exports.deleteUser = async function(req,res,next){
 	let id = req.body.id;
-	if(id==null){
+	if(id==null&&id!=req.user._id){
 		return res.send({error:true,messsage:'invalid params'});
 	}
 
@@ -123,5 +123,58 @@ exports.userInfoPage = async function(req,res,next){
 	}
 	console.log(user);
 	return res.render('./admin/user-info', {user: user.data});
+}
 
+exports.profile = async function(req,res,next){
+	let admin = req.user;
+	console.log(admin);
+	res.render('./admin/profile',{admin:admin});
+}
+
+exports.adminUpdateInfo = async function(req,res,next){
+	let messages = [];
+    let fullname =req.body.fullname?req.body.fullname:null;
+    let email = req.body.email?req.body.email:null;
+    let phone = req.body.phone?req.body.phone:null;
+    let address = req.body.address?req.body.address:null;
+    let userId = req.user._id;
+    let gender = req.body.gender;
+    if(gender){
+    	gender = parseInt(gender);
+    	if(gender!=0){
+    		gender=1;
+    	}
+    }
+    if(phone!=null){
+        req.checkBody('phone','Số điện thoại không hợp lệ').isMobilePhone();
+    }
+    if(email!=null){
+        req.checkBody('email','Email không hợp lệ').isEmail();
+    }
+    let validateErr = req.validationErrors();
+    if(validateErr){
+        validateErr.forEach(function(error){
+            let err_key = 'error_'+ error.param;
+            messages.push(error.msg);
+        })
+    }
+    if(fullname!=null&&fullname.length > 50){
+        messages.push('Họ tên tối đa 50 ký tự');
+    }
+
+    if(address!=null&&address.length>300){
+        messages.push('Địa chỉ tối đa 300 ký tự');
+    }
+    if(messages && Object.keys(messages).length > 0){
+        return res.send({error:true,messages:messages});
+    }
+
+    let result = await userModel.updateInfo(userId,fullname,email,phone,address,gender);
+    if(result.error){
+        messages.push('Đã có lỗi xảy ra. Vui lòng thử lại sau');
+        return res.send({error:true,messages:messages});
+    }
+    else{
+        return res.send({error:false});
+    }
 }

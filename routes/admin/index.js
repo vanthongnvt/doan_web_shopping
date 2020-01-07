@@ -12,4 +12,8 @@ router.post('/login',homeController.login);
 
 router.get('/logout',homeController.logOut);
 
+router.get('/update-password',checkAdmin,homeController.updatePasswordPage);
+
+router.post('/update-password',checkAdmin,homeController.updatePassword);
+
 module.exports = router;

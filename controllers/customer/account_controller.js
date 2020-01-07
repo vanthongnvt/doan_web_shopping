@@ -71,6 +71,13 @@ exports.updateInfo = async function(req,res,next){
     let phone = req.body.account_phone?req.body.account_phone:null;
     let address = req.body.account_address?req.body.account_address:null;
     let userId = req.user._id;
+    let gender = req.body.gender;
+    if(gender){
+        gender = parseInt(gender);
+        if(gender!=0){
+            gender=1;
+        }
+    }
     if(phone!=null){
         req.checkBody('account_phone','Số điện thoại không hợp lệ').isMobilePhone();
     }
@@ -98,7 +105,7 @@ exports.updateInfo = async function(req,res,next){
         return res.redirect('/tai-khoan/chinh-sua');
     }
 
-    let result = await userModel.updateInfo(userId,fullname,email,phone,address);
+    let result = await userModel.updateInfo(userId,fullname,email,phone,address,gender);
     if(result.error){
         messages.server_error = 'Đã có lỗi xảy ra. Vui lòng thử lại sau';
         req.flash('messages',messages);

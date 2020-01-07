@@ -190,7 +190,7 @@ exports.createProduct = async function (req, res, next) {
 				item.detail = value;
 			}
 			else if (key == 'discount') {
-				item.discount = parseInt(value);
+				item.discount = parseInt(value?value:0);
 				if (item.discount < 0) {
 					item.discount = 0;
 				}

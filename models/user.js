@@ -23,6 +23,10 @@ var userSchema = mongoose.Schema({
 	avatar: {
 		type: String,
 	},
+	gender:{
+		type: Number,
+		default: 0,
+	},
 	isAdmin:{
 		type: Boolean,
 		default:false
@@ -126,9 +130,9 @@ userSchema.statics.listUser = async function(findObj,page,pageSize,sort){
 	}
 }
 
-userSchema.statics.updateInfo = async function(id,fullname,email,phone,address){
+userSchema.statics.updateInfo = async function(id,fullname,email,phone,address,gender){
 	try{
-		let result = await this.updateOne({_id:id},{fullname:fullname,email:email,phone:phone,address:address}).exec();
+		let result = await this.updateOne({_id:id},{fullname:fullname,email:email,phone:phone,address:address,gender:gender}).exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);

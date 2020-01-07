@@ -112,6 +112,11 @@
 														<i class="icofont icofont-ui-edit"></i>
 													</button>
 												</a>
+												<a href="/<%=brand.categoryId?brand.categoryId.slug:null%>?brand=<%=brand.name%>">
+													<button type="button" class="btn btn-success waves-effect waves-light"data-toggle="tooltip" data-placement="top" title="View">
+															<i class="icofont icofont-eye-alt"></i>
+														</button>
+												</a>
 												<button type="button"class="btn btn-danger waves-effect waves-light delete-brand" data-id="<%=brand._id%>" data-numProducts="<%=brand.numProducts%>" data-toggle="tooltip" data-placement="top" title="Delete">
 													<i class="icofont icofont-ui-delete"></i>
 												</button>

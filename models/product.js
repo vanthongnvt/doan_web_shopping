@@ -102,7 +102,7 @@ productSchema.statics.getProductByName=async function(name){
 }
 productSchema.statics.getRelateProducts = async function(product){
 	try{
-		var result = await this.find({categoryId:product.categoryId,_id:{$ne:product._id}}).limit(4).populate('categoryId').exec();
+		var result = await this.find({categoryId:product.categoryId,status:true,_id:{$ne:product._id}}).limit(4).populate('categoryId').exec();
 		return {error:false,data:result};
 	}catch(err){
 		console.log(err);

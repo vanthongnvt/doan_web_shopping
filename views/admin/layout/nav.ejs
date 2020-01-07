@@ -70,9 +70,14 @@
                 <li class="dropdown">
                     <a href="#!" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
                         class="dropdown-toggle drop icon-circle drop-image">
-                        <span><img class="img-circle " src="/admin/images/avatar-1.png" style="width:40px;"
-                                alt="User Image"></span>
-                        <span>John <b>Doe</b> <i class=" icofont icofont-simple-down"></i></span>
+                        <span>
+                            <%if(user.avatar){%>
+                            <img class="img-circle " src="/images/avatars/<%=user.avatar%>" style="width:40px;" alt="User Image">
+                            <%}else{%>
+                            <img class="img-circle " src="/admin/images/avatar-1.png" style="width:40px;" alt="User Image">
+                            <%}%>
+                        </span>
+                        <span><%=user.fullname?user.fullname:user.username%> <i class=" icofont icofont-simple-down"></i></span>
 
                     </a>
                     <ul class="dropdown-menu settings-menu">
@@ -82,8 +87,8 @@
                         <li class="p-0">
                             <div class="dropdown-divider m-0"></div>
                         </li>
-                        <li><a href="/lock-screen"><i class="icon-lock"></i> Lock Screen</a></li>
-                        <li><a href="#!"><i class="icon-logout"></i> Logout</a></li>
+                        <li><a href="/admin/update-password"><i class="icon-lock"></i> Đổi mật khẩu</a></li>
+                        <li><a href="/admin/logout"><i class="icon-logout"></i> Đăng xuất</a></li>
 
                     </ul>
                 </li>
@@ -149,9 +154,14 @@
     <section class="sidebar" id="sidebar-scroll">
 
         <div class="user-panel">
-            <div class="f-left image"><img src="/admin/images/avatar-1.png" alt="User Image" class="img-circle"></div>
+            <div class="f-left image">
+                <%if(user.avatar){%>
+                <img src="/images/avatars/<%=user.avatar%>" alt="User Image" class="img-circle"></div>
+                <%}else{%>
+                <img src="/admin/images/avatar-1.png" alt="User Image" class="img-circle"></div>
+                <%}%>
             <div class="f-left info">
-                <p>John Doe</p>
+                <p><%=user.fullname?user.fullname:user.username%></p>
                 <p class="designation">UX Designer <i class="icofont icofont-caret-down m-l-5"></i></p>
             </div>
         </div>
@@ -172,9 +182,9 @@
                 </a>
             </li>
             <li>
-                <a class="waves-effect waves-dark" href="javascript:void(0)">
+                <a class="waves-effect waves-dark" href="/admin/logout">
                     <i class="icon-logout"></i>
-                    <span class="menu-text">Logout</span>
+                    <span class="menu-text">Đăng xuất</span>
                     <span class="selected"></span>
                 </a>
             </li>

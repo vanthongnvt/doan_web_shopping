@@ -147,7 +147,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 														<%if(product.discount>0){
 															%>
 
-															<span class="item_price"><%=priceFormat(product.price*product.discount)%> VNĐ</span>
+															<span class="item_price"><%=priceAfterDiscount(product.price,product.discount)%> VNĐ</span>
 															<del><%=priceFormat(product.price)%> VNĐ</del>
 															<%
 														} else{

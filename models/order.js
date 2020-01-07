@@ -65,38 +65,38 @@ orderSchema.statics.createOrder = async function (cart, userId, name, address, p
 	order.note = note;
 	order.totalPrice = cart.totalPrice;
 	order.products = [];
-	// const session = await this.startSession();
-	// session.startTransaction();
-	// const opts = { session };
+	const session = await this.startSession();
+	session.startTransaction();
+	const opts = { session };
 	for (id in cart.items) {
 		try {
 			let itemProduct = cart.items[id].item;
 			let qty = cart.items[id].qty;
-			let result = await productModel.findOneAndUpdate({ _id: id, status: true, quantity: { "$gte": qty } }, { "$inc": { "quantity": -qty, 'numberOfProductSold': qty } });
-			if (!result) {
-				// await session.abortTransaction();
-				// session.endSession();
-				return { error: true, message: 'product is not available', code: 1, name: itemProduct.name, link: itemProduct.link };
+			let result = await productModel.findOneAndUpdate({_id:id,status:true,quantity:{"$gte":qty}},{"$inc": { "quantity":-qty,'numberOfProductSold':qty}},opts);
+			if(!result){
+				await session.abortTransaction();
+				session.endSession();
+				return {error:true, message:'product is not available', code:1, name:itemProduct.name, link: itemProduct.link};
 			}
 			else {
 				order.products.push({ productId: id, quantity: qty, discount: itemProduct.discount, price: itemProduct.price });
 			}
 		} catch (err) {
 			console.log(err);
-			// await session.abortTransaction();
-			// session.endSession();
+			await session.abortTransaction();
+			session.endSession();
 			return { error: true, message: 'server error', code: 0 };
 		}
 	}
 	try {
 		let result = await this.create(order);
-		// await session.commitTransaction();
-		// session.endSession();
+		await session.commitTransaction();
+		session.endSession();
 		return { error: false, data: result };
 	} catch (err) {
 		console.log(err);
-		// await session.abortTransaction();
-		// session.endSession();
+		await session.abortTransaction();
+		session.endSession();
 		return { error: true, message: 'server error', code: 0 };
 	}
 

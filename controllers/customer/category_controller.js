@@ -66,15 +66,15 @@ exports.listProduct = async function(req,res,next){
 			let products= await categoryModel.paginateFilterProducts(category,sort,eqs,page);
 			if(!products.err){
 				if(products.data==null){
-					return res.send('404');
+					return res.render('./admin/404');
 				}
 				count=products.total;
 				let pagination={totalPage:parseInt(count/9)+1,curPage:page,totalItem:count,url:url};
 				return res.render('./customer/product',{category:products.data,query:query,count:count,pagination:pagination});
 			}
-			return res.send('500');
+			return res.render('./admin/404');
 		}
-		return res.send('404');
+		return res.render('./admin/404');
 	}
 	else{
 		if(Object.keys(query).length>0){
@@ -86,7 +86,7 @@ exports.listProduct = async function(req,res,next){
 		let products= await categoryModel.paginateFilterProducts(category,sort,eqs,page);
 		if(!products.err){
 			if(products.data==null){
-				return res.send('404');
+				return res.render('./admin/404');
 			}
 			count=products.total;
 			let pagination={totalPage:parseInt(count/9)+1,curPage:page,totalItem:count,url:url};

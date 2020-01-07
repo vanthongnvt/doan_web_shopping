@@ -68,11 +68,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 										</a>
 									</td>
 									<td class="invert">
-										<a href="/<%=product.productId.categoryId.slug%>/<%=product.productId.slug%>">
+										<a href="/<%=product.productId.categoryId?product.productId.categoryId.slug:null%>/<%=product.productId.slug%>">
 											<%=product.productId.name%></a>
 										</td>
 										<td class="invert"><%=product.quantity%></td>
-										<td class="invert"><%=priceFormat(product.quantity*product.price)%> vnd <%if(product.discount>0){%>(Đã giảm <%=product.discount%>) <%}%></td>
+										<td class="invert"><%=priceAfterDiscount(product.quantity*product.price,product.discount)%> vnd <%if(product.discount>0){%>(Đã giảm <%=product.discount%>%) <%}%></td>
 									</tr>
 									<%})%>
 								</tbody>

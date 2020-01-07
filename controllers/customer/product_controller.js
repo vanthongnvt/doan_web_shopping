@@ -16,10 +16,10 @@ exports.detail = async function(req,res,next){
 				}
 			}
 			else{
-				return res.send('404');
+				return res.render('./admin/404');
 			}
 		}
-		return res.send('404');
+		return res.render('./admin/404');
 	}
 	else{
 		return res.send('500');

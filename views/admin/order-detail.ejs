@@ -75,9 +75,9 @@
                                         <tr>
                                             <td class="text-center"><%= i+1%></td>
                                             <td class="text-center"><img width="40px" height="40px" src="/images/products/<%= product.productId.images[0] %>"></td>
-                                            <td><a href="/<%=product.productId.categoryId.slug%>/<%=product.productId.slug%>"><%= product.productId.name %></a></td>
+                                            <td><a href="/<%=product.productId.categoryId?product.productId.categoryId.slug:null%>/<%=product.productId.slug%>"><%= product.productId.name %></a></td>
                                             <td class="text-center"><%= product.quantity %></td>
-                                            <td class="text-center"><%= product.price*product.quantity %> <%if(product.discount){%>(-<%=product.discount%>)<%}%></td>
+                                            <td class="text-center"><%= priceAfterDiscount(product.price*product.quantity,product.discount) %> <%if(product.discount){%>(-<%=product.discount%>%)<%}%></td>
                                         </tr>
                                         <% }) %>
 

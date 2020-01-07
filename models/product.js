@@ -177,8 +177,9 @@ productSchema.statics.updateProductDiscount = async function(id,discount){
 
 productSchema.statics.removeProduct = async function(id){
 	try{
+		let pr = await this.findById(id).exec();
 		let result = await this.findByIdAndRemove(id).exec();
-		return {error:false,data:result};
+		return {error:false,data:pr};
 
 	}catch(err){
 		console.log(err);

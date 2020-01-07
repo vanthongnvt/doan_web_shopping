@@ -86,7 +86,7 @@ exports.updateInfo = async function(req,res,next){
     }
     let validateErr = req.validationErrors();
     if(validateErr){
-        console.log(validateErr);
+        // console.log(validateErr);
         validateErr.forEach(function(error){
             let err_key = 'error_'+ error.param;
             messages[err_key] = error.msg;
@@ -221,7 +221,7 @@ exports.orderDetail = async function(req,res,next){
     let id = req.params.id;
     let result = await orderModel.getOrderById(id);
     if(result.error){
-        return res.send({error:true,messsage:'server error'});
+        return res.render('./admin/404');
     }
     else{
         res.render('./customer/order_detail',{order:result.data});

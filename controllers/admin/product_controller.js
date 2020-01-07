@@ -271,7 +271,7 @@ exports.createProduct = async function (req, res, next) {
 				});
 				item.images[0] = newname;
 				var data = new productModel(item);
-				data.save();
+				await data.save();
 				return res.redirect('/admin/san-pham/danh-sach');
 			}
 		});
@@ -304,7 +304,7 @@ exports.editProductPage = async function (req, res, next) {
 		if (item == null) { // from edit in /danh sach
 			var id = req.params.id;
 			let updateItem = await productModel.findOne({ _id: id }).exec();
-			console.log(updateItem);
+			// console.log(updateItem);
 			var categoryId = updateItem.categoryId;
 			let page = 1, pageSize = MAX_PAGE_SIZE, findObj = { categoryId: categoryId };
 			let sort = { created: -1 };
@@ -341,8 +341,8 @@ exports.updateProduct = async function (req, res, next) {
 				file.resume();
 			}
 
-			if (filename != null) {
-				if (streamTimes == 0 && filename) {
+			if (filename) {
+				if (streamTimes == 0) {
 					item.images[0] = now + filename;
 				}
 				streamTimes++;
@@ -476,19 +476,27 @@ exports.updateProduct = async function (req, res, next) {
 				return res.redirect('/admin/san-pham/sua/' + item._id);
 			}
 			else {
-				type = '.' + type.substring(6);
-				let oldname = item.images[0];
-				let newname = item.slug + type;
-				fs.rename(process.cwd() + '/public/images/products/' + oldname, process.cwd() + '/public/images/products/' + newname, function (err) {
-					if (err) {
-						//ignore error 
-						console.log(err)
-					};
-				});
-				findObj.images[0] = newname;
-				findObj.save();
-				if (oldSlug != findObj.slug)
-					fs.unlinkSync(process.cwd() + '/public/images/products/' + oldImgName + type);
+				if(item.images[0]){
+					type = '.' + type.substring(6);
+					let oldname = item.images[0];
+					let newname = item.slug + type;
+					fs.rename(process.cwd() + '/public/images/products/' + oldname, process.cwd() + '/public/images/products/' + newname, function (err) {
+						if (err) {
+							//ignore error 
+							console.log(err)
+						};
+					});
+					findObj.images[0] = newname;
+					if (oldSlug != findObj.slug){
+						fs.unlink(process.cwd() + '/public/images/products/' + oldImgName,function(err){
+							if(err){
+								//ignore error 
+								console.log(err)
+							}
+						});
+					}
+				}
+				await findObj.save();
 				return res.redirect('/admin/san-pham/danh-sach');
 			}
 		});
@@ -584,6 +592,16 @@ exports.deleteProduct = async function (req, res, next) {
 	let result = await productModel.removeProduct(id);
 	if (result.error) {
 		return res.send({ error: true, messsage: 'server error' });
+	}
+	if(result.data){
+		if(result.data.images.length>0){
+			fs.unlink(process.cwd() + '/public/images/products/' + result.data.images[0],function(err){
+				if(err){
+					//ignore error 
+					console.log(err)
+				}
+			});
+		}
 	}
 	return res.send({ error: false, messsage: 'successfull' });
 

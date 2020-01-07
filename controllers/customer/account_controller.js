@@ -284,12 +284,11 @@ exports.sendEmailResetPassword = async function(req,res,next){
                     pass: process.env.MAIL_PASSWORD
                 }
             });
-
             var mailOptions = {
                 from: process.env.MAIL_USERNAME,
                 to: email,
                 subject: 'Khôi phục mật khẩu',
-                html: '<a href="'+process.env.APP_URL+':'+process.env.PORT+'/tai-khoan/tao-moi-mat-khau/'+token+'">Bấm vào link để khôi phục mật khẩu</a>'
+                html: '<a href="'+process.env.APP_HOST+'/tai-khoan/tao-moi-mat-khau/'+token+'">Bấm vào link để khôi phục mật khẩu</a>'
             };
 
             transporter.sendMail(mailOptions, function(error, info){

@@ -9,7 +9,7 @@ exports.detail = async function(req,res,next){
 			if(result.data.status==true||(req.isAuthenticated()&&req.user.isAdmin)){
 				let relateProduct = await productModel.getRelateProducts(result.data);
 				if(!relateProduct.error){
-					res.render('./customer/single',{product:result.data, relateProducts:relateProduct.data});
+					return res.render('./customer/single',{product:result.data, relateProducts:relateProduct.data});
 				}
 				else{
 					return res.send('500');

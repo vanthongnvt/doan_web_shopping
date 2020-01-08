@@ -59,9 +59,9 @@ exports.listProduct = async function(req,res,next){
 
 	}
 	if(query.brand!=null){
-		let brand= await brandModel.getBrandByName(query.brand);
-		if(!brand.error&&brand.data!=null){
-			eqs.brandId=brand.data._id;
+		// let brand= await brandModel.getBrandByName(query.brand);
+		// if(!brand.error&&brand.data!=null){
+			eqs.brandId=query.brand;
 			url=url+'&brand='+query.brand+'&page=';
 			let products= await categoryModel.paginateFilterProducts(category,sort,eqs,page);
 			if(!products.err){
@@ -73,8 +73,8 @@ exports.listProduct = async function(req,res,next){
 				return res.render('./customer/product',{category:products.data,query:query,count:count,pagination:pagination});
 			}
 			return res.render('./admin/404');
-		}
-		return res.render('./admin/404');
+		// }
+		// return res.render('./admin/404');
 	}
 	else{
 		if(Object.keys(query).length>0){
